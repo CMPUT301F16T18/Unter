@@ -1,0 +1,33 @@
+language: android
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    - platform-tools
+    - tools
+
+    # The BuildTools version used by your project
+    - build-tools-22.0.1
+
+    # The SDK version used to compile your project
+    - android-23
+
+    # Additional components
+    - extra-google-m2repository
+    - extra-android-m2repository
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    - sys-img-armeabi-v7a-android-18
+    - sys-img-x86-android-18
+sudo: false
+
+jdk:
+  - oraclejdk7
+
+notifications:
+  slack:
+    rooms:
+      - secure: M270VYdq0bJVp/iaXrsyY0mtb/j3E1T40EQUK9JqnFCddLUEKthFSSiupeIFpRdHxO3f7NT44BB/+9DyBcYF6WZQrduYaVnV4zHGi5SvqFGXR40XhNvsLbRsfw0mafhf4y1sq2lbkvB07EbSqeJA2MHpdVINkoelt8LG3Ouzf9JbzHzvsaikufcNwM0HSrumxQuy28PpS1FDAXuyu+zmVG16qLJPSB8F/qAYuXX4scYm1Ekw2J1jd3lqHSJHL8zw63H/+xBP78CVe26c2jq4j/Mo1q2i0Rrv8ZlWSqXxKelS3vvJyj6g3UKIR4rQHPmi+Q5GZDY3b52dwFjR+66rQQcW3PYETq1aO1SB5Fk1XtbXCPq/9L+53w7eb+sB5OR8q7BMK7Jvh9FmebvZalh4N3hJT/Aj0A7fIlXiq8+KXIsErWNXq6X+7QNrPFmfErsJXquyC/zPgM3L/WMXSCfGZM73XQxFMybStAa8VN9mMkkJh6XKq3gO6x4VU0nLPy+7yAYWq/r0I8PFo4oubyl/pdEAbqQyFvpjj3RngwCOi/2fXR1FyK1zQpR9oGOQk6bSc+E7Oys8q1jmr1XKcPdTciXClfwOtKpsyctiYuxNWOIQKHsBTPXAQ9gTrwbIWlYU1SoExcLntOffc/QBnvml+TUL3TTvCHs85HhLqBt3KLw=
+    on_success: always
+    on_failure: always
