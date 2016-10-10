@@ -10,7 +10,7 @@ A CMPUT 301 Project
 [Javadoc - Host by Github Page](https://cmput301f16t18.github.io/Unter/javadoc/)
 
 # Important Notes
-1. **Please read [Contribution Code](https://github.com/CMPUT301F16T18/Unter/wiki/Contribution-Code)** before you work on this project.
+1. **Please read [Contribution Code](https://github.com/CMPUT301F16T18/Unter/wiki/Contribution-Code)**
 
 # Author
 * [Alan(Xutong) Zhao](https://github.com/TongTongX)
