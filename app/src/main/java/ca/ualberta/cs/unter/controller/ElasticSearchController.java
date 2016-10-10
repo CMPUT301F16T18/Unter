@@ -17,7 +17,10 @@
 
 package ca.ualberta.cs.unter.controller;
 
+import java.util.ArrayList;
+
 import ca.ualberta.cs.unter.model.Driver;
+import ca.ualberta.cs.unter.model.Request;
 import ca.ualberta.cs.unter.model.User;
 
 /**
@@ -53,5 +56,30 @@ public class ElasticSearchController {
         } else {
             return -1;
         }
+    }
+
+    /**
+     * Search request by location array list.
+     *
+     * @param lat the lat
+     * @param lon the lon
+     * @return the array list
+     */
+    public ArrayList<Request> searchRequestByLocation(int lat, int lon) {
+        ArrayList<Request> matchedRequest = new ArrayList<>();
+        // magic
+        return matchedRequest;
+    }
+
+    /**
+     * Search request by keyword array list.
+     *
+     * @param keyword the keyword
+     * @return the array list
+     */
+    public ArrayList<Request> searchRequestByKeyword(String keyword) {
+        ArrayList<Request> matchedRequest = new ArrayList<>();
+        // magic
+        return matchedRequest;
     }
 }

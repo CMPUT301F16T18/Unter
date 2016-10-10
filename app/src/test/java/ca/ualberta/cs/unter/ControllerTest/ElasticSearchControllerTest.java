@@ -50,4 +50,19 @@ public class ElasticSearchControllerTest extends TestCase{
         Rider rider = new Rider("test", "7807163939", "test@ualberta.ca");
         assertEquals(esc.updateUser(rider), 1);
     }
+
+    /**
+     * Test search request by location.
+     */
+    public void testSearchRequestByLocation() {
+        assertTrue(esc.searchRequestByLocation(100, 100) != null);
+    }
+
+    /**
+     * Test search request by keyword.
+     */
+    public void testSearchRequestByKeyword() {
+        assertTrue(esc.searchRequestByKeyword("test") != null);
+    }
+
 }
