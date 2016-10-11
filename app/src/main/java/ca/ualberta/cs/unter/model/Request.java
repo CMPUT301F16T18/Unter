@@ -83,13 +83,18 @@ public class Request {
      *
      * @param driverUserName the driver user name
      */
-    public void driverConfirmRequest(String driverUserName) {
-        if (driverUserName == null) {
+    public void driverAcceptRequest(String driverUserName) { // changed from driverConfirmRequest
+        /*if (driverUserName == null) {
             this.driverUserName = driverUserName;
             driverList.add(driverUserName);
         } else {
             driverList.add(driverUserName);
         }
+        */
+        if (driverList == null) {
+            driverList = new ArrayList<>();
+        }
+        driverList.add(driverUserName);
     }
 
     /**
@@ -161,6 +166,10 @@ public class Request {
      */
     public Double getEstimatedFare() {
         return estimatedFare;
+    }
+
+    public ArrayList<String> getDriverList() {
+        return driverList;
     }
 
     /**
