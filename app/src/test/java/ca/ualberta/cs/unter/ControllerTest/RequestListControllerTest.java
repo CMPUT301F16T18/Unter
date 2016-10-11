@@ -127,4 +127,63 @@ public class RequestListControllerTest extends TestCase {
     public void testSeeRequestStatus() {
         assertTrue(rlc.getRequestByIndex(0) != null);
     }
+
+	/**
+	 * Test driver accepts a request
+	 */
+	public void testAcceptRequest() {
+		Request request = rlc.getRequestByIndex(0);
+		request.driverAcceptRequest("Black");
+		assertTrue(request.getDriverList().contains("Black"));
+	}
+
+	/**
+	 * Test view accepted requests
+	 */
+	// TODO: too similar to testAcceptRequest()
+	public void testViewAccepted() {
+		Request request = rlc.getRequestByIndex(0);
+		request.driverAcceptRequest("Black");
+		assertTrue(request.getDriverList() != null);
+	}
+
+	/**
+	 * Test view rider accepted
+	 */
+	public void testViewRiderAcceptance() {
+		String driver = "White";
+		Request request = rlc.getRequestByIndex(1);
+		assertTrue(request.getDriverUserName() == driver);
+	}
+
+	/**
+	 * Test notify driver accepted
+	 */
+	// TODO: need more info
+	public void testNotifyDriverAccepted() {
+		rlc.riderConfirmDriver(0, "Black");
+		// need more info, same issue as testNotifyRiderRequestAccept()
+	}
+
+	// TODO: offline test cases, create skeleton offline class?
+
+	/**
+	 * Test specify start/end locations
+	 */
+	public void testSpecifyStartEnd() {
+		Request request = rlc.getRequestByIndex(0);
+		request.setOriginCoordinate("170");
+		request.setDestinationCoordinate("200");
+		assertTrue(request.getDestinationCoordinate() == "200");
+		assertTrue(request.getOriginCoordinate() == "170");
+	}
+
+	/**
+	 * Test view start/end locations
+	 */
+	public void testViewStartEnd() {
+		Request request = rlc.getRequestByIndex(0);
+		assertTrue(request.getOriginCoordinate() != null);
+		assertTrue(request.getDestinationCoordinate()!= null);
+	}
 }

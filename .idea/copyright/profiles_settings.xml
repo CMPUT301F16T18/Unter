@@ -1,7 +1,3 @@
 <component name="CopyrightManager">
-  <settings default="CMPUT301F16T18">
-    <module2copyright>
-      <element module="All" copyright="CMPUT301F16T18" />
-    </module2copyright>
-  </settings>
+  <settings default="" />
 </component>
