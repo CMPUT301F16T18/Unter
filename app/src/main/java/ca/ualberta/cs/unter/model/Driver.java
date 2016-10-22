@@ -24,6 +24,10 @@ package ca.ualberta.cs.unter.model;
  * @see User
  */
 public class Driver extends User {
+
+    public Driver() {
+    }
+
     public Driver(String userName, String mobileNumber, String emailAddress) {
         super(userName, mobileNumber, emailAddress);
     }
