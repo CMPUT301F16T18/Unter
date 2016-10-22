@@ -81,10 +81,15 @@ public class ElasticSearchController {
     }
 
     /**
-     * Update the user profile to the elastic search server
+     * Static class that update user profile
      */
     public static class UpdateUserProfileTask extends AsyncTask<User, Void, Void> {
 
+        /**
+         * Update the user profile to the server
+         * @param user the user object to be updated
+         * @return
+         */
         @Override
         protected Void doInBackground(User... user) {
             verifySettings();
@@ -109,7 +114,16 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     *  Static class that get user profile
+     */
     public static class GetUserProfileTask extends AsyncTask<String, Void, User> {
+
+        /**
+         * Get the user profile from the server
+         * @param search_parameters the username to be searched
+         * @return the mathed user obejct
+         */
         @Override
         protected User doInBackground(String... search_parameters) {
             verifySettings();
@@ -139,8 +153,15 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Static class that update the request
+     */
     public static class UpdateRequestTask extends AsyncTask<Request, Void, Void> {
 
+        /**
+         * Update the request when user accept, reject, require a ride
+         * @param request the request object to be updated
+         */
         @Override
         protected Void doInBackground(Request... request) {
             verifySettings();
@@ -165,7 +186,16 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Static class that fetch request from server
+     */
     public static class GetRequestsTask extends AsyncTask<String, Void, ArrayList<Request>> {
+
+        /**
+         * Fetch request list that matched the parameters, by keyword, geo-location, and all requests
+         * @param search_parameters the parameter to search
+         * @return a arraylist of requests
+         */
         @Override
         protected ArrayList<Request> doInBackground(String... search_parameters) {
             verifySettings();
@@ -196,6 +226,9 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Set up the connection with server
+     */
     private static void verifySettings() {
         // if the client hasn't been initialized then we should make it!
         if (client == null) {
