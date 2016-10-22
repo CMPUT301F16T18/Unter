@@ -30,12 +30,13 @@ public class Request {
     Use string as datatype for now,
     maybe we would integrate GMS later
      */
-    private String originCoordinate;
-    private String destinationCoordinate;
+    private Double originCoordinate;
+    private Double destinationCoordinate;
     private Double estimatedFare;
     private String requestDescription;
-    private Boolean isCompleted;
 
+    private Boolean isCompleted;
+    private Boolean isDriverAccepted;
 
     /**
      * Constructs a new request.
@@ -46,7 +47,7 @@ public class Request {
      * @param destinationCoordinate the destination coordinate
      * @param estimatedFare         the estimated fare
      */
-    public Request(String riderUserName, String driverUserName, String originCoordinate, String destinationCoordinate, Double estimatedFare) {
+    public Request(String riderUserName, String driverUserName, Double originCoordinate, Double destinationCoordinate, Double estimatedFare) {
         this.riderUserName = riderUserName;
         this.driverUserName = driverUserName;
         this.originCoordinate = originCoordinate;
@@ -61,7 +62,7 @@ public class Request {
      * @param originCoordinate      the origin coordinate
      * @param destinationCoordinate the destination coordinate
      */
-    public Request(String riderUserName, String originCoordinate, String destinationCoordinate) {
+    public Request(String riderUserName, Double originCoordinate, Double destinationCoordinate) {
         this.riderUserName = riderUserName;
         this.originCoordinate = originCoordinate;
         this.destinationCoordinate = destinationCoordinate;
@@ -137,7 +138,7 @@ public class Request {
      *
      * @return the origin coordinate
      */
-    public String getOriginCoordinate() {
+    public Double getOriginCoordinate() {
         return originCoordinate;
     }
 
@@ -146,7 +147,7 @@ public class Request {
      *
      * @return the destination coordinate
      */
-    public String getDestinationCoordinate() {
+    public Double getDestinationCoordinate() {
         return destinationCoordinate;
     }
 
@@ -186,7 +187,7 @@ public class Request {
      *
      * @param destinationCoordinate the destination coordinate
      */
-    public void setDestinationCoordinate(String destinationCoordinate) {
+    public void setDestinationCoordinate(Double destinationCoordinate) {
         this.destinationCoordinate = destinationCoordinate;
     }
 
@@ -195,7 +196,7 @@ public class Request {
      *
      * @param originCoordinate the origin coordinate
      */
-    public void setOriginCoordinate(String originCoordinate) {
+    public void setOriginCoordinate(Double originCoordinate) {
         this.originCoordinate = originCoordinate;
     }
 
