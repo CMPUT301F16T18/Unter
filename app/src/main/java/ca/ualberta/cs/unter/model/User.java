@@ -25,6 +25,9 @@ public abstract class User {
     private String mobileNumber;
     private String emailAddress;
 
+    public User() {
+
+    }
 
     /**
      * Instantiates a new User.
