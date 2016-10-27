@@ -86,6 +86,15 @@ public class ElasticSearchController {
 
         Index index = new Index.Builder(user).index("unter").type("user").build();
 
+        try {
+            DocumentResult result = client.execute(index);
+            if (result.isSucceeded()) {
+                // do something
+//                user.setID(result.getId());
+            }
+        } catch (Exception e) {
+
+        }
     }
 
     /**

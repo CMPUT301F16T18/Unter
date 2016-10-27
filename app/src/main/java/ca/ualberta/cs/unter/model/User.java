@@ -25,6 +25,17 @@ public abstract class User {
     private String mobileNumber;
     private String emailAddress;
 
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getID() {
+
+        return ID;
+    }
+
+    private String ID;
+
     public User() {
 
     }

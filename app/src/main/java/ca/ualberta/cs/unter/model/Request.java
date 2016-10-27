@@ -38,6 +38,8 @@ public class Request {
     private Boolean isCompleted;
     private Boolean isDriverAccepted;
 
+    private String ID;
+
     /**
      * Constructs a new request.
      *
@@ -207,5 +209,13 @@ public class Request {
      */
     public void setEstimatedFare(Double estimatedFare) {
         this.estimatedFare = estimatedFare;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }
