@@ -31,14 +31,16 @@ import ca.ualberta.cs.unter.model.Request;
  * @see RequestListController
  */
 public class RequestListControllerTest extends TestCase {
+    double[] origin = {300.12, 200.12};
+    double[] dest = {123.12, 500.12};
     /**
      * The R 1.
      */
-    Request r1 = new Request("John Doe", "112, 201", "112, 201");
+    Request r1 = new Request("John Doe", origin, dest);
     /**
      * The R 2.
      */
-    Request r2 = new Request("John", "White", "112, 201", "292, 293", 200.00);
+    Request r2 = new Request("John", "White", origin, dest, 13.22);
     /**
      * The Rlc.
      */
@@ -172,10 +174,12 @@ public class RequestListControllerTest extends TestCase {
 	 */
 	public void testSpecifyStartEnd() {
 		Request request = rlc.getRequestByIndex(0);
-		request.setOriginCoordinate("170");
-		request.setDestinationCoordinate("200");
-		assertTrue(request.getDestinationCoordinate() == "200");
-		assertTrue(request.getOriginCoordinate() == "170");
+        double[] origin = {300.12, 200.12};
+        double[] dest = {123.12, 500.12};
+		request.setOriginCoordinate(origin);
+		request.setDestinationCoordinate(dest);
+		assertTrue(request.getDestinationCoordinate().equals(origin));
+		assertTrue(request.getOriginCoordinate().equals(dest));
 	}
 
 	/**
