@@ -16,14 +16,6 @@
 
 package ca.ualberta.cs.unter.model.request;
 
-import ca.ualberta.cs.unter.model.Route;
-
-/**
- * Request that has been completed in the past.
- * @see Request
- */
-public class CompletedRequest extends Request {
-    public CompletedRequest(String riderUserName, String driverUserName, Route route, double estimatedFare) {
-        super(riderUserName, driverUserName, route, estimatedFare);
-    }
+public interface FareCalculator {
+    double calculateEstimatedFare();
 }

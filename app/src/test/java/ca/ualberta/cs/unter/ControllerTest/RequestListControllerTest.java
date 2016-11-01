@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.controller.RequestListController;
+import ca.ualberta.cs.unter.model.Route;
 import ca.ualberta.cs.unter.model.request.Request;
 
 
@@ -31,12 +32,12 @@ import ca.ualberta.cs.unter.model.request.Request;
  * @see RequestListController
  */
 public class RequestListControllerTest extends TestCase {
-    double[] origin = {300.12, 200.12};
+    Route origin = {300.12, 200.12};
     double[] dest = {123.12, 500.12};
     /**
      * The R 1.
      */
-    Request r1 = new Request("John Doe", origin, dest);
+    Request r1 = new Request("John Doe", origin);
     /**
      * The R 2.
      */
@@ -174,7 +175,7 @@ public class RequestListControllerTest extends TestCase {
 	 */
 	public void testSpecifyStartEnd() {
 		Request request = rlc.getRequestByIndex(0);
-        double[] origin = {300.12, 200.12};
+        Route origin = {300.12, 200.12};
         double[] dest = {123.12, 500.12};
 		request.setOriginCoordinate(origin);
 		request.setDestinationCoordinate(dest);

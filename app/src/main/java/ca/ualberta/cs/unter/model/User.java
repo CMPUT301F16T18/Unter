@@ -43,9 +43,7 @@ public abstract class User {
         this.mobileNumber = mobileNumber;
         this.emailAddress = emailAddress;
     }
-
-
-
+    
     /**
      * Gets user name.
      *

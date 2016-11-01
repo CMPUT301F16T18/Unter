@@ -18,17 +18,25 @@ package ca.ualberta.cs.unter.model.request;
 
 import java.util.ArrayList;
 
+import ca.ualberta.cs.unter.model.Route;
+
 /**
  * Request that has been sent by the rider,
- * and also accepted by one or more driver.
+ * and also accepted by one or more driver, but
+ * has not been confirmed by the rider.
  * @see Request
  */
 public class AcceptedRequest extends Request {
-    public AcceptedRequest(String riderUserName, String driverUserName, double[] originCoordinate, double[] destinationCoordinate, Double estimatedFare) {
-        super(riderUserName, driverUserName, originCoordinate, destinationCoordinate, estimatedFare);
+    public AcceptedRequest(String riderUserName, String driverUserName, Route route, Double estimatedFare) {
+        super(riderUserName, driverUserName, route, estimatedFare);
     }
 
-    public AcceptedRequest(String riderUserName, ArrayList<String> driverList, double[] originCoordinate, double[] destinationCoordinate, Double estimatedFare) {
-        super(riderUserName, driverList, originCoordinate, destinationCoordinate, estimatedFare);
+    public AcceptedRequest(String riderUserName, ArrayList<String> driverList, Route route, Double estimatedFare) {
+        super(riderUserName, driverList, route, estimatedFare);
+    }
+
+    @Override
+    public void riderConfirmDriver(String driverUserName) {
+        super.riderConfirmDriver(driverUserName);
     }
 }

@@ -17,23 +17,23 @@
 
 package ca.ualberta.cs.unter.model.request;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.exception.RequestException;
+import ca.ualberta.cs.unter.model.Route;
 
 /**
  * This is a class that contains all attributes a Request should have.
  */
-public abstract class Request {
+public abstract class Request implements FareCalculator{
     private String riderUserName;
     private String driverUserName;
     private ArrayList<String> driverList;
-    /*
-    Use string as datatype for now,
-    maybe we would integrate GMS later
-     */
-    private double[] originCoordinate;
-    private double[] destinationCoordinate;
+
+    private Route route;
+
     private double estimatedFare;
     private String requestDescription;
 
@@ -43,16 +43,14 @@ public abstract class Request {
     private String ID;
 
     /**
-     * Constructor for a new request that has not been accepted.
+     * Constructor for a new request.
      *
-     * @param riderUserName         the rider user name
-     * @param originCoordinate      the origin coordinate
-     * @param destinationCoordinate the destination coordinate
+     * @param riderUserName  the rider user name
+     * @param route the path from pickup location to destination
      */
-    public Request(String riderUserName, double[] originCoordinate, double[] destinationCoordinate) {
+    public Request(String riderUserName, Route route) {
         this.riderUserName = riderUserName;
-        this.originCoordinate = originCoordinate;
-        this.destinationCoordinate = destinationCoordinate;
+        this.route = route;
         this.estimatedFare = calculateEstimatedFare();
     }
 
@@ -61,15 +59,13 @@ public abstract class Request {
      *
      * @param riderUserName         the rider user name
      * @param driverUserName        the driver user name
-     * @param originCoordinate      the origin coordinate
-     * @param destinationCoordinate the destination coordinate
      * @param estimatedFare         the estimated fare
+     * @param route the path from pickup location to destination
      */
-    public Request(String riderUserName, String driverUserName, double[] originCoordinate, double[] destinationCoordinate, Double estimatedFare) {
+    public Request(String riderUserName, String driverUserName, Route route, double estimatedFare) {
         this.riderUserName = riderUserName;
         this.driverUserName = driverUserName;
-        this.originCoordinate = originCoordinate;
-        this.destinationCoordinate = destinationCoordinate;
+        this.route = route;
         this.estimatedFare = estimatedFare;
     }
 
@@ -78,15 +74,12 @@ public abstract class Request {
      *
      * @param riderUserName the rider user name
      * @param driverList the list of drivers username who accept the request
-     * @param originCoordinate the origin coordinate
-     * @param destinationCoordinate the destination coordinate
      * @param estimatedFare the estimated fare
      */
-    public Request(String riderUserName, ArrayList<String> driverList, double[] originCoordinate, double[] destinationCoordinate, Double estimatedFare) {
+    public Request(String riderUserName, ArrayList<String> driverList, Route route, double estimatedFare) {
         this.riderUserName = riderUserName;
         this.driverList = driverList;
-        this.originCoordinate = originCoordinate;
-        this.destinationCoordinate = destinationCoordinate;
+        this.route = route;
         this.estimatedFare = estimatedFare;
     }
 
@@ -94,9 +87,8 @@ public abstract class Request {
      * Calculate an estimated fare base on location
      * @return the estimated fare
      */
-    private double calculateEstimatedFare() {
-        // hardcode for now due to lack of sufficient information
-        // how to calculate the fare
+    @Override
+    public double calculateEstimatedFare() {
         return 100;
     }
 
@@ -122,7 +114,6 @@ public abstract class Request {
         }
     }
 
-
     /**
      * Rider confirm driver.
      *
@@ -141,6 +132,13 @@ public abstract class Request {
         } catch (RequestException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Rider complete request and pay.
+     */
+    public void riderCompleteRequest() {
+        isCompleted = true;
     }
 
     /**
@@ -173,8 +171,8 @@ public abstract class Request {
      *
      * @return the origin coordinate
      */
-    public double[] getOriginCoordinate() {
-        return originCoordinate;
+    public GeoPoint getOriginCoordinate() {
+        return route.getOrigin();
     }
 
     /**
@@ -182,8 +180,8 @@ public abstract class Request {
      *
      * @return the destination coordinate
      */
-    public double[] getDestinationCoordinate() {
-        return destinationCoordinate;
+    public GeoPoint getDestinationCoordinate() {
+        return route.getDestination();
     }
 
     /**
@@ -218,24 +216,6 @@ public abstract class Request {
     }
 
     /**
-     * Sets destination coordinate.
-     *
-     * @param destinationCoordinate the destination coordinate
-     */
-    public void setDestinationCoordinate(double[] destinationCoordinate) {
-        this.destinationCoordinate = destinationCoordinate;
-    }
-
-    /**
-     * Sets origin coordinate.
-     *
-     * @param originCoordinate the origin coordinate
-     */
-    public void setOriginCoordinate(double[] originCoordinate) {
-        this.originCoordinate = originCoordinate;
-    }
-
-    /**
      * Sets estimated fare.
      *
      * @param estimatedFare the estimated fare
@@ -250,5 +230,13 @@ public abstract class Request {
 
     public void setID(String ID) {
         this.ID = ID;
+    }
+
+    public String getRequestDescription() {
+        return requestDescription;
+    }
+
+    public Route getRoute() {
+        return route;
     }
 }

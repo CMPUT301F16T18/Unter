@@ -16,6 +16,10 @@
 
 package ca.ualberta.cs.unter.model.request;
 
+import java.util.ArrayList;
+
+import ca.ualberta.cs.unter.model.Route;
+
 /**
  * Reuqest that has been sent by the rider,
  * but has not been accepted by any driver.
@@ -26,10 +30,19 @@ public class PendingRequest extends Request {
     /**
      * Constructor for pending request
      * @param riderUserName rider's user name
-     * @param originCoordinate rider's pickup location coordinate
-     * @param destinationCoordinate rider's destination coordinate
+     * @param route the path from pickup location to destination
      */
-    public PendingRequest(String riderUserName, double[] originCoordinate, double[] destinationCoordinate) {
-        super(riderUserName, originCoordinate, destinationCoordinate);
+    public PendingRequest(String riderUserName, Route route) {
+        super(riderUserName, route);
+    }
+
+    /**
+     * Driver accepts the request.
+     *
+     * @param driverUserName the driver user name who accepts the ride request
+     */
+    @Override
+    public void driverAcceptRequest(String driverUserName) { // changed from driverConfirmRequest
+        super.driverAcceptRequest(driverUserName);
     }
 }
