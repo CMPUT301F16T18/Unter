@@ -19,6 +19,8 @@ package ca.ualberta.cs.unter.model.request;
 
 import java.util.ArrayList;
 
+import ca.ualberta.cs.unter.exception.RequestException;
+
 /**
  * This is a class that contains all attributes a Request should have.
  */
@@ -120,14 +122,25 @@ public abstract class Request {
         }
     }
 
+
     /**
      * Rider confirm driver.
      *
      * @param driverUserName the driver user name
+     * @exception RequestException raise exception when request has not been confirmed
      */
     public void riderConfirmDriver(String driverUserName) {
-        this.driverUserName = driverUserName;
-
+        try {
+            if (this.driverUserName.isEmpty() || driverList.isEmpty()) {
+                // If the request has not been accpeted yet
+                throw new RequestException("This request has not been accepted by any driver yet");
+            } else {
+                // Confirmed driver
+                this.driverUserName = driverUserName;
+            }
+        } catch (RequestException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
