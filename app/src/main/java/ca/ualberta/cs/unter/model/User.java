@@ -25,15 +25,6 @@ public abstract class User {
     private String mobileNumber;
     private String emailAddress;
 
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
-    public String getID() {
-
-        return ID;
-    }
-
     private String ID;
 
     public User() {
@@ -52,6 +43,8 @@ public abstract class User {
         this.mobileNumber = mobileNumber;
         this.emailAddress = emailAddress;
     }
+
+
 
     /**
      * Gets user name.
@@ -110,5 +103,14 @@ public abstract class User {
     @Override
     public String toString() {
         return userName;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getID() {
+
+        return ID;
     }
 }

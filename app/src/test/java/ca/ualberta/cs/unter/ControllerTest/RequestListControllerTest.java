@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.controller.RequestListController;
-import ca.ualberta.cs.unter.model.Request;
+import ca.ualberta.cs.unter.model.request.Request;
 
 
 /**
