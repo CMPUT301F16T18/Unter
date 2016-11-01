@@ -19,7 +19,7 @@ package ca.ualberta.cs.unter.controller;
 
 import java.util.ArrayList;
 
-import ca.ualberta.cs.unter.model.Request;
+import ca.ualberta.cs.unter.model.request.Request;
 
 
 /**

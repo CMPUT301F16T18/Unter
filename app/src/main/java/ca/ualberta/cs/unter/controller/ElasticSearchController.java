@@ -29,8 +29,7 @@ import java.util.List;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.Driver;
-import ca.ualberta.cs.unter.model.Request;
-import ca.ualberta.cs.unter.model.Rider;
+import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.model.User;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
@@ -81,21 +80,6 @@ public class ElasticSearchController {
         return matchedRequest;
     }
 
-    public void addUser(User user) {
-        verifySettings();
-
-        Index index = new Index.Builder(user).index("unter").type("user").build();
-
-        try {
-            DocumentResult result = client.execute(index);
-            if (result.isSucceeded()) {
-                // do something
-//                user.setID(result.getId());
-            }
-        } catch (Exception e) {
-
-        }
-    }
 
     /**
      * Static class that update user profile
@@ -126,7 +110,6 @@ public class ElasticSearchController {
                 Log.i("Uhoh", "We failed to update user profile to elastic search!");
                 e.printStackTrace();
             }
-
             return null;
         }
     }
