@@ -99,22 +99,25 @@ public abstract class Request {
     }
 
     /**
-     * Driver confirm request.
+     * Driver accepts the request.
      *
-     * @param driverUserName the driver user name
+     * @param driverUserName the driver user name who accepts the ride request
      */
     public void driverAcceptRequest(String driverUserName) { // changed from driverConfirmRequest
-        /*if (driverUserName == null) {
+        if (this.driverUserName.isEmpty()) {
+            // If the request has not been accepted
             this.driverUserName = driverUserName;
-            driverList.add(driverUserName);
-        } else {
-            driverList.add(driverUserName);
-        }
-        */
-        if (driverList == null) {
+        } else if (driverList == null && this.driverUserName != null) {
+            // If the request has been confirmed by only one driver
             driverList = new ArrayList<>();
+            // add existing accepted driver username first
+            driverList.add(this.driverUserName);
+            // add the new accepted driver
+            driverList.add(driverUserName);
+        } else if (driverList != null && !driverList.isEmpty()) {
+            // If the request has been accepted by more than one driver
+            driverList.add(driverUserName);
         }
-        driverList.add(driverUserName);
     }
 
     /**
