@@ -27,9 +27,9 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.Driver;
-import ca.ualberta.cs.unter.model.Request;
-import ca.ualberta.cs.unter.model.Rider;
+import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.model.User;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
@@ -80,6 +80,7 @@ public class ElasticSearchController {
         return matchedRequest;
     }
 
+
     /**
      * Static class that update user profile
      */
@@ -94,7 +95,7 @@ public class ElasticSearchController {
         protected Void doInBackground(User... user) {
             verifySettings();
 
-            Index index = new Index.Builder(user).index("Unter").type("user").build();
+            Index index = new Index.Builder(user).index("unter").type("user").build();
 
             try {
                 DocumentResult result = client.execute(index);
@@ -102,14 +103,13 @@ public class ElasticSearchController {
                     // do something
                 }
                 else {
-                    Log.i("Error", "Elastic search was not able to add the tweet.");
+                    Log.i("Error", "Elastic search was not able to add the update user.");
                 }
             }
             catch (Exception e) {
-                Log.i("Uhoh", "We failed to add a tweet to elastic search!");
+                Log.i("Uhoh", "We failed to update user profile to elastic search!");
                 e.printStackTrace();
             }
-
             return null;
         }
     }
@@ -232,7 +232,7 @@ public class ElasticSearchController {
     private static void verifySettings() {
         // if the client hasn't been initialized then we should make it!
         if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL);
             //DroidClientConfig.Builder builder = new DroidClientConfig.Builder("https://api.vfree.org");
             DroidClientConfig config = builder.build();
 

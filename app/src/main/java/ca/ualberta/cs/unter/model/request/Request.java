@@ -15,14 +15,14 @@
  *
  */
 
-package ca.ualberta.cs.unter.model;
+package ca.ualberta.cs.unter.model.request;
 
 import java.util.ArrayList;
 
 /**
  * This is a class that contains all attributes a Request should have.
  */
-public class Request {
+public abstract class Request {
     private String riderUserName;
     private String driverUserName;
     private ArrayList<String> driverList;
@@ -30,16 +30,32 @@ public class Request {
     Use string as datatype for now,
     maybe we would integrate GMS later
      */
-    private Double originCoordinate;
-    private Double destinationCoordinate;
-    private Double estimatedFare;
+    private double[] originCoordinate;
+    private double[] destinationCoordinate;
+    private double estimatedFare;
     private String requestDescription;
 
     private Boolean isCompleted;
     private Boolean isDriverAccepted;
 
+    private String ID;
+
     /**
-     * Constructs a new request.
+     * Constructor for a new request that has not been accepted.
+     *
+     * @param riderUserName         the rider user name
+     * @param originCoordinate      the origin coordinate
+     * @param destinationCoordinate the destination coordinate
+     */
+    public Request(String riderUserName, double[] originCoordinate, double[] destinationCoordinate) {
+        this.riderUserName = riderUserName;
+        this.originCoordinate = originCoordinate;
+        this.destinationCoordinate = destinationCoordinate;
+        this.estimatedFare = calculateEstimatedFare();
+    }
+
+    /**
+     * Constructor for ConfirmedRequest or CompletedRequest.
      *
      * @param riderUserName         the rider user name
      * @param driverUserName        the driver user name
@@ -47,7 +63,7 @@ public class Request {
      * @param destinationCoordinate the destination coordinate
      * @param estimatedFare         the estimated fare
      */
-    public Request(String riderUserName, String driverUserName, Double originCoordinate, Double destinationCoordinate, Double estimatedFare) {
+    public Request(String riderUserName, String driverUserName, double[] originCoordinate, double[] destinationCoordinate, Double estimatedFare) {
         this.riderUserName = riderUserName;
         this.driverUserName = driverUserName;
         this.originCoordinate = originCoordinate;
@@ -56,17 +72,20 @@ public class Request {
     }
 
     /**
-     * Constructs a new request that has not been accpeted.
+     * Constructor for AcceptedRequest
      *
-     * @param riderUserName         the rider user name
-     * @param originCoordinate      the origin coordinate
+     * @param riderUserName the rider user name
+     * @param driverList the list of drivers username who accept the request
+     * @param originCoordinate the origin coordinate
      * @param destinationCoordinate the destination coordinate
+     * @param estimatedFare the estimated fare
      */
-    public Request(String riderUserName, Double originCoordinate, Double destinationCoordinate) {
+    public Request(String riderUserName, ArrayList<String> driverList, double[] originCoordinate, double[] destinationCoordinate, Double estimatedFare) {
         this.riderUserName = riderUserName;
+        this.driverList = driverList;
         this.originCoordinate = originCoordinate;
         this.destinationCoordinate = destinationCoordinate;
-        this.estimatedFare = calculateEstimatedFare();
+        this.estimatedFare = estimatedFare;
     }
 
     /**
@@ -138,7 +157,7 @@ public class Request {
      *
      * @return the origin coordinate
      */
-    public Double getOriginCoordinate() {
+    public double[] getOriginCoordinate() {
         return originCoordinate;
     }
 
@@ -147,7 +166,7 @@ public class Request {
      *
      * @return the destination coordinate
      */
-    public Double getDestinationCoordinate() {
+    public double[] getDestinationCoordinate() {
         return destinationCoordinate;
     }
 
@@ -187,7 +206,7 @@ public class Request {
      *
      * @param destinationCoordinate the destination coordinate
      */
-    public void setDestinationCoordinate(Double destinationCoordinate) {
+    public void setDestinationCoordinate(double[] destinationCoordinate) {
         this.destinationCoordinate = destinationCoordinate;
     }
 
@@ -196,7 +215,7 @@ public class Request {
      *
      * @param originCoordinate the origin coordinate
      */
-    public void setOriginCoordinate(Double originCoordinate) {
+    public void setOriginCoordinate(double[] originCoordinate) {
         this.originCoordinate = originCoordinate;
     }
 
@@ -207,5 +226,13 @@ public class Request {
      */
     public void setEstimatedFare(Double estimatedFare) {
         this.estimatedFare = estimatedFare;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

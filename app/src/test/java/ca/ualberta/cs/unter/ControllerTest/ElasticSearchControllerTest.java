@@ -17,24 +17,44 @@
 
 package ca.ualberta.cs.unter.ControllerTest;
 
-import junit.framework.TestCase;
+import android.app.Application;
+import android.test.ApplicationTestCase;
+import android.util.Log;
+
+
+import java.util.concurrent.CountDownLatch;
 
 import ca.ualberta.cs.unter.controller.ElasticSearchController;
+import ca.ualberta.cs.unter.model.Driver;
 import ca.ualberta.cs.unter.model.Rider;
+import ca.ualberta.cs.unter.model.User;
+import io.searchbox.core.Update;
 
 /**
  * The type Elastic search controller test.
  */
-public class ElasticSearchControllerTest extends TestCase{
+public class ElasticSearchControllerTest extends ApplicationTestCase<Application>{
+
+    CountDownLatch signal = null;
+
+    public ElasticSearchControllerTest() {
+        super(Application.class);
+    }
+
+    @Override
+    public void setUp() throws Exception {
+        signal = new CountDownLatch(1);
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        signal.countDown();
+    }
+
     /**
      * The Esc.
      */
     ElasticSearchController esc = new ElasticSearchController();
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-
-    }
 
     /**
      * Test show user profile.
@@ -46,9 +66,23 @@ public class ElasticSearchControllerTest extends TestCase{
     /**
      * Test edit user profile.
      */
-    public void testEditUserProfile() {
+    public void testEditUserProfile() throws InterruptedException {
         Rider rider = new Rider("test", "7807163939", "test@ualberta.ca");
-        assertEquals(esc.updateUser(rider), 1);
+
+
+        signal.await();
+
+        User test = new Driver();
+        ElasticSearchController.GetUserProfileTask getUserProfileTask =
+                new ElasticSearchController.GetUserProfileTask();
+        getUserProfileTask.execute("test");
+        try {
+            test = getUserProfileTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Cannot get user");
+        }
+        signal.await();
+        assertTrue(rider.equals(test));
     }
 
     /**
