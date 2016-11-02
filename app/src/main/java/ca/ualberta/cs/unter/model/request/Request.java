@@ -135,13 +135,6 @@ public abstract class Request implements FareCalculator{
     }
 
     /**
-     * Rider complete request and pay.
-     */
-    public void riderCompleteRequest() {
-        isCompleted = true;
-    }
-
-    /**
      * Rider confirm request complete.
      */
     public void riderConfirmRequestComplete() {

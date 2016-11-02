@@ -17,6 +17,19 @@
 
 package ca.ualberta.cs.unter.model;
 
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.searchly.jestdroid.DroidClientConfig;
+import com.searchly.jestdroid.JestClientFactory;
+import com.searchly.jestdroid.JestDroidClient;
+
+import ca.ualberta.cs.unter.UnterConstant;
+import io.searchbox.core.DocumentResult;
+import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
+
 /**
  * This a abstract base class for for all user model, including Driver and Rider.
  */
@@ -26,6 +39,8 @@ public abstract class User {
     private String emailAddress;
 
     private String ID;
+
+    private transient static JestDroidClient client;
 
     public User() {
 
@@ -43,7 +58,100 @@ public abstract class User {
         this.mobileNumber = mobileNumber;
         this.emailAddress = emailAddress;
     }
-    
+
+    /**
+     * Static class that update user profile
+     */
+    public static class UpdateUserProfileTask extends AsyncTask<User, Void, Void> {
+
+        /**
+         * Update the user profile to the server
+         * @param user the user object to be updated
+         * @return
+         */
+        @Override
+        protected Void doInBackground(User... user) {
+            verifySettings();
+
+            Index index = new Index.Builder(user).index("unter").type("user").build();
+
+            try {
+                DocumentResult result = client.execute(index);
+                if (result.isSucceeded()) {
+                    // do something
+                }
+                else {
+                    Log.i("Error", "Elastic search was not able to add the update user.");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Uhoh", "We failed to update user profile to elastic search!");
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            // do something to notify succeed
+        }
+    }
+
+    /**
+     *  Static class that get user profile
+     */
+    public static class GetUserProfileTask extends AsyncTask<String, Void, User> {
+
+        /**
+         * Get the user profile from the server
+         * @param search_parameters the username to be searched
+         * @return the mathed user obejct
+         */
+        @Override
+        protected User doInBackground(String... search_parameters) {
+            verifySettings();
+
+            User user = new Driver();
+
+            // assume that search_parameters[0] is the only search term we are interested in using
+            Search search = new Search.Builder(search_parameters[0])
+                    .addIndex("unter")
+                    .addType("user")
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    user = result.getSourceAsObject(User.class);
+                }
+                else {
+                    Log.i("Error", "The search query failed to find any tweets that matched.");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return user;
+        }
+    }
+
+
+    /**
+     * Set up the connection with server
+     */
+    private static void verifySettings() {
+        // if the client hasn't been initialized then we should make it!
+        if (client == null) {
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL);
+            //DroidClientConfig.Builder builder = new DroidClientConfig.Builder("https://api.vfree.org");
+            DroidClientConfig config = builder.build();
+
+            JestClientFactory factory = new JestClientFactory();
+            factory.setDroidClientConfig(config);
+            client = (JestDroidClient) factory.getObject();
+        }
+    }
     /**
      * Gets user name.
      *

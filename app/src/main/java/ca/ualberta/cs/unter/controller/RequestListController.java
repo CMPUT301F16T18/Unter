@@ -67,7 +67,7 @@ public class RequestListController {
      * @param driverUserName the driver user name
      */
     public void driverConfirmRequest(int index, String driverUserName) {
-        requestList.get(index).setDriverUserName(driverUserName);
+        requestList.get(index).driverAcceptRequest(driverUserName);
     }
 
     /**

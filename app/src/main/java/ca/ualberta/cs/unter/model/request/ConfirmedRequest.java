@@ -30,8 +30,7 @@ public class ConfirmedRequest extends Request{
         super(riderUserName, driverUserName, route, estimatedFare);
     }
 
-    @Override
     public void riderCompleteRequest() {
-        super.riderCompleteRequest();
+        super.riderConfirmRequestComplete();
     }
 }
