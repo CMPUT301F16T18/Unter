@@ -17,12 +17,23 @@
 
 package ca.ualberta.cs.unter.model.request;
 
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.searchly.jestdroid.DroidClientConfig;
+import com.searchly.jestdroid.JestClientFactory;
+import com.searchly.jestdroid.JestDroidClient;
+
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 
+import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.exception.RequestException;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.Route;
+import io.searchbox.core.DocumentResult;
+import io.searchbox.core.Index;
 
 /**
  * This is a class that contains all attributes a Request should have.
@@ -41,6 +52,8 @@ public abstract class Request implements FareCalculator{
     private Boolean isDriverAccepted;
 
     private String ID;
+
+    private transient static JestDroidClient client;
 
     /**
      * Constructor for a new request.
@@ -135,6 +148,75 @@ public abstract class Request implements FareCalculator{
     }
 
     /**
+     * Static class that update the request
+     */
+    public static class UpdateRequestTask extends AsyncTask<Request, Void, Void> {
+        public OnAsyncTaskCompleted listener;
+
+        // http://stackoverflow.com/questions/9963691/android-asynctask-sending-callbacks-to-ui
+        // Author: Dmitry Zaitsev
+        /**
+         * Constructor for updaterequesttask class
+         * @param listener the customize job after the async task is done
+         */
+        public UpdateRequestTask(OnAsyncTaskCompleted listener) {
+            this.listener = listener;
+        }
+
+        /**
+         * Update the request when user accept, reject, require a ride
+         * @param requests the request object to be updated
+         */
+        @Override
+        protected Void doInBackground(Request... requests) {
+            verifySettings();
+
+            for (Request req : requests) {
+                Index index = new Index.Builder(req).index("unter").type("request").build();
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        // set ID
+                        req.setID(result.getId());
+                    } else {
+                        Log.i("Error", "Elastic search was not able to add the request.");
+                    }
+                } catch (Exception e) {
+                    Log.i("Uhoh", "We failed to add a request to elastic search!");
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Excute after async task is finished
+         * Stuff like notify arrayadapter the data set is changed
+         * @param aVoid nothing
+         */
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            listener.onTaskCompleted();
+        }
+    }
+
+    /**
+     * Set up the connection with server
+     */
+    private static void verifySettings() {
+        // if the client hasn't been initialized then we should make it!
+        if (client == null) {
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL);
+            //DroidClientConfig.Builder builder = new DroidClientConfig.Builder("https://api.vfree.org");
+            DroidClientConfig config = builder.build();
+
+            JestClientFactory factory = new JestClientFactory();
+            factory.setDroidClientConfig(config);
+            client = (JestDroidClient) factory.getObject();
+        }
+    }
+
+    /**
      * Rider confirm request complete.
      */
     public void riderConfirmRequestComplete() {
@@ -216,6 +298,7 @@ public abstract class Request implements FareCalculator{
     public void setEstimatedFare(Double estimatedFare) {
         this.estimatedFare = estimatedFare;
     }
+
 
     public String getID() {
         return ID;
