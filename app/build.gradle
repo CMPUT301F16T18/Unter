@@ -40,4 +40,5 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.github.MKergall:osmbonuspack:6.0'
     compile files('src/include/jest-droid-2.0.1-SNAPSHOT.jar')
+
 }
