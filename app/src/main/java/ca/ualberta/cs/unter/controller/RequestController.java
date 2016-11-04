@@ -19,13 +19,14 @@ package ca.ualberta.cs.unter.controller;
 
 import java.util.ArrayList;
 
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.request.Request;
 
 
 /**
  * This class contains all functionalities of request list
  */
-public class RequestListController {
+public class RequestController {
     private ArrayList<Request> requestList;
 
     /**
@@ -38,6 +39,19 @@ public class RequestListController {
             requestList = new ArrayList<>();
         }
         return requestList;
+    }
+
+    public void createRequest(Request request, OnAsyncTaskCompleted listener) {
+        Request.CreateRequestTask task = new Request.CreateRequestTask(listener);
+        task.execute(request);
+    }
+
+    public void updateRequest(Request request) {
+
+    }
+
+    public void deleteRequest(Request request) {
+
     }
 
     /**
