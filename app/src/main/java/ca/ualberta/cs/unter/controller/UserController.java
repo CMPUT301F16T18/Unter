@@ -16,22 +16,36 @@
 
 package ca.ualberta.cs.unter.controller;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import ca.ualberta.cs.unter.model.Driver;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.Rider;
 import ca.ualberta.cs.unter.model.User;
 
 public class UserController {
-    User user;
-    public void addUser(String username, String phoneNumber, String emailAddr, String role) {
-        if (role.equals("Driver")) {
-            user = new Driver(username, phoneNumber, emailAddr);
-        } else if (role.equals("Rider")) {
-            user = new Rider(username, phoneNumber, emailAddr);
-        }
-        User.UpdateUserProfileTask task = new User.UpdateUserProfileTask();
+    OnAsyncTaskCompleted listener;
+
+    public UserController(OnAsyncTaskCompleted listener) {
+        this.listener = listener;
+    }
+
+    public void addUser(User user) {
+        User.CreateUserTask task = new User.CreateUserTask(listener);
         task.execute(user);
+    }
+
+    public void updateUser(User user) {
+        String query = String.format(
+                        "{\n" +
+                        "    \"userName\": \"$s\"     " +
+                        "    \"mobileNumber\": \"$s\" " +
+                        "    \"emailAddress\": \"$s\" " +
+                        "}",
+                user.getUserName(), user.getMobileNumber(), user.getEmailAddress());
+        User.UpdateUserTask task = new User.UpdateUserTask(listener);
+        task.execute(query, user.getID());
     }
 
     /**
@@ -40,6 +54,7 @@ public class UserController {
      * @return
      */
     public User getUser(String username) {
+        User user = new User();
         String query = String.format(
                 "{\n" +
                 "    \"query\": {\n" +
@@ -50,7 +65,7 @@ public class UserController {
                 "        }\n" +
                 "    }\n" +
                 "}", username);
-        User.GetUserProfileTask task = new User.GetUserProfileTask();
+        User.GetUserProfileTask task = new User.GetUserProfileTask(listener);
         task.execute(query);
 
         try {

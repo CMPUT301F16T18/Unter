@@ -17,12 +17,6 @@
 
 package ca.ualberta.cs.unter.model;
 
-import ca.ualberta.cs.unter.JsonHandler.InterfaceAdapter;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -30,12 +24,14 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import ca.ualberta.cs.unter.JsonHandler.UserClassAdapter;
+import java.io.IOException;
+
 import ca.ualberta.cs.unter.UnterConstant;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.Update;
 
 /**
  * This a abstract base class for for all user model, including Driver and Rider.
@@ -67,9 +63,14 @@ public class User {
     }
 
     /**
-     * Static class that update user profile
+     * Static class that create user profile
      */
-    public static class UpdateUserProfileTask extends AsyncTask<User, Void, Void> {
+    public static class CreateUserTask extends AsyncTask<User, Void, Void> {
+        public OnAsyncTaskCompleted listener;
+
+        public CreateUserTask(OnAsyncTaskCompleted listener) {
+            this.listener = listener;
+        }
 
         /**
          * Update the user profile to the server
@@ -87,12 +88,13 @@ public class User {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
+                        u.setID(result.getId());
                         Log.i("Error", "yes");
                     } else {
                         Log.i("Error", "Elastic search was not able to add the update user.");
                     }
                 } catch (Exception e) {
-                    Log.i("Error", "We failed to update user profile to elastic search!");
+                    Log.i("Error", "We failed to add user profile to elastic search!");
                     e.printStackTrace();
                 }
             }
@@ -101,7 +103,41 @@ public class User {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            // do something to notify succeed
+            listener.onTaskCompleted();
+        }
+    }
+
+    /**
+     * Static class that update user profile
+     */
+    public static class UpdateUserTask extends AsyncTask<String, Void, Void> {
+        public OnAsyncTaskCompleted listener;
+
+        public UpdateUserTask(OnAsyncTaskCompleted listener) {
+            this.listener = listener;
+        }
+        @Override
+        protected Void doInBackground(String... users) {
+            verifySettings();
+
+            Update update = new Update.Builder(users[0]).index("unter").type("user").id(users[1]).build();
+
+            try {
+                DocumentResult result = client.execute(update);
+                if (result.isSucceeded()) {
+                    Log.i("Debug", "Successful update user profile");
+                } else {
+                    Log.i("Error", "We failed to update user profile to elastic search!");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            listener.onTaskCompleted();
         }
     }
 
@@ -109,7 +145,11 @@ public class User {
      *  Static class that get user profile
      */
     public static class GetUserProfileTask extends AsyncTask<String, Void, User> {
+        public OnAsyncTaskCompleted listener;
 
+        public GetUserProfileTask(OnAsyncTaskCompleted listener) {
+            this.listener = listener;
+        }
         /**
          * Get the user profile from the server
          * @param query the username to be searched
@@ -137,6 +177,11 @@ public class User {
             }
 
             return user;
+        }
+
+        @Override
+        protected void onPostExecute(User user) {
+            listener.onTaskCompleted();
         }
     }
 
