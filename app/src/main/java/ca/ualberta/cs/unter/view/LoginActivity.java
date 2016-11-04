@@ -1,8 +1,12 @@
 package ca.ualberta.cs.unter.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,34 +16,38 @@ import android.widget.Toast;
 
 import ca.ualberta.cs.unter.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private EditText usernameText;
-    // private EditText passwordText;
-    private RadioGroup rolesGroup;
+    private EditText emailText;
+    private EditText mobileText;
+
     private RadioButton riderRadio;
     private RadioButton driverRadio;
     private Button loginButton;
     private String roleSel;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         usernameText = (EditText) findViewById(R.id.username);
-        // passwordText = (EditText) findViewById(R.id.password);
+        emailText = (EditText) findViewById(R.id.email);
+        mobileText = (EditText) findViewById(R.id.mobile);
 
         riderRadio = (RadioButton) findViewById(R.id.radio_rider);
         driverRadio = (RadioButton) findViewById(R.id.radio_driver);
 
         loginButton = (Button) findViewById(R.id.login_button);
+        assert loginButton != null;
+        loginButton.setOnClickListener(this);
 
         // http://stackoverflow.com/questions/8323778/how-to-set-on-click-listener-on-the-radio-button-in-android
 
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
     }
 
@@ -63,35 +71,38 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        if (view == loginButton ) {
-//            login();
-//        }
-//    }
+    @Override
+    public void onClick(View view) {
+        if (view == loginButton ) {
+            login();
+        }
+    }
 
     // TODO create a login() function, refer to addHabit in as1
-    protected void login(){
-        boolean validUsername = true;
-        // boolean validPassword = true;
-
+    // TODO maybe also use controller to check user's validity
+    public void login(){
         String username = usernameText.getText().toString();
-        // String password = passwordText.getText().toString();
+        String email = emailText.getText().toString();
+        String mobile = mobileText.getText().toString();
 
-        // TODO maybe also use controller to check user's validity
-        if (username.isEmpty() || username.trim().isEmpty()){
-            validUsername = false;
-            Toast.makeText(this, "Username is not valid.", Toast.LENGTH_SHORT).show();
-        }
+        boolean validUsername = !(username.isEmpty() || username.trim().isEmpty());
+        boolean validEmail = Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        boolean validMobile = Patterns.PHONE.matcher(mobile).matches();
 
-        if (validUsername) {
+        if ( !(validUsername && validEmail && validMobile) ){
+            Toast.makeText(this, "Username/Email/Mobile is not valid.", Toast.LENGTH_SHORT).show();
+        } else {
             try {
-                if (roleSel == "R") {
+                if (roleSel.equals("R")) {
                     // intent to RiderMainActivity
-
-                } else if (roleSel == "D") {
+//                    Intent intentRiderMain = new Intent(this, RiderMainActivity.class);
+//                    startActivity(intentRiderMain);
+                } else if (roleSel.equals("D")) {
                     // intent to DriverMainActivity
-
+//                    Intent intentDriverMain = new Intent(this, DriverMainActivity.class);
+//                    startActivity(intentDriverMain);
+                } else {
+                    openSelRoleDialog();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -100,4 +111,18 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     }
+
+    private void openSelRoleDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setTitle("Please Specify Your Role (Rider/Driver).")
+                .setPositiveButton(R.string.dialog_ok_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        // Create & Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

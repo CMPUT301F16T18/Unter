@@ -3,11 +3,13 @@
 
     <!--LoginActivity-->
     <string name="username_input">Enter Username</string>
-    <!--<string name="password_input">Enter Password</string>-->
+    <string name="email_input">Enter Email Address</string>
+    <string name="mobile_input">Enter Mobile Phone Number</string>
     <string name="select_role_text">Select A Role</string>
     <string name="rider_radio">Rider</string>
     <string name="driver_radio">Driver</string>
     <string name="login_button">Login</string>
+    <string name="dialog_ok_button">OK</string>
 
 
 </resources>
