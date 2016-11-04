@@ -58,13 +58,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch(view.getId()) {
             case R.id.radio_rider:
                 if (checked)
-                    riderRadio.setTypeface(null, Typeface.BOLD_ITALIC);
+                    riderRadio.setTypeface(null, Typeface.BOLD);
+                    driverRadio.setTypeface(null, Typeface.NORMAL);
                     // will login as rider
                     roleSel = "R";
                     break;
             case R.id.radio_driver:
                 if (checked)
-                    driverRadio.setTypeface(null, Typeface.BOLD_ITALIC);
+                    driverRadio.setTypeface(null, Typeface.BOLD);
+                    riderRadio.setTypeface(null, Typeface.NORMAL);
                     // will login as driver
                     roleSel = "D";
                     break;
@@ -101,12 +103,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // intent to DriverMainActivity
 //                    Intent intentDriverMain = new Intent(this, DriverMainActivity.class);
 //                    startActivity(intentDriverMain);
-                } else {
-                    openSelRoleDialog();
                 }
             } catch (Exception e) {
+                openSelRoleDialog();
                 e.printStackTrace();
-                throw new RuntimeException();
             }
 
         }
