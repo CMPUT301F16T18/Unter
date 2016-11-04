@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="ca.ualberta.cs.unter.view.LoginActivity">
+
+    <!--username-->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username_input"
+            android:inputType="textNoSuggestions|textVisiblePassword"
+            android:paddingTop="20dp"
+            android:maxLines="1"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <!--password-->
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingTop="@dimen/activity_vertical_margin">-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/password"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="@string/password_input"-->
+            <!--android:inputType="textPassword"-->
+            <!--android:paddingBottom="15dp"-->
+            <!--android:maxLines="1"/>-->
+
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--select a role (rider/driver)-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_role_text"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <RadioGroup
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/radio_group_roles"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:layout_margin="10dp"
+        android:paddingEnd="50dp">
+        <RadioButton
+            android:id="@+id/radio_rider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rider_radio"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton
+            android:id="@+id/radio_driver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/driver_radio"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
+    <!--login button-->
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_button"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"/>
+
+
+</LinearLayout>
