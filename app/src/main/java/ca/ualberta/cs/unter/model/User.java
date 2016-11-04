@@ -17,6 +17,12 @@
 
 package ca.ualberta.cs.unter.model;
 
+import ca.ualberta.cs.unter.JsonHandler.InterfaceAdapter;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -24,6 +30,7 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
+import ca.ualberta.cs.unter.JsonHandler.UserClassAdapter;
 import ca.ualberta.cs.unter.UnterConstant;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
@@ -33,7 +40,7 @@ import io.searchbox.core.SearchResult;
 /**
  * This a abstract base class for for all user model, including Driver and Rider.
  */
-public abstract class User {
+public class User {
     private String userName;
     private String mobileNumber;
     private String emailAddress;
@@ -73,20 +80,21 @@ public abstract class User {
         protected Void doInBackground(User... user) {
             verifySettings();
 
-            Index index = new Index.Builder(user).index("unter").type("user").build();
+            for (User u : user) {
 
-            try {
-                DocumentResult result = client.execute(index);
-                if (result.isSucceeded()) {
-                    // do something
+                Index index = new Index.Builder(u).index("unter").type("user").build();
+
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        Log.i("Error", "yes");
+                    } else {
+                        Log.i("Error", "Elastic search was not able to add the update user.");
+                    }
+                } catch (Exception e) {
+                    Log.i("Error", "We failed to update user profile to elastic search!");
+                    e.printStackTrace();
                 }
-                else {
-                    Log.i("Error", "Elastic search was not able to add the update user.");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Uhoh", "We failed to update user profile to elastic search!");
-                e.printStackTrace();
             }
             return null;
         }
@@ -104,38 +112,33 @@ public abstract class User {
 
         /**
          * Get the user profile from the server
-         * @param search_parameters the username to be searched
+         * @param query the username to be searched
          * @return the mathed user obejct
          */
         @Override
-        protected User doInBackground(String... search_parameters) {
+        protected User doInBackground(String... query) {
             verifySettings();
 
-            User user = new Driver();
-
-            // assume that search_parameters[0] is the only search term we are interested in using
-            Search search = new Search.Builder(search_parameters[0])
+            User user = new User();
+            Search search = new Search.Builder(query[0])
                     .addIndex("unter")
                     .addType("user")
                     .build();
-
             try {
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     user = result.getSourceAsObject(User.class);
+
+                } else {
+                    Log.i("Error", "The search query failed to find any user that matched.");
                 }
-                else {
-                    Log.i("Error", "The search query failed to find any tweets that matched.");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            } catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elastic search server!");
             }
 
             return user;
         }
     }
-
 
     /**
      * Set up the connection with server
@@ -143,8 +146,9 @@ public abstract class User {
     private static void verifySettings() {
         // if the client hasn't been initialized then we should make it!
         if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL);
-            //DroidClientConfig.Builder builder = new DroidClientConfig.Builder("https://api.vfree.org");
+            DroidClientConfig.Builder builder = new DroidClientConfig
+                    .Builder(UnterConstant.ELASTIC_SEARCH_URL).multiThreaded(true);
+
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();

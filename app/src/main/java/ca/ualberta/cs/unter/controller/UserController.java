@@ -34,10 +34,27 @@ public class UserController {
         task.execute(user);
     }
 
+    /**
+     * Retrive user profile from the server
+     * @param username the username to search
+     * @return
+     */
     public User getUser(String username) {
+        String query = String.format(
+                "{\n" +
+                "    \"query\": {\n" +
+                "        \"filtered\" : {\n" +
+                "            \"filter\" : {\n" +
+                "                \"term\" : { \"userName\" : \"%s\" }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}", username);
         User.GetUserProfileTask task = new User.GetUserProfileTask();
-        task.execute(username);
+        task.execute(query);
+
         try {
+            Log.i("Error", "Searching");
             user = task.get();
         } catch (Exception e) {
             Log.i("Error", "Fail to get");
