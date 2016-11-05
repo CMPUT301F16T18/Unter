@@ -16,12 +16,9 @@
 
 package ca.ualberta.cs.unter.controller;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
-import ca.ualberta.cs.unter.model.Driver;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
-import ca.ualberta.cs.unter.model.Rider;
 import ca.ualberta.cs.unter.model.User;
 
 public class UserController {
@@ -45,26 +42,32 @@ public class UserController {
                         "}",
                 user.getUserName(), user.getMobileNumber(), user.getEmailAddress());
         User.UpdateUserTask task = new User.UpdateUserTask(listener);
-        task.execute(query, user.getID());
+        task.execute(user);
     }
 
-    /**
+    /** TODO, Query is not working
      * Retrive user profile from the server
      * @param username the username to search
      * @return
      */
     public User getUser(String username) {
         User user = new User();
+//        String query = String.format(
+//                "{\n" +
+//                "    \"query\": {\n" +
+//                "        \"filtered\" : {\n" +
+//                "            \"filter\" : {\n" +
+//                "                \"term\" : { \"userName\" : \"%s\" }\n" +
+//                "            }\n" +
+//                "        }\n" +
+//                "    }\n" +
+//                "}", username);
         String query = String.format(
-                "{\n" +
-                "    \"query\": {\n" +
-                "        \"filtered\" : {\n" +
-                "            \"filter\" : {\n" +
-                "                \"term\" : { \"userName\" : \"%s\" }\n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "}", username);
+                        "{\n" +
+                        "    \"query\": {\n" +
+                        "       \"term\" : { \"userName\" : \"%s\" }\n" +
+                        "    }\n" +
+                        "}", username);
         User.GetUserProfileTask task = new User.GetUserProfileTask(listener);
         task.execute(query);
 

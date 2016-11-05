@@ -27,6 +27,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 
 import ca.ualberta.cs.unter.UnterConstant;
+import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
@@ -65,7 +66,7 @@ public class User {
     /**
      * Static class that create user profile
      */
-    public static class CreateUserTask extends AsyncTask<User, Void, Void> {
+    public static class CreateUserTask extends AsyncTask<User, Void, User> {
         public OnAsyncTaskCompleted listener;
 
         public CreateUserTask(OnAsyncTaskCompleted listener) {
@@ -75,12 +76,12 @@ public class User {
         /**
          * Update the user profile to the server
          * @param user the user object to be updated
-         * @return
+         * @return user
          */
         @Override
-        protected Void doInBackground(User... user) {
+        protected User doInBackground(User... user) {
             verifySettings();
-
+            User newUser = new User();
             for (User u : user) {
 
                 Index index = new Index.Builder(u).index("unter").type("user").build();
@@ -89,6 +90,7 @@ public class User {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         u.setID(result.getId());
+                        newUser = u;
                         Log.i("Error", "yes");
                     } else {
                         Log.i("Error", "Elastic search was not able to add the update user.");
@@ -98,32 +100,40 @@ public class User {
                     e.printStackTrace();
                 }
             }
-            return null;
+            return newUser;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            listener.onTaskCompleted();
+        protected void onPostExecute(User user) {
+            listener.onTaskCompleted(user);
         }
     }
 
     /**
      * Static class that update user profile
      */
-    public static class UpdateUserTask extends AsyncTask<String, Void, Void> {
+    public static class UpdateUserTask extends AsyncTask<User, Void, User> {
         public OnAsyncTaskCompleted listener;
 
         public UpdateUserTask(OnAsyncTaskCompleted listener) {
             this.listener = listener;
         }
         @Override
-        protected Void doInBackground(String... users) {
+        protected User doInBackground(User... users) {
             verifySettings();
 
-            Update update = new Update.Builder(users[0]).index("unter").type("user").id(users[1]).build();
+            String query = String.format(
+                            "{\n" +
+                            "    \"userName\": \"%s\"     ,\n" +
+                            "    \"mobileNumber\": \"%s\" ,\n" +
+                            "    \"emailAddress\": \"%s\" \n" +
+                            "}",
+                    users[0].getUserName(), users[0].getMobileNumber(), users[0].getEmailAddress());
+            Index index = new Index.Builder(query)
+                    .index("unter").type("user").id(users[0].getID()).build();
 
             try {
-                DocumentResult result = client.execute(update);
+                DocumentResult result = client.execute(index);
                 if (result.isSucceeded()) {
                     Log.i("Debug", "Successful update user profile");
                 } else {
@@ -132,16 +142,16 @@ public class User {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return users[0];
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            listener.onTaskCompleted();
+        protected void onPostExecute(User user) {
+            listener.onTaskCompleted(user);
         }
     }
 
-    /**
+    /** TODO, Query is not working
      *  Static class that get user profile
      */
     public static class GetUserProfileTask extends AsyncTask<String, Void, User> {
@@ -164,24 +174,28 @@ public class User {
                     .addIndex("unter")
                     .addType("user")
                     .build();
+            Log.i("Error", query[0]);
             try {
-                SearchResult result = client.execute(search);
+                JestResult result = client.execute(search);
                 if (result.isSucceeded()) {
-                    user = result.getSourceAsObject(User.class);
-
+                    User getUser = result.getSourceAsObject(User.class);
+                    user = getUser;
+                    Log.i("Debug", "Successful get user profile");
+                    if (user == null) {
+                        Log.i("Debug", "fail to deserilize");
+                    }
                 } else {
                     Log.i("Error", "The search query failed to find any user that matched.");
                 }
             } catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elastic search server!");
             }
-
             return user;
         }
 
         @Override
         protected void onPostExecute(User user) {
-            listener.onTaskCompleted();
+            listener.onTaskCompleted(user);
         }
     }
 
@@ -192,7 +206,7 @@ public class User {
         // if the client hasn't been initialized then we should make it!
         if (client == null) {
             DroidClientConfig.Builder builder = new DroidClientConfig
-                    .Builder(UnterConstant.ELASTIC_SEARCH_URL).multiThreaded(true);
+                    .Builder(UnterConstant.ELASTIC_SEARCH_URL);
 
             DroidClientConfig config = builder.build();
 
