@@ -25,10 +25,7 @@ import android.util.Log;
 import java.util.concurrent.CountDownLatch;
 
 import ca.ualberta.cs.unter.controller.ElasticSearchController;
-import ca.ualberta.cs.unter.model.Driver;
-import ca.ualberta.cs.unter.model.Rider;
 import ca.ualberta.cs.unter.model.User;
-import io.searchbox.core.Update;
 
 /**
  * The type Elastic search controller test.

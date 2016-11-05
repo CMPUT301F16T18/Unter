@@ -16,14 +16,26 @@
 
 package ca.ualberta.cs.unter.model.request;
 
+import java.util.ArrayList;
+
 import ca.ualberta.cs.unter.model.Route;
 
 /**
- * Request that has been completed in the past.
- * @see Request
+ * Created by Michael on 16-11-04.
  */
-public class CompletedRequest extends Request {
-    public CompletedRequest(String riderUserName, String driverUserName, Route route, double estimatedFare) {
+public class NormalRequest extends Request {
+    public NormalRequest() {
+    }
+
+    public NormalRequest(String riderUserName, Route route) {
+        super(riderUserName, route);
+    }
+
+    public NormalRequest(String riderUserName, String driverUserName, Route route, double estimatedFare) {
         super(riderUserName, driverUserName, route, estimatedFare);
+    }
+
+    public NormalRequest(String riderUserName, ArrayList<String> driverList, Route route, double estimatedFare) {
+        super(riderUserName, driverList, route, estimatedFare);
     }
 }
