@@ -27,13 +27,16 @@ import com.searchly.jestdroid.JestDroidClient;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.Route;
+import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
+import io.searchbox.core.Update;
 
 /**
  * This is a class that contains all attributes a Request should have.
@@ -54,6 +57,10 @@ public abstract class Request implements FareCalculator{
     private String ID;
 
     private transient static JestDroidClient client;
+
+    public Request() {
+
+    }
 
     /**
      * Constructor for a new request.
@@ -147,14 +154,65 @@ public abstract class Request implements FareCalculator{
         }
     }
 
-    /**
-     * Static class that update the request
+    /**TODO
+     * Static class that adds the request
      */
-    public static class UpdateRequestTask extends AsyncTask<Request, Void, Void> {
+    public static class CreateRequestTask extends AsyncTask<Request, Void, Request> {
         public OnAsyncTaskCompleted listener;
-
+        public Request request;
         // http://stackoverflow.com/questions/9963691/android-asynctask-sending-callbacks-to-ui
         // Author: Dmitry Zaitsev
+        /**
+         * Constructor for CreateRequestTask class
+         * @param listener the customize job after the async task is done
+         */
+        public CreateRequestTask(OnAsyncTaskCompleted listener) {
+            this.listener = listener;
+        }
+
+        /**
+         * Update the request when user accept, reject, require a ride
+         * @param requests the request object to be create
+         */
+        @Override
+        protected Request doInBackground(Request... requests) {
+            verifySettings();
+            for (Request req : requests) {
+                Index index = new Index.Builder(req).index("unter").type("request").build();
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        // set ID
+                        req.setID(result.getId());
+                        this.request = req;
+                    } else {
+                        Log.i("Error", "Elastic search was not able to add the request.");
+                    }
+                } catch (Exception e) {
+                    Log.i("Uhoh", "We failed to add a request to elastic search!");
+                    e.printStackTrace();
+                }
+            }
+            return this.request;
+        }
+
+        /**
+         * Excute after async task is finished
+         * Stuff like notify arrayadapter the data set is changed
+         * @param request the request
+         */
+        @Override
+        protected void onPostExecute(Request request) {
+            listener.onTaskCompleted(request);
+        }
+    }
+
+    /**TODO
+     * Static class that update the request
+     */
+    public static class UpdateRequestTask extends AsyncTask<String, Void, Request> {
+        public OnAsyncTaskCompleted listener;
+
         /**
          * Constructor for updaterequesttask class
          * @param listener the customize job after the async task is done
@@ -168,21 +226,71 @@ public abstract class Request implements FareCalculator{
          * @param requests the request object to be updated
          */
         @Override
-        protected Void doInBackground(Request... requests) {
+        protected Request doInBackground(String... requests) {
             verifySettings();
-
-            for (Request req : requests) {
-                Index index = new Index.Builder(req).index("unter").type("request").build();
+                Update update = new Update.Builder(requests[0])
+                        .index("unter")
+                        .type("request")
+                        .id(requests[1]).build();
                 try {
-                    DocumentResult result = client.execute(index);
+                    DocumentResult result = client.execute(update);
+
                     if (result.isSucceeded()) {
-                        // set ID
-                        req.setID(result.getId());
+
                     } else {
                         Log.i("Error", "Elastic search was not able to add the request.");
                     }
                 } catch (Exception e) {
                     Log.i("Uhoh", "We failed to add a request to elastic search!");
+                    e.printStackTrace();
+                }
+            return null;
+        }
+
+        /**
+         * Excute after async task is finished
+         * Stuff like notify arrayadapter the data set is changed
+         * @param request the request
+         */
+        @Override
+        protected void onPostExecute(Request request) {
+            listener.onTaskCompleted(request);
+        }
+    }
+
+    /**TODO
+     * Static class that cancel the request
+     */
+    public static class DeleteRequestTask extends AsyncTask<Request, Void, Void> {
+        public OnAsyncTaskCompleted listener;
+
+        /**
+         * Constructor for DeleteRequestTask class
+         * @param listener the customize job after the async task is done
+         */
+        public DeleteRequestTask(OnAsyncTaskCompleted listener) {
+            this.listener = listener;
+        }
+
+        /**
+         * Cancel the request
+         * @param requests the request object to be canceled
+         */
+        @Override
+        protected Void doInBackground(Request... requests) {
+            verifySettings();
+
+            for (Request req : requests) {
+                Delete delete = new Delete.Builder(req.getID()).index("unter").type("request").build();
+                try {
+                    DocumentResult result = client.execute(delete);
+                    if (result.isSucceeded()) {
+                        Log.i("Debug", "Successful delete request");
+                    } else {
+                        Log.i("Error", "Elastic search was not able to add the request.");
+                    }
+                } catch (Exception e) {
+                    Log.i("Error", "We failed to add a request to elastic search!");
                     e.printStackTrace();
                 }
             }
@@ -196,9 +304,13 @@ public abstract class Request implements FareCalculator{
          */
         @Override
         protected void onPostExecute(Void aVoid) {
-            listener.onTaskCompleted();
+            listener.onTaskCompleted(aVoid);
         }
     }
+
+
+
+
 
     /**
      * Set up the connection with server

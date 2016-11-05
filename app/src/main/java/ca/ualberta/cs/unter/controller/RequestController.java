@@ -27,119 +27,55 @@ import ca.ualberta.cs.unter.model.request.Request;
  * This class contains all functionalities of request list
  */
 public class RequestController {
-    private ArrayList<Request> requestList;
 
-    /**
-     * Gets request list.
-     *
-     * @return the request list
-     */
-    public ArrayList<Request> getRequestList() {
-        if (requestList == null) {
-            requestList = new ArrayList<>();
-        }
-        return requestList;
-    }
+    public OnAsyncTaskCompleted listener;
 
-    public void createRequest(Request request, OnAsyncTaskCompleted listener) {
+    public void createRequest(Request request) {
         Request.CreateRequestTask task = new Request.CreateRequestTask(listener);
         task.execute(request);
     }
-
+    // TODO
     public void updateRequest(Request request) {
-
+        String query = String.format(
+                        "{\n" +
+                        "    \"riderUserName\": \"$s\" " +
+                        "    \"driverUserName\": \"$s\" " +
+                        "    }\n" +
+                        "}");
+        Request.UpdateRequestTask task = new Request.UpdateRequestTask(listener);
+        task.execute();
     }
 
     public void deleteRequest(Request request) {
-
-    }
-
-    /**
-     * Gets index of request.
-     *
-     * @param request the request
-     * @return the index of request
-     */
-    public int getIndexOfRequest(Request request) {
-        return requestList.indexOf(request);
-    }
-
-    /**
-     * Gets request by index.
-     *
-     * @param index the index
-     * @return the request by index
-     */
-    public Request getRequestByIndex(int index) {
-        return requestList.get(index);
+        Request.DeleteRequestTask task = new Request.DeleteRequestTask(listener);
+        task.execute(request);
     }
 
     /**
      * Driver confirm request.
      *
-     * @param index          the index
      * @param driverUserName the driver user name
      */
-    public void driverConfirmRequest(int index, String driverUserName) {
-        requestList.get(index).driverAcceptRequest(driverUserName);
+    public void driverConfirmRequest(Request request, String driverUserName) {
+        request.driverAcceptRequest(driverUserName);
     }
 
     /**
      * Rider confirm request complete.
      *
-     * @param index the index
+     * @param request the request to be confirmed completed
      */
-    public void riderConfirmRequestComplete(int index) {
-        requestList.get(index).riderConfirmRequestComplete();
+    public void riderConfirmRequestComplete(Request request) {
+        request.riderConfirmRequestComplete();
     }
 
     /**
      * Rider confirm driver.
      *
-     * @param index          the index
+     * @param request the request to be confirmed by the rider
      * @param driverUserName the driver user name
      */
-    public void riderConfirmDriver(int index, String driverUserName) {
-        requestList.get(index).riderConfirmDriver(driverUserName);
-    }
-
-    /**
-     * Add ride request.
-     *
-     * @param newRequest the new request
-     */
-    public void addRideRequest(Request newRequest) {
-        getRequestList().add(newRequest);
-    }
-
-    /**
-     * Add all ride request.
-     *
-     * @param requestList the request list
-     */
-    public void addAllRideRequest(ArrayList<Request> requestList) {
-        this.requestList = requestList;
-    }
-
-    /**
-     * Cancel ride request.
-     *
-     * @param oldRequest the request to cancel
-     */
-    public void cancelRideRequest(Request oldRequest) {
-        getRequestList().remove(oldRequest);
-    }
-
-    /**
-     * Check if the request is existed in the request list.
-     *
-     * @param request the request to check
-     * @return if the request exist
-     */
-    public Boolean contains(Request request) {
-        if (getRequestList().contains(request)) {
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
+    public void riderConfirmDriver(Request request, String driverUserName) {
+        request.riderConfirmDriver(driverUserName);
     }
 }
