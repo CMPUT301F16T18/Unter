@@ -31,8 +31,7 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
+
 
 /**
  * This a abstract base class for for all user model, including Driver and Rider.
@@ -151,7 +150,7 @@ public class User {
         }
     }
 
-    /** TODO, Query is not working
+    /**
      *  Static class that get user profile
      */
     public static class GetUserProfileTask extends AsyncTask<String, Void, User> {
@@ -196,6 +195,44 @@ public class User {
         @Override
         protected void onPostExecute(User user) {
             listener.onTaskCompleted(user);
+        }
+    }
+
+    /**
+     *  Static class that check user profile
+     */
+    public static class SearchUserExistTask extends AsyncTask<String, Void, Boolean> {
+
+        /**
+         * Check if username has been taken
+         * @param query the username to be searched
+         * @return True or Flase
+         */
+        @Override
+        protected Boolean doInBackground(String... query) {
+            verifySettings();
+
+            User user = new User();
+            Search search = new Search.Builder(query[0])
+                    .addIndex("unter")
+                    .addType("user")
+                    .build();
+            Log.i("Error", query[0]);
+            try {
+                JestResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    user = result.getSourceAsObject(User.class);
+                    if (user == null) {
+                        return false;
+                    }
+                    Log.i("Debug", "Successful");
+                } else {
+                    Log.i("Error", "The search query failed to find any user that matched.");
+                }
+            } catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elastic search server!");
+            }
+            return true;
         }
     }
 

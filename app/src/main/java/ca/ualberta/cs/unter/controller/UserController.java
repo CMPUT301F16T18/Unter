@@ -18,6 +18,9 @@ package ca.ualberta.cs.unter.controller;
 
 import android.util.Log;
 
+import java.util.concurrent.ExecutionException;
+
+import ca.ualberta.cs.unter.exception.UserException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 
@@ -29,39 +32,40 @@ public class UserController {
     }
 
     public void addUser(User user) {
+        String query = String.format(
+                "{\n" +
+                        "    \"query\": {\n" +
+                        "       \"term\" : { \"userName\" : \"%s\" }\n" +
+                        "    }\n" +
+                        "}", user.getUserName());
+
         User.CreateUserTask task = new User.CreateUserTask(listener);
-        task.execute(user);
+        User.SearchUserExistTask checkTask = new User.SearchUserExistTask();
+        checkTask.execute(query);
+
+        try {
+            if (checkTask.get()) {
+                throw new UserException("Username has been taken");
+            } else {
+                task.execute(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateUser(User user) {
-        String query = String.format(
-                        "{\n" +
-                        "    \"userName\": \"$s\"     " +
-                        "    \"mobileNumber\": \"$s\" " +
-                        "    \"emailAddress\": \"$s\" " +
-                        "}",
-                user.getUserName(), user.getMobileNumber(), user.getEmailAddress());
         User.UpdateUserTask task = new User.UpdateUserTask(listener);
         task.execute(user);
     }
 
-    /** TODO, Query is not working
+    /**
      * Retrive user profile from the server
      * @param username the username to search
      * @return
      */
     public User getUser(String username) {
         User user = new User();
-//        String query = String.format(
-//                "{\n" +
-//                "    \"query\": {\n" +
-//                "        \"filtered\" : {\n" +
-//                "            \"filter\" : {\n" +
-//                "                \"term\" : { \"userName\" : \"%s\" }\n" +
-//                "            }\n" +
-//                "        }\n" +
-//                "    }\n" +
-//                "}", username);
         String query = String.format(
                         "{\n" +
                         "    \"query\": {\n" +
