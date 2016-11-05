@@ -18,24 +18,17 @@ package ca.ualberta.cs.unter.ControllerTest;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
-import android.util.Log;
 
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import junit.framework.TestCase;
-
 import java.io.IOException;
 
 import ca.ualberta.cs.unter.UnterConstant;
-import ca.ualberta.cs.unter.controller.UserController;
-import ca.ualberta.cs.unter.model.Driver;
 import ca.ualberta.cs.unter.model.User;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
 
 public class UserControllerTest extends ApplicationTestCase<Application> {
     private static JestDroidClient client;

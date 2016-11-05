@@ -21,15 +21,15 @@
 //
 //import java.util.ArrayList;
 //
-//import ca.ualberta.cs.unter.controller.RequestListController;
+//import ca.ualberta.cs.unter.controller.RequestController;
 //import ca.ualberta.cs.unter.model.Route;
 //import ca.ualberta.cs.unter.model.request.Request;
 //
 //
 ///**
-// * Test cases of RequestListController class
+// * Test cases of RequestController class
 // *
-// * @see RequestListController
+// * @see RequestController
 // */
 //public class RequestListControllerTest extends TestCase {
 //    Route origin = {300.12, 200.12};
@@ -45,7 +45,7 @@
 //    /**
 //     * The Rlc.
 //     */
-//    RequestListController rlc = new RequestListController();
+//    RequestController rlc = new RequestController();
 //
 //    @Override
 //    public void setUp() throws Exception {
