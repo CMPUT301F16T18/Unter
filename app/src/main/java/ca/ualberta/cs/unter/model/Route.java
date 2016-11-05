@@ -12,23 +12,45 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package ca.ualberta.cs.unter.model;
 
-/**
- * This is a class that inherits from the User abstract base class,
- * and it contains all attributes that a Driver should have.
- *
- * @see User
- */
-public class Driver extends User {
+import org.osmdroid.util.GeoPoint;
 
-    public Driver() {
+/**
+ * The type Route.
+ */
+public class Route {
+    private GeoPoint origin;
+    private GeoPoint destination;
+
+    /**
+     * Instantiates a new Route.
+     *
+     * @param origin      the origin coordinate
+     * @param destination the destination coordinate
+     */
+    public Route(GeoPoint origin, GeoPoint destination) {
+        this.origin = origin;
+        this.destination = destination;
     }
 
-    public Driver(String userName, String mobileNumber, String emailAddress) {
-        super(userName, mobileNumber, emailAddress);
+    /**
+     * Gets origin.
+     *
+     * @return the origin coordinate
+     */
+    public GeoPoint getOrigin() {
+        return origin;
+    }
+
+    /**
+     * Gets destination.
+     *
+     * @return the destination coordinate
+     */
+    public GeoPoint getDestination() {
+        return destination;
     }
 }

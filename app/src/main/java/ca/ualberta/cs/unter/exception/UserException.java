@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2016 CMPUT301F16T18 - Alan(Xutong) Zhao, Michael(Zichun) Lin, Stephen Larsen, Yu Zhu, Zhenzhe Xu
  *
@@ -15,10 +14,15 @@
  * limitations under the License.
  */
 
-package ca.ualberta.cs.unter;
+package ca.ualberta.cs.unter.exception;
 
-public class UnterConstant {
-    public static final String ELASTIC_SEARCH_URL = "http://cmput301.softwareprocess.es:8080";
-    public static final String LOCAL_STORAGE_FILENAME = "xx.json";
-    public static final String USER_PROFILE_FILENAME = "user.json";
+public class UserException extends Exception {
+
+    public UserException() {
+
+    }
+
+    public UserException(String message) {
+        super(message);
+    }
 }

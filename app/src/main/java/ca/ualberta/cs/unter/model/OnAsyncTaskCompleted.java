@@ -12,19 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package ca.ualberta.cs.unter.model;
 
-/**
- * This is a class that inherits from the User abstract base class,
- * and it contains all attributes that a Rider should have.
- *
- * @see User
- */
-public class Rider extends User {
-    public Rider(String userName, String mobileNumber, String emailAddress) {
-        super(userName, mobileNumber, emailAddress);
-    }
+import java.util.Objects;
+
+public interface OnAsyncTaskCompleted {
+    void onTaskCompleted(Object o);
 }

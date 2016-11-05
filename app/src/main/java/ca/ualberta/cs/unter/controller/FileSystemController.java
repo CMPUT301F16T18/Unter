@@ -35,7 +35,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import ca.ualberta.cs.unter.model.Request;
+import ca.ualberta.cs.unter.model.request.*;
 
 /**
  * Class handles all the save to/load from file (file.sav).

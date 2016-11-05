@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2016 CMPUT301F16T18 - Alan(Xutong) Zhao, Michael(Zichun) Lin, Stephen Larsen, Yu Zhu, Zhenzhe Xu
  *
@@ -15,10 +14,25 @@
  * limitations under the License.
  */
 
-package ca.ualberta.cs.unter;
+package ca.ualberta.cs.unter.exception;
 
-public class UnterConstant {
-    public static final String ELASTIC_SEARCH_URL = "http://cmput301.softwareprocess.es:8080";
-    public static final String LOCAL_STORAGE_FILENAME = "xx.json";
-    public static final String USER_PROFILE_FILENAME = "user.json";
+/**
+ * The type Request exception.
+ */
+public class RequestException extends Exception{
+    /**
+     * Instantiates a new Request exception.
+     */
+    public RequestException() {
+
+    }
+
+    /**
+     * Instantiates a new Request exception.
+     *
+     * @param message the message
+     */
+    public RequestException(String message) {
+        super(message);
+    }
 }

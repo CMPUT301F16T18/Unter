@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.ualberta.cs.unter.UnterConstant;
-import ca.ualberta.cs.unter.model.Driver;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.model.User;
 import io.searchbox.core.DocumentResult;
@@ -48,12 +47,12 @@ public class ElasticSearchController {
      * @param userName the user name
      * @return the user
      */
-    public User findUserByUserName(String userName) {
-        // hardcode for now
-        // for testing ony during project part 2
-        Driver driver = new Driver("t1", "110-110-110", "test@ualberta.ca");
-        return driver;
-    }
+//    public User findUserByUserName(String userName) {
+//        // hardcode for now
+//        // for testing ony during project part 2
+//        Driver driver = new Driver("t1", "110-110-110", "test@ualberta.ca");
+//        return driver;
+//    }
 
     /**
      * Search request by location array list.
@@ -128,7 +127,7 @@ public class ElasticSearchController {
         protected User doInBackground(String... search_parameters) {
             verifySettings();
 
-            User user = new Driver();
+            User user = new User();
 
             // assume that search_parameters[0] is the only search term we are interested in using
             Search search = new Search.Builder(search_parameters[0])
@@ -181,7 +180,6 @@ public class ElasticSearchController {
                 Log.i("Uhoh", "We failed to add a tweet to elastic search!");
                 e.printStackTrace();
             }
-
             return null;
         }
     }
@@ -221,7 +219,6 @@ public class ElasticSearchController {
             catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
-
             return requests;
         }
     }
