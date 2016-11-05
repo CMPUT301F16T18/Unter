@@ -20,26 +20,6 @@
         android:paddingTop="30dp"
         android:maxLines="1"/>
 
-    <!--email-->
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/email_input"
-        android:inputType="textEmailAddress"
-        android:paddingTop="30dp"
-        android:maxLines="1"/>
-
-    <!--mobile-->
-    <EditText
-        android:id="@+id/mobile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/mobile_input"
-        android:inputType="phone"
-        android:paddingTop="30dp"
-        android:maxLines="1"/>
-
     <!--select a role (rider/driver)-->
     <TextView
         android:layout_width="match_parent"
@@ -81,5 +61,13 @@
         android:paddingTop="15dp"
         android:paddingBottom="15dp"/>
 
+    <!--sign up button-->
+    <Button
+        android:id="@+id/signup_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/signup_button"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"/>
 
 </LinearLayout>

@@ -18,12 +18,11 @@ import ca.ualberta.cs.unter.R;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private EditText usernameText;
-    private EditText emailText;
-    private EditText mobileText;
 
     private RadioButton riderRadio;
     private RadioButton driverRadio;
     private Button loginButton;
+    private Button signupButton;
     private String roleSel;
 
     @Override
@@ -32,8 +31,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         usernameText = (EditText) findViewById(R.id.username);
-        emailText = (EditText) findViewById(R.id.email);
-        mobileText = (EditText) findViewById(R.id.mobile);
 
         riderRadio = (RadioButton) findViewById(R.id.radio_rider);
         driverRadio = (RadioButton) findViewById(R.id.radio_driver);
@@ -41,6 +38,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginButton = (Button) findViewById(R.id.login_button);
         assert loginButton != null;
         loginButton.setOnClickListener(this);
+
+        signupButton = (Button) findViewById(R.id.signup_button);
+        assert signupButton != null;
+        signupButton.setOnClickListener(this);
 
         // http://stackoverflow.com/questions/8323778/how-to-set-on-click-listener-on-the-radio-button-in-android
 
@@ -77,22 +78,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         if (view == loginButton ) {
             login();
+        } else if (view == signupButton){
+            // intent to SignupActivity
+            Intent intentSignup = new Intent(this, SignupActivity.class);
+            startActivity(intentSignup);
         }
     }
 
-    // TODO create a login() function, refer to addHabit in as1
-    // TODO maybe also use controller to check user's validity
     public void login(){
         String username = usernameText.getText().toString();
-        String email = emailText.getText().toString();
-        String mobile = mobileText.getText().toString();
 
+        // TODO check user validity, replace following line with elastic search
         boolean validUsername = !(username.isEmpty() || username.trim().isEmpty());
-        boolean validEmail = Patterns.EMAIL_ADDRESS.matcher(email).matches();
-        boolean validMobile = Patterns.PHONE.matcher(mobile).matches();
 
-        if ( !(validUsername && validEmail && validMobile) ){
-            Toast.makeText(this, "Username/Email/Mobile is not valid.", Toast.LENGTH_SHORT).show();
+        if ( !(validUsername) ){
+            Toast.makeText(this, "Username entered is incorrect.", Toast.LENGTH_SHORT).show();
         } else {
             try {
                 if (roleSel.equals("R")) {
@@ -111,6 +111,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }
     }
+
+
 
     private void openSelRoleDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
