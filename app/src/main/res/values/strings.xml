@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <string name="app_name">Unter</string>
 
@@ -17,6 +19,17 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
+
+
+    <!--DriverMainActivity-->
+    <string name="search_request">Search Request</string>
+    <string name="search_result">Search Result</string>
+
+    <!--Spinner-->
+    <string-array name="search_option">
+        <item>Search request by geolocation</item>
+        <item>Search request by keyword</item>
+    </string-array>
 
 
 </resources>

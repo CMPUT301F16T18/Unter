@@ -13,16 +13,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import ca.ualberta.cs.unter.R;
 
 public class DriverMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Spinner searchOptionSpinner;
+    private ArrayAdapter<CharSequence> searchOptionAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_main);
+
+        // https://developer.android.com/guide/topics/ui/controls/spinner.html#Populate
+        searchOptionSpinner = (Spinner) findViewById(R.id.search_option);
+        searchOptionAdapter = ArrayAdapter.createFromResource(this,
+                R.array.search_option, android.R.layout.simple_spinner_item);
+        searchOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        searchOptionSpinner.setAdapter(searchOptionAdapter);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
