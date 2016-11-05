@@ -18,8 +18,10 @@
 package ca.ualberta.cs.unter.controller;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
 
 
@@ -30,25 +32,44 @@ public class RequestController {
 
     public OnAsyncTaskCompleted listener;
 
+    public RequestController(OnAsyncTaskCompleted listener) {
+        this.listener = listener;
+    }
+
     public void createRequest(Request request) {
         Request.CreateRequestTask task = new Request.CreateRequestTask(listener);
-        task.execute(request);
+        try {
+            task.execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
-    // TODO
+
     public void updateRequest(Request request) {
-        String query = String.format(
-                        "{\n" +
-                        "    \"riderUserName\": \"$s\" " +
-                        "    \"driverUserName\": \"$s\" " +
-                        "    }\n" +
-                        "}");
         Request.UpdateRequestTask task = new Request.UpdateRequestTask(listener);
-        task.execute();
+        task.execute(request);
     }
 
     public void deleteRequest(Request request) {
         Request.DeleteRequestTask task = new Request.DeleteRequestTask(listener);
         task.execute(request);
+    }
+
+    public ArrayList<NormalRequest> getAllRequest() {
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute("");
+
+        ArrayList<NormalRequest> requests = new ArrayList<>();
+
+        try {
+            requests =  task.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return requests;
     }
 
     /**
@@ -58,6 +79,7 @@ public class RequestController {
      */
     public void driverConfirmRequest(Request request, String driverUserName) {
         request.driverAcceptRequest(driverUserName);
+        updateRequest(request);
     }
 
     /**
@@ -67,6 +89,7 @@ public class RequestController {
      */
     public void riderConfirmRequestComplete(Request request) {
         request.riderConfirmRequestComplete();
+        updateRequest(request);
     }
 
     /**
@@ -77,5 +100,6 @@ public class RequestController {
      */
     public void riderConfirmDriver(Request request, String driverUserName) {
         request.riderConfirmDriver(driverUserName);
+        updateRequest(request);
     }
 }
