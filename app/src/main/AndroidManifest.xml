@@ -15,7 +15,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.SignupActivity"></activity>
+        <activity android:name=".view.SignupActivity" />
+        <activity
+            android:name=".view.DriverMainActivity"
+            android:label="@string/title_activity_driver_main"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

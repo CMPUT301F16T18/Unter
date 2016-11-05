@@ -101,8 +101,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                    startActivity(intentRiderMain);
                 } else if (roleSel.equals("D")) {
                     // intent to DriverMainActivity
-//                    Intent intentDriverMain = new Intent(this, DriverMainActivity.class);
-//                    startActivity(intentDriverMain);
+                    Intent intentDriverMain = new Intent(this, DriverMainActivity.class);
+                    startActivity(intentDriverMain);
                 }
             } catch (Exception e) {
                 openSelRoleDialog();
