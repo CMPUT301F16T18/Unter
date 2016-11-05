@@ -16,6 +16,8 @@
 
 package ca.ualberta.cs.unter.model;
 
+import java.util.Objects;
+
 public interface OnAsyncTaskCompleted {
-    void onTaskCompleted();
+    void onTaskCompleted(Object o);
 }
