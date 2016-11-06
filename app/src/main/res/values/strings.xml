@@ -1,3 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <string name="app_name">Unter</string>
+
+    <!--LoginActivity and SignupActivity-->
+    <string name="username_input">Enter User Name</string>
+    <string name="email_input">Enter Email Address</string>
+    <string name="mobile_input">Enter Mobile Phone Number</string>
+    <string name="select_role_text">Select A Role</string>
+    <string name="rider_radio">Rider</string>
+    <string name="driver_radio">Driver</string>
+    <string name="login_button">Login</string>
+    <string name="signup_button">Sign Up</string>
+    <string name="dialog_ok_button">OK</string>
+
+    <!--DriverMainActivity-->
+    <string name="title_activity_driver_main">DriverMainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+
+
+    <!--DriverMainActivity-->
+    <string name="search_request">Search Request</string>
+    <string name="search_result">Search Result</string>
+    <string-array name="search_option">
+        <item>Search request by geolocation</item>
+        <item>Search request by keyword</item>
+    </string-array>
+
+    <!--EditUserProfileActivity-->
+    <string name="username">User Name</string>
+    <string name="mobile">Mobile Number</string>
+    <string name="email">Email</string>
+    <string name="save_button">Save</string>
+    <string name="new_username_input">Enter New User Name</string>
+    <string name="new_email_input">Enter New Email Address</string>
+    <string name="new_mobile_input">Enter New Mobile Phone Number</string>
+
+    <!--DriverBrowseRequestActivity-->
+    <string name="accepted_request">Accepted Request</string>
+    <string name="pending_request">Pending Request</string>
+
+
 </resources>

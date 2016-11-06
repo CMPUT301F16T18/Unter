@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ca.ualberta.cs.unter.view.DriverMainActivity"
+    tools:showIn="@layout/app_bar_driver_main">
+
+    <EditText android:id="@+id/search_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_request"
+        android:inputType="textNoSuggestions|textVisiblePassword"
+        android:paddingTop="30dp"
+        android:maxLines="1"/>
+
+    <Spinner
+        android:id="@+id/search_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search_result"
+        android:paddingTop="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <ListView
+        android:id="@+id/driver_search_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:clickable="true" >
+    </ListView>
+
+</LinearLayout>
+
+
+

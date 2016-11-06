@@ -17,6 +17,8 @@
 
 package ca.ualberta.cs.unter.model.request;
 
+import com.google.gson.Gson;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -27,6 +29,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import ca.ualberta.cs.unter.UnterConstant;
@@ -36,6 +39,8 @@ import ca.ualberta.cs.unter.model.Route;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
 /**
@@ -49,15 +54,18 @@ public abstract class Request implements FareCalculator{
     private Route route;
 
     private double estimatedFare;
+
     private String requestDescription;
 
     private Boolean isCompleted;
-    private Boolean isDriverAccepted;
 
     private String ID;
 
     private transient static JestDroidClient client;
 
+    /**
+     * Empty constructor for fun :)
+     */
     public Request() {
 
     }
@@ -118,10 +126,10 @@ public abstract class Request implements FareCalculator{
      * @param driverUserName the driver user name who accepts the ride request
      */
     public void driverAcceptRequest(String driverUserName) { // changed from driverConfirmRequest
-        if (this.driverUserName.isEmpty()) {
+        if (this.driverUserName == null) {
             // If the request has not been accepted
             this.driverUserName = driverUserName;
-        } else if (driverList == null && this.driverUserName != null) {
+        } else if (driverList == null && !this.driverUserName.isEmpty()) {
             // If the request has been confirmed by only one driver
             driverList = new ArrayList<>();
             // add existing accepted driver username first
@@ -154,12 +162,11 @@ public abstract class Request implements FareCalculator{
         }
     }
 
-    /**TODO
+    /**
      * Static class that adds the request
      */
     public static class CreateRequestTask extends AsyncTask<Request, Void, Request> {
         public OnAsyncTaskCompleted listener;
-        public Request request;
         // http://stackoverflow.com/questions/9963691/android-asynctask-sending-callbacks-to-ui
         // Author: Dmitry Zaitsev
         /**
@@ -177,23 +184,25 @@ public abstract class Request implements FareCalculator{
         @Override
         protected Request doInBackground(Request... requests) {
             verifySettings();
+            Request request = new PendingRequest();
             for (Request req : requests) {
-                Index index = new Index.Builder(req).index("unter").type("request").build();
+                Index index = new Index.Builder(req).index("unter").type("request").id(req.getID()).build();
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         // set ID
                         req.setID(result.getId());
-                        this.request = req;
+                        request = req;
+                        Log.i("Debug", "Successful create request");
                     } else {
-                        Log.i("Error", "Elastic search was not able to add the request.");
+                        Log.i("Debug", "Elastic search was not able to add the request.");
                     }
                 } catch (Exception e) {
-                    Log.i("Uhoh", "We failed to add a request to elastic search!");
+                    Log.i("Debug", "We failed to add a request to elastic search!");
                     e.printStackTrace();
                 }
             }
-            return this.request;
+            return request;
         }
 
         /**
@@ -207,10 +216,10 @@ public abstract class Request implements FareCalculator{
         }
     }
 
-    /**TODO
+    /**
      * Static class that update the request
      */
-    public static class UpdateRequestTask extends AsyncTask<String, Void, Request> {
+    public static class UpdateRequestTask extends AsyncTask<Request, Void, Request> {
         public OnAsyncTaskCompleted listener;
 
         /**
@@ -226,25 +235,29 @@ public abstract class Request implements FareCalculator{
          * @param requests the request object to be updated
          */
         @Override
-        protected Request doInBackground(String... requests) {
+        protected Request doInBackground(Request... requests) {
             verifySettings();
-                Update update = new Update.Builder(requests[0])
-                        .index("unter")
-                        .type("request")
-                        .id(requests[1]).build();
-                try {
-                    DocumentResult result = client.execute(update);
+            // Constructs json string
+            Gson gson = new Gson();
+            String query = String.format(gson.toJson(requests[0]));
+            Log.i("Debug", query);
+            Index index = new Index.Builder(query)
+                    .index("unter")
+                    .type("request")
+                    .id(requests[0].getID()).build();
+            try {
+                DocumentResult result = client.execute(index);
 
-                    if (result.isSucceeded()) {
-
-                    } else {
-                        Log.i("Error", "Elastic search was not able to add the request.");
-                    }
-                } catch (Exception e) {
-                    Log.i("Uhoh", "We failed to add a request to elastic search!");
-                    e.printStackTrace();
+                if (result.isSucceeded()) {
+                    Log.i("Debug", "Successful update the request");
+                } else {
+                    Log.i("Debug", "Elastic search was not able to add the request.");
                 }
-            return null;
+            } catch (Exception e) {
+                Log.i("Debug", "We failed to add a request to elastic search!");
+                e.printStackTrace();
+                }
+            return requests[0];
         }
 
         /**
@@ -261,7 +274,7 @@ public abstract class Request implements FareCalculator{
     /**TODO
      * Static class that cancel the request
      */
-    public static class DeleteRequestTask extends AsyncTask<Request, Void, Void> {
+    public static class DeleteRequestTask extends AsyncTask<Request, Void, Request> {
         public OnAsyncTaskCompleted listener;
 
         /**
@@ -277,7 +290,7 @@ public abstract class Request implements FareCalculator{
          * @param requests the request object to be canceled
          */
         @Override
-        protected Void doInBackground(Request... requests) {
+        protected Request doInBackground(Request... requests) {
             verifySettings();
 
             for (Request req : requests) {
@@ -294,23 +307,64 @@ public abstract class Request implements FareCalculator{
                     e.printStackTrace();
                 }
             }
-            return null;
+            return requests[0];
         }
 
         /**
          * Excute after async task is finished
          * Stuff like notify arrayadapter the data set is changed
-         * @param aVoid nothing
+         * @param request nothing
          */
         @Override
-        protected void onPostExecute(Void aVoid) {
-            listener.onTaskCompleted(aVoid);
+        protected void onPostExecute(Request request) {
+            listener.onTaskCompleted(request);
         }
     }
 
+    /**
+     * Static class that fetch request from server
+     */
+    public static class GetRequestsListTask extends AsyncTask<String, Void, ArrayList<NormalRequest>> {
+        public OnAsyncTaskCompleted listener;
 
+        public GetRequestsListTask(OnAsyncTaskCompleted listener) {
+            this.listener = listener;
+        }
 
+        /**
+         * Fetch request list that matched the parameters, by keyword, geo-location, and all requests
+         * @param search_parameters the parameter to search
+         * @return a arraylist of requests
+         */
+        @Override
+        protected ArrayList<NormalRequest> doInBackground(String... search_parameters) {
+            verifySettings();
 
+            ArrayList<NormalRequest> requests = new ArrayList<>();
+
+            // assume that search_parameters[0] is the only search term we are interested in using
+            Search search = new Search.Builder(search_parameters[0])
+                    .addIndex("unter")
+                    .addType("request")
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<NormalRequest> findRequest = result.getSourceAsObjectList(NormalRequest.class);
+                    requests.addAll(findRequest);
+                }
+                else {
+                    Log.i("Error", "The search query failed to find any tweets that matched.");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+            return requests;
+        }
+
+    }
 
     /**
      * Set up the connection with server
@@ -422,6 +476,10 @@ public abstract class Request implements FareCalculator{
 
     public String getRequestDescription() {
         return requestDescription;
+    }
+
+    public void setRequestDescription(String requestDescription) {
+        this.requestDescription = requestDescription;
     }
 
     public Route getRoute() {

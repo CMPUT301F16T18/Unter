@@ -27,6 +27,9 @@ import ca.ualberta.cs.unter.model.Route;
  */
 public class PendingRequest extends Request {
 
+    public PendingRequest() {
+    }
+
     /**
      * Constructor for pending request
      * @param riderUserName rider's user name

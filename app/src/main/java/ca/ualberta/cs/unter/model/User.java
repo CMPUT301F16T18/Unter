@@ -31,6 +31,7 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 
 
 /**
@@ -40,7 +41,6 @@ public class User {
     private String userName;
     private String mobileNumber;
     private String emailAddress;
-
     private String ID;
 
     private transient static JestDroidClient client;
@@ -82,17 +82,19 @@ public class User {
             verifySettings();
             User newUser = new User();
             for (User u : user) {
-
-                Index index = new Index.Builder(u).index("unter").type("user").build();
-
+                Index index = new Index.Builder(u)
+                        .index("unter")
+                        .type("user")
+                        .id(u.getID())
+                        .build();
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         u.setID(result.getId());
                         newUser = u;
-                        Log.i("Error", "yes");
+                        Log.i("Debug", "Successful create user");
                     } else {
-                        Log.i("Error", "Elastic search was not able to add the update user.");
+                        Log.i("Debug", "Elastic search was not able to add the update user.");
                     }
                 } catch (Exception e) {
                     Log.i("Error", "We failed to add user profile to elastic search!");
@@ -125,9 +127,12 @@ public class User {
                             "{\n" +
                             "    \"userName\": \"%s\"     ,\n" +
                             "    \"mobileNumber\": \"%s\" ,\n" +
-                            "    \"emailAddress\": \"%s\" \n" +
+                            "    \"emailAddress\": \"%s\" ,\n" +
+                            "    \"ID\": \"%s\" \n" +
                             "}",
-                    users[0].getUserName(), users[0].getMobileNumber(), users[0].getEmailAddress());
+                    users[0].getUserName(), users[0].getMobileNumber(),
+                    users[0].getEmailAddress(), users[0].getID());
+            Log.i("Debug", query);
             Index index = new Index.Builder(query)
                     .index("unter").type("user").id(users[0].getID()).build();
 
@@ -175,7 +180,7 @@ public class User {
                     .build();
             Log.i("Error", query[0]);
             try {
-                JestResult result = client.execute(search);
+                SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     User getUser = result.getSourceAsObject(User.class);
                     user = getUser;
@@ -217,22 +222,22 @@ public class User {
                     .addIndex("unter")
                     .addType("user")
                     .build();
-            Log.i("Error", query[0]);
             try {
                 JestResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     user = result.getSourceAsObject(User.class);
-                    if (user == null) {
-                        return false;
+                    if (user != null) {
+                        Log.i("Debug", "Username has been taken");
+                        return true;
                     }
                     Log.i("Debug", "Successful");
                 } else {
-                    Log.i("Error", "The search query failed to find any user that matched.");
+                    Log.i("Debug", "The search query failed to find any user that matched.");
                 }
             } catch (Exception e) {
-                Log.i("Error", "Something went wrong when we tried to communicate with the elastic search server!");
+                Log.i("Debug", "Something went wrong when we tried to communicate with the elastic search server!");
             }
-            return true;
+            return false;
         }
     }
 
