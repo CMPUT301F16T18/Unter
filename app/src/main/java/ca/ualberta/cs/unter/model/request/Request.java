@@ -54,6 +54,7 @@ public abstract class Request implements FareCalculator{
     private Route route;
 
     private double estimatedFare;
+
     private String requestDescription;
 
     private Boolean isCompleted;
@@ -362,7 +363,7 @@ public abstract class Request implements FareCalculator{
             }
             return requests;
         }
-        
+
     }
 
     /**
@@ -475,6 +476,10 @@ public abstract class Request implements FareCalculator{
 
     public String getRequestDescription() {
         return requestDescription;
+    }
+
+    public void setRequestDescription(String requestDescription) {
+        this.requestDescription = requestDescription;
     }
 
     public Route getRoute() {
