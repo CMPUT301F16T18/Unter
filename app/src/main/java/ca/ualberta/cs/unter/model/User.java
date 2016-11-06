@@ -25,7 +25,6 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import io.searchbox.client.JestResult;
@@ -83,13 +82,11 @@ public class User {
             verifySettings();
             User newUser = new User();
             for (User u : user) {
-
                 Index index = new Index.Builder(u)
                         .index("unter")
                         .type("user")
                         .id(u.getID())
                         .build();
-
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
