@@ -1,5 +1,8 @@
 package ca.ualberta.cs.unter.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -33,7 +36,8 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
         acceptedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO open request info dialog
+                // open request info dialog
+                openRequestInfoDialog();
             }
         });
 
@@ -41,7 +45,8 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
         pendingRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO open request info dialog
+                // open request info dialog
+                openRequestInfoDialog();
             }
         });
 
@@ -54,6 +59,36 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
         pendingRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_pending_list_item, pendingRequestList);
         acceptedRequestListView.setAdapter(acceptedRequestAdapter);
         pendingRequestListView.setAdapter(pendingRequestAdapter);
+    }
+
+    private void openRequestInfoDialog() {
+        // TODO get estimated fare price and description of the request
+        String estimatedFare = Integer.toString(100);   // replace 100 with actual price
+        String description = "hello";   // replace hello with actual request description
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(DriverBrowseRequestActivity.this);
+        builder.setTitle("Request Information")
+                .setMessage("Estimated Fare: " + estimatedFare + "\\n" + "Description" + description)
+                .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // TODO intent to MainActivity/DriverAcceptRequestActivity, send request
+                        // TODO display route on above 2 activities
+                        // TODO new MainActivity is DriverAcceptRequestActivity without cancel and ok buttons
+                        Intent intentDriverMain = new Intent(DriverBrowseRequestActivity.this, DriverMainActivity.class);
+                        // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+                        intentDriverMain.putExtra("request", "testRequest");   // TODO replace testRequest with actuall request object
+                        startActivity(intentDriverMain);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        // Create & Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
