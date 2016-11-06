@@ -34,7 +34,7 @@ public class DriverMainActivity extends AppCompatActivity
         // https://developer.android.com/guide/topics/ui/controls/spinner.html#Populate
         searchOptionSpinner = (Spinner) findViewById(R.id.search_option);
         searchOptionAdapter = ArrayAdapter.createFromResource(this,
-                R.array.search_option, android.R.layout.simple_spinner_item);
+                                R.array.search_option, android.R.layout.simple_spinner_item);
         searchOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchOptionSpinner.setAdapter(searchOptionAdapter);
 
@@ -73,8 +73,8 @@ public class DriverMainActivity extends AppCompatActivity
 
         // TODO handle all cases
         if (id == R.id.nav_user_profile) {
-//            Intent intentUserProfile = new Intent(this, EditUserProfileActivity.class);
-//            startActivity(intentUserProfile);
+            Intent intentUserProfile = new Intent(this, EditUserProfileActivity.class);
+            startActivity(intentUserProfile);
         } else if (id == R.id.nav_request) {
 //            Intent intentDriverBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
 //            startActivity(intentDriverBrowseRequest);
