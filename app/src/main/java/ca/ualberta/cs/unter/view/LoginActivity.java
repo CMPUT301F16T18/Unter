@@ -115,8 +115,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             try {
                 if (roleSel.equals("R")) {
                     // intent to RiderMainActivity
-//                    Intent intentRiderMain = new Intent(this, RiderMainActivity.class);
-//                    startActivity(intentRiderMain);
+                    Intent intentRiderMain = new Intent(this, RiderMainActivity.class);
+                    startActivity(intentRiderMain);
                 } else if (roleSel.equals("D")) {
                     // intent to DriverMainActivity
                     Intent intentDriverMain = new Intent(this, DriverMainActivity.class);

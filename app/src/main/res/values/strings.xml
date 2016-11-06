@@ -41,6 +41,7 @@
     <!--DriverBrowseRequestActivity-->
     <string name="accepted_request">Accepted Request</string>
     <string name="pending_request">Pending Request</string>
+    <string name="title_activity_rider_main">Unter</string>
 
 
 </resources>
