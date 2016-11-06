@@ -38,4 +38,9 @@
     <string name="new_email_input">Enter New Email Address</string>
     <string name="new_mobile_input">Enter New Mobile Phone Number</string>
 
+    <!--DriverBrowseRequestActivity-->
+    <string name="accepted_request">Accepted Request</string>
+    <string name="pending_request">Pending Request</string>
+
+
 </resources>
