@@ -27,36 +27,11 @@ import ca.ualberta.cs.unter.model.request.Request;
 public class DriverMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Spinner searchOptionSpinner;
-    private ArrayAdapter<CharSequence> searchOptionAdapter;
-
-    private ListView searchRequestListView;
-    private ArrayAdapter<Request> searchRequestAdapter;
-    private ArrayList<Request> searchRequestList = new ArrayList<>();
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_main);
-
-        // https://developer.android.com/guide/topics/ui/controls/spinner.html#Populate
-        searchOptionSpinner = (Spinner) findViewById(R.id.spinner_searchOption_DriverMainActivity);
-        searchOptionAdapter = ArrayAdapter.createFromResource(this,
-                                R.array.search_option, android.R.layout.simple_spinner_item);
-        searchOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        searchOptionSpinner.setAdapter(searchOptionAdapter);
-
-        searchRequestListView = (ListView) findViewById(R.id.listView_searchList_DriverMainActivity);
-        searchRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO intent to DriverAcceptRequestActivity
-//                Intent intentDriverAcceptRequest = new Intent(this, DriverAcceptRequestActivity.class);
-//                startActivity(intentDriverAcceptRequest);
-            }
-        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,8 +51,6 @@ public class DriverMainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        searchRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_accepted_list_item, searchRequestList);
-        searchRequestListView.setAdapter(searchRequestAdapter);
     }
 
     @Override
@@ -104,6 +77,9 @@ public class DriverMainActivity extends AppCompatActivity
         } else if (id == R.id.nav_request) {
             Intent intentDriverBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
             startActivity(intentDriverBrowseRequest);
+        } else if (id == R.id.nav_search){
+            Intent intentDriverSearchRequest = new Intent(this, DriverSearchRequestActivity.class);
+            startActivity(intentDriverSearchRequest);
         } else if (id == R.id.nav_logout) {
             finish();
         }
