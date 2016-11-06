@@ -31,7 +31,7 @@ public class UserController {
         this.listener = listener;
     }
 
-    public void addUser(User user) {
+    public void addUser(User user) throws UserException{
         String query = String.format(
                 "{\n" +
                         "    \"query\": {\n" +
@@ -49,7 +49,9 @@ public class UserController {
             } else {
                 task.execute(user);
             }
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
     }
