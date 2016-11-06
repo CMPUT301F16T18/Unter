@@ -13,7 +13,7 @@
     tools:context="ca.ualberta.cs.unter.view.DriverMainActivity"
     tools:showIn="@layout/app_bar_driver_main">
 
-    <EditText android:id="@+id/search_request"
+    <EditText android:id="@+id/editText_searchRequest_DriverMainActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_request"
@@ -22,7 +22,7 @@
         android:maxLines="1"/>
 
     <Spinner
-        android:id="@+id/search_option"
+        android:id="@+id/spinner_searchOption_DriverMainActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"/>
@@ -36,7 +36,7 @@
         android:textStyle="bold"/>
 
     <ListView
-        android:id="@+id/driver_search_list"
+        android:id="@+id/listView_searchList_DriverMainActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"

@@ -38,18 +38,18 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_profile);
 
-        usernameText = (EditText) findViewById(R.id.username_name);
-        emailText = (EditText) findViewById(R.id.email_address);
-        mobileText = (EditText) findViewById(R.id.mobile_number);
         user = FileIOUtil.loadUserFromFile(getApplicationContext());
-        // TODO get the user, use the user to setText
+
+        usernameText = (EditText) findViewById(R.id.editText_userName_EditUserProfileActivity);
+        emailText = (EditText) findViewById(R.id.editText_email_EditUserProfileActivity);
+        mobileText = (EditText) findViewById(R.id.editText_mobile_EditUserProfileActivity);
+
+        // get the user, use the user to setText
         usernameText.setText(user.getUserName());   // setText(user.getName)
         emailText.setText(user.getEmailAddress());      // setText(user.getEmail)
         mobileText.setText(user.getMobileNumber());     // setText(user.getMobile)
-        this.id = user.getID();
-        Log.i("Debug", user.getID());
 
-        saveButton = (Button) findViewById(R.id.save_button);
+        saveButton = (Button) findViewById(R.id.button_save_EditUserProfileActivity);
         assert saveButton != null;
         saveButton.setOnClickListener(this);
     }

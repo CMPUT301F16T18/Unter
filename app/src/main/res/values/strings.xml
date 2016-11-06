@@ -43,5 +43,8 @@
     <string name="pending_request">Pending Request</string>
     <string name="title_activity_rider_main">Unter</string>
 
+    <!--DriverBrowseRequestActivity-->
+    <string name="dialog_view_map_button">View Map</string>
+    <string name="dialog_cancel_button">Cancel</string>
 
 </resources>

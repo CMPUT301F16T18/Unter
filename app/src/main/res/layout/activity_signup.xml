@@ -12,7 +12,7 @@
 
     <!--username-->
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/editText_userName_SignupActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/username_input"
@@ -22,7 +22,7 @@
 
     <!--email-->
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/editText_email_SignupActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email_input"
@@ -32,7 +32,7 @@
 
     <!--mobile-->
     <EditText
-        android:id="@+id/mobile"
+        android:id="@+id/editText_mobile_SignupActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/mobile_input"
@@ -42,7 +42,7 @@
 
     <!--sign up button-->
     <Button
-        android:id="@+id/signup_button"
+        android:id="@+id/button_signup_SignupActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/signup_button"
