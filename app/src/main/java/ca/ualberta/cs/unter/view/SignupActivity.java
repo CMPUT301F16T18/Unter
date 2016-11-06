@@ -9,6 +9,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.controller.UserController;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.User;
+import ca.ualberta.cs.unter.util.FileIOUtil;
 
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -17,6 +21,14 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private EditText mobileText;
 
     private Button signupButton;
+
+    private UserController uc = new UserController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            User user = (User) o;
+            FileIOUtil.saveUserInFile(user, getApplicationContext());
+        }
+    });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +73,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             try {
                 // TODO check duplicate user name
                 // TODO save new user to elastic search
-
+                User user = new User(username, mobile, email);
+                uc.addUser(user);
                 finish();
             } catch (Exception e) {
                 e.printStackTrace();
