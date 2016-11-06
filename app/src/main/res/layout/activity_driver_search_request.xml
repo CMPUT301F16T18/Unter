@@ -25,6 +25,15 @@
         android:layout_height="wrap_content"
         android:paddingTop="5dp"/>
 
+    <Button
+        android:id="@+id/button_search_DriverSearchRequestActivity"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/search_button"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

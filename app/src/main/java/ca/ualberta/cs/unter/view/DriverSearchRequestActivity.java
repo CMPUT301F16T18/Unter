@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -14,10 +15,12 @@ import java.util.ArrayList;
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.model.request.Request;
 
-public class DriverSearchRequestActivity extends AppCompatActivity {
+public class DriverSearchRequestActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Spinner searchOptionSpinner;
     private ArrayAdapter<CharSequence> searchOptionAdapter;
+
+    private Button searchButton;
 
     private ListView searchRequestListView;
     private ArrayAdapter<Request> searchRequestAdapter;
@@ -34,6 +37,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity {
                 R.array.search_option, android.R.layout.simple_spinner_item);
         searchOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchOptionSpinner.setAdapter(searchOptionAdapter);
+
+        searchButton = (Button) findViewById(R.id.button_search_DriverSearchRequestActivity);
+        assert searchButton != null;
+        searchButton.setOnClickListener(this);
 
         searchRequestListView = (ListView) findViewById(R.id.listView_searchList_DriverSearchRequestActivity);
         searchRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -52,4 +59,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity {
         searchRequestListView.setAdapter(searchRequestAdapter);
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view == searchButton ) {
+            // TODO start search
+        }
+    }
 }
