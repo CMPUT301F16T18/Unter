@@ -15,6 +15,10 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.controller.UserController;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.User;
+import ca.ualberta.cs.unter.util.FileIOUtil;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private EditText usernameText;
@@ -24,6 +28,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button loginButton;
     private Button signupButton;
     private String roleSel;
+
+    private UserController uc = new UserController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            User user = (User) o;
+            FileIOUtil.saveUserInFile(user, getApplicationContext());
+        }
+    });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,6 +105,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if ( !(validUsername) ){
             Toast.makeText(this, "Username entered is incorrect.", Toast.LENGTH_SHORT).show();
+        }
+
+        User user = uc.getUser(username);
+
+        if (user == null) {
+            Toast.makeText(this, "User does not exist, please signup", Toast.LENGTH_SHORT).show();
         } else {
             try {
                 if (roleSel.equals("R")) {
