@@ -1,46 +1,29 @@
 package ca.ualberta.cs.unter.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import ca.ualberta.cs.unter.R;
 
 public class DriverMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Spinner searchOptionSpinner;
-    private ArrayAdapter<CharSequence> searchOptionAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_main);
 
-        // https://developer.android.com/guide/topics/ui/controls/spinner.html#Populate
-        searchOptionSpinner = (Spinner) findViewById(R.id.spinner_searchOption_DriverMainActivity);
-        searchOptionAdapter = ArrayAdapter.createFromResource(this,
-                                R.array.search_option, android.R.layout.simple_spinner_item);
-        searchOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        searchOptionSpinner.setAdapter(searchOptionAdapter);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -52,6 +35,11 @@ public class DriverMainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -78,6 +66,9 @@ public class DriverMainActivity extends AppCompatActivity
         } else if (id == R.id.nav_request) {
             Intent intentDriverBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
             startActivity(intentDriverBrowseRequest);
+        } else if (id == R.id.nav_search){
+            Intent intentDriverSearchRequest = new Intent(this, DriverSearchRequestActivity.class);
+            startActivity(intentDriverSearchRequest);
         } else if (id == R.id.nav_logout) {
             finish();
         }
@@ -86,5 +77,21 @@ public class DriverMainActivity extends AppCompatActivity
         assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // TODO call openDriverNotifyAcceptedDialog() when a request is accepted by a rider
+
+    private void openDriverNotifyAcceptedDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DriverMainActivity.this);
+        builder.setTitle("Rider Acceptance Notification")
+                .setMessage("Request XX is Accepted!")  // TODO replace XX with actual request ID
+                .setNeutralButton(R.string.dialog_ok_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        // Create & Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
