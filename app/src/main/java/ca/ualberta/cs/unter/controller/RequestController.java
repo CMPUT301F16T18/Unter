@@ -37,6 +37,10 @@ public class RequestController {
         this.listener = listener;
     }
 
+    /**
+     * Create a new request and send it to the server
+     * @param request The request to be created
+     */
     public void createRequest(Request request) {
         Request.CreateRequestTask task = new Request.CreateRequestTask(listener);
         try {
@@ -48,16 +52,28 @@ public class RequestController {
 
     }
 
+    /**
+     * Update a a request
+     * @param request The request to be updated
+     */
     public void updateRequest(Request request) {
         Request.UpdateRequestTask task = new Request.UpdateRequestTask(listener);
         task.execute(request);
     }
 
+    /**
+     * Cancle a request
+     * @param request The request to be deleted
+     */
     public void deleteRequest(Request request) {
         Request.DeleteRequestTask task = new Request.DeleteRequestTask(listener);
         task.execute(request);
     }
 
+    /**
+     * Get a list of all request
+     * @return An ArrayList of requests
+     */
     public ArrayList<NormalRequest> getAllRequest() {
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute("");
@@ -72,6 +88,38 @@ public class RequestController {
             e.printStackTrace();
         }
         return requests;
+    }
+
+    /**
+     * Get a list of request that match the keyword
+     * @param keyword The keyword
+     * @return An arraylist of matching request.
+     */
+    public ArrayList<Request> searchRequestByKeyword(String keyword) {
+        String query = String.format(
+                        "{\n" +
+                        "    \"query\": {\n" +
+                        "       \"match\" : {\n" +
+                        "           \"requestDescription\" : \"%s\" \n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", keyword);
+
+        ArrayList<Request> requestList = new ArrayList<>();
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+        try {
+            ArrayList<NormalRequest> getRequest = task.get();
+            for (NormalRequest r : getRequest) {
+                requestList.add(r);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return requestList;
     }
 
     /**

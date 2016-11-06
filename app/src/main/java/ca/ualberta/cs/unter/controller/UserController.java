@@ -46,7 +46,7 @@ public class UserController {
      */
     public void addUser(User user) throws UserException{
         String query = String.format(
-                "{\n" +
+                        "{\n" +
                         "    \"query\": {\n" +
                         "       \"term\" : { \"userName\" : \"%s\" }\n" +
                         "    }\n" +
