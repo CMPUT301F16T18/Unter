@@ -40,11 +40,38 @@ public class UserController {
                         "}", user.getUserName());
 
         User.CreateUserTask task = new User.CreateUserTask(listener);
+        User.UpdateUserTask updateTask = new User.UpdateUserTask(listener);
         User.SearchUserExistTask checkTask = new User.SearchUserExistTask();
         checkTask.execute(query);
 
         try {
             if (checkTask.get()) {
+                throw new UserException("Username has been taken");
+            } else {
+                task.execute(user);
+                updateTask.execute(user);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUser(User user, String oldUserName) throws UserException{
+        String query = String.format(
+                "{\n" +
+                        "    \"query\": {\n" +
+                        "       \"term\" : { \"userName\" : \"%s\" }\n" +
+                        "    }\n" +
+                        "}", user.getUserName());
+        Log.i("Debug", user.getID());
+        User.UpdateUserTask task = new User.UpdateUserTask(listener);
+        User.SearchUserExistTask checkTask = new User.SearchUserExistTask();
+        checkTask.execute(query);
+
+        try {
+            if (checkTask.get() && !oldUserName.equals(user.getUserName())) {
                 throw new UserException("Username has been taken");
             } else {
                 task.execute(user);
@@ -54,11 +81,6 @@ public class UserController {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-    }
-
-    public void updateUser(User user) {
-        User.UpdateUserTask task = new User.UpdateUserTask(listener);
-        task.execute(user);
     }
 
     /**

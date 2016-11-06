@@ -42,6 +42,7 @@ public class FileIOUtil {
             Gson gson = new Gson();
             String jsonStr = gson.toJson(user);
             // write json string into corresponding file
+            Log.i("Debug", jsonStr);
             FileOutputStream fos = context.openFileOutput(UnterConstant.USER_PROFILE_FILENAME, 0);
             fos.write(jsonStr.getBytes());
             fos.close();
@@ -62,7 +63,7 @@ public class FileIOUtil {
             Gson gson = new Gson();
             FileInputStream fis = context.openFileInput(UnterConstant.USER_PROFILE_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-             user = gson.fromJson(in, User.class);
+            user = gson.fromJson(in, User.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

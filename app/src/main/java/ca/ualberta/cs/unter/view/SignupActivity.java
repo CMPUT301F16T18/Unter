@@ -72,16 +72,12 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             try {
                 User user = new User(username, mobile, email);
-                try {
-                    // create user
-                    uc.addUser(user);
-                } catch (UserException e) {
-                    // if the username has been taken
-                    Toast.makeText(this, "Username has been taken.", Toast.LENGTH_SHORT).show();
-                }
+                // create user
+                uc.addUser(user);
                 //finish();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (UserException e) {
+                // if the username has been taken
+                Toast.makeText(this, "Username has been taken.", Toast.LENGTH_SHORT).show();
             }
         }
     }

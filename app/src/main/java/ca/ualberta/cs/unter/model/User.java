@@ -31,6 +31,7 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 
 
 /**
@@ -40,7 +41,6 @@ public class User {
     private String userName;
     private String mobileNumber;
     private String emailAddress;
-
     private String ID;
 
     private transient static JestDroidClient client;
@@ -125,9 +125,12 @@ public class User {
                             "{\n" +
                             "    \"userName\": \"%s\"     ,\n" +
                             "    \"mobileNumber\": \"%s\" ,\n" +
-                            "    \"emailAddress\": \"%s\" \n" +
+                            "    \"emailAddress\": \"%s\" ,\n" +
+                            "    \"ID\": \"%s\" \n" +
                             "}",
-                    users[0].getUserName(), users[0].getMobileNumber(), users[0].getEmailAddress());
+                    users[0].getUserName(), users[0].getMobileNumber(),
+                    users[0].getEmailAddress(), users[0].getID());
+            Log.i("Debug", query);
             Index index = new Index.Builder(query)
                     .index("unter").type("user").id(users[0].getID()).build();
 
@@ -175,7 +178,7 @@ public class User {
                     .build();
             Log.i("Error", query[0]);
             try {
-                JestResult result = client.execute(search);
+                SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     User getUser = result.getSourceAsObject(User.class);
                     user = getUser;
