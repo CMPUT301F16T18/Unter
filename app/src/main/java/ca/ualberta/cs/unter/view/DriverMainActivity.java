@@ -76,8 +76,8 @@ public class DriverMainActivity extends AppCompatActivity
             Intent intentUserProfile = new Intent(this, EditUserProfileActivity.class);
             startActivity(intentUserProfile);
         } else if (id == R.id.nav_request) {
-//            Intent intentDriverBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
-//            startActivity(intentDriverBrowseRequest);
+            Intent intentDriverBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
+            startActivity(intentDriverBrowseRequest);
         } else if (id == R.id.nav_logout) {
             finish();
         }
