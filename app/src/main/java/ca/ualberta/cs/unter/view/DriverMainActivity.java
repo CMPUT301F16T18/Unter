@@ -1,5 +1,7 @@
 package ca.ualberta.cs.unter.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,7 +31,6 @@ public class DriverMainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_main);
 
@@ -88,5 +89,21 @@ public class DriverMainActivity extends AppCompatActivity
         assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // TODO call openDriverNotifyAcceptedDialog() when a request is accepted by a rider
+
+    private void openDriverNotifyAcceptedDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DriverMainActivity.this);
+        builder.setTitle("Rider Acceptance Notification")
+                .setMessage("Request XX is Accepted!")  // TODO replace XX with actual request ID
+                .setNeutralButton(R.string.dialog_ok_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        // Create & Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
