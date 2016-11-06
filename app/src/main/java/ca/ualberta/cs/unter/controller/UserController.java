@@ -18,6 +18,7 @@ package ca.ualberta.cs.unter.controller;
 
 import android.util.Log;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.exception.UserException;
@@ -40,7 +41,6 @@ public class UserController {
                         "}", user.getUserName());
 
         User.CreateUserTask task = new User.CreateUserTask(listener);
-        User.UpdateUserTask updateTask = new User.UpdateUserTask(listener);
         User.SearchUserExistTask checkTask = new User.SearchUserExistTask();
         checkTask.execute(query);
 
@@ -48,8 +48,8 @@ public class UserController {
             if (checkTask.get()) {
                 throw new UserException("Username has been taken");
             } else {
+                user.setID(UUID.randomUUID().toString());
                 task.execute(user);
-                updateTask.execute(user);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
