@@ -21,7 +21,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".view.EditUserProfileActivity" />
         <activity android:name=".view.DriverBrowseRequestActivity" />
-        <activity android:name=".view.DriverSearchRequestActivity"></activity>
+        <activity android:name=".view.DriverSearchRequestActivity" />
+        <activity android:name=".view.DriverAcceptRequestActivity"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package ca.ualberta.cs.unter.view;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -38,9 +39,8 @@ public class DriverSearchRequestActivity extends AppCompatActivity {
         searchRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO intent to DriverAcceptRequestActivity
-//                Intent intentDriverAcceptRequest = new Intent(this, DriverAcceptRequestActivity.class);
-//                startActivity(intentDriverAcceptRequest);
+                Intent intentDriverAcceptRequest = new Intent(DriverSearchRequestActivity.this, DriverAcceptRequestActivity.class);
+                startActivity(intentDriverAcceptRequest);
             }
         });
     }
