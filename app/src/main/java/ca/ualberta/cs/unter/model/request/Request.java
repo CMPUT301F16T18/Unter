@@ -185,7 +185,7 @@ public abstract class Request implements FareCalculator{
             verifySettings();
             Request request = new PendingRequest();
             for (Request req : requests) {
-                Index index = new Index.Builder(req).index("unter").type("request").build();
+                Index index = new Index.Builder(req).index("unter").type("request").id(req.getID()).build();
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
@@ -362,6 +362,7 @@ public abstract class Request implements FareCalculator{
             }
             return requests;
         }
+        
     }
 
     /**

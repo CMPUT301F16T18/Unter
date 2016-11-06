@@ -18,6 +18,7 @@
 package ca.ualberta.cs.unter.controller;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
@@ -39,6 +40,7 @@ public class RequestController {
     public void createRequest(Request request) {
         Request.CreateRequestTask task = new Request.CreateRequestTask(listener);
         try {
+            request.setID(UUID.randomUUID().toString());
             task.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
