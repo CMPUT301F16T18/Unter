@@ -90,9 +90,9 @@ public class User {
                     if (result.isSucceeded()) {
                         u.setID(result.getId());
                         newUser = u;
-                        Log.i("Error", "yes");
+                        Log.i("Debug", "Successful create user");
                     } else {
-                        Log.i("Error", "Elastic search was not able to add the update user.");
+                        Log.i("Debug", "Elastic search was not able to add the update user.");
                     }
                 } catch (Exception e) {
                     Log.i("Error", "We failed to add user profile to elastic search!");
@@ -217,22 +217,22 @@ public class User {
                     .addIndex("unter")
                     .addType("user")
                     .build();
-            Log.i("Error", query[0]);
             try {
                 JestResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     user = result.getSourceAsObject(User.class);
-                    if (user == null) {
-                        return false;
+                    if (user != null) {
+                        Log.i("Debug", "Username has been taken");
+                        return true;
                     }
                     Log.i("Debug", "Successful");
                 } else {
-                    Log.i("Error", "The search query failed to find any user that matched.");
+                    Log.i("Debug", "The search query failed to find any user that matched.");
                 }
             } catch (Exception e) {
-                Log.i("Error", "Something went wrong when we tried to communicate with the elastic search server!");
+                Log.i("Debug", "Something went wrong when we tried to communicate with the elastic search server!");
             }
-            return true;
+            return false;
         }
     }
 
