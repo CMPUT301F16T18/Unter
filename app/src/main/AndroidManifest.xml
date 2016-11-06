@@ -27,5 +27,6 @@
             android:label="@string/title_activity_driver_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".view.EditUserProfileActivity"></activity>
+
     </application>
 </manifest>
