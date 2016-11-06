@@ -25,13 +25,25 @@ import ca.ualberta.cs.unter.exception.UserException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 
+/**
+ * User model's controller
+ */
 public class UserController {
     OnAsyncTaskCompleted listener;
 
+    /**
+     * The constructor
+     * @param listener the task to do after async task is done.
+     */
     public UserController(OnAsyncTaskCompleted listener) {
         this.listener = listener;
     }
 
+    /**
+     * Create a new user
+     * @param user The user to be created
+     * @throws UserException Raise exception when username has been taken
+     */
     public void addUser(User user) throws UserException{
         String query = String.format(
                 "{\n" +
@@ -48,6 +60,7 @@ public class UserController {
             if (checkTask.get()) {
                 throw new UserException("Username has been taken");
             } else {
+                // generate document ID
                 user.setID(UUID.randomUUID().toString());
                 task.execute(user);
             }
@@ -58,6 +71,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Update user profile
+     * @param user The user to be created
+     * @param oldUserName The old user name
+     * @throws UserException Raise exception when username has been taken
+     */
     public void updateUser(User user, String oldUserName) throws UserException{
         String query = String.format(
                 "{\n" +
@@ -86,7 +105,7 @@ public class UserController {
     /**
      * Retrive user profile from the server
      * @param username the username to search
-     * @return
+     * @return The user object
      */
     public User getUser(String username) {
         User user = new User();
