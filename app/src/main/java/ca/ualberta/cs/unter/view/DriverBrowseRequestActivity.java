@@ -32,7 +32,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_browse_request);
 
-        acceptedRequestListView = (ListView) findViewById(R.id.accepted_request_list);
+        acceptedRequestListView = (ListView) findViewById(R.id.listView_acceptedRequest_DriverBrowseRequestActivity);
         acceptedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -41,7 +41,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
             }
         });
 
-        pendingRequestListView = (ListView) findViewById(R.id.pending_request_list);
+        pendingRequestListView = (ListView) findViewById(R.id.listView_pendingRequest_DriverBrowseRequestActivity);
         pendingRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

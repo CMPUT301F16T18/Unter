@@ -30,16 +30,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        usernameText = (EditText) findViewById(R.id.username);
+        usernameText = (EditText) findViewById(R.id.editText_userName_LoginActivity);
 
-        riderRadio = (RadioButton) findViewById(R.id.radio_rider);
-        driverRadio = (RadioButton) findViewById(R.id.radio_driver);
+        riderRadio = (RadioButton) findViewById(R.id.radioButton_rider_LoginActivity);
+        driverRadio = (RadioButton) findViewById(R.id.radioButton_driver_LoginActivity);
 
-        loginButton = (Button) findViewById(R.id.login_button);
+        loginButton = (Button) findViewById(R.id.button_login_LoginActivity);
         assert loginButton != null;
         loginButton.setOnClickListener(this);
 
-        signupButton = (Button) findViewById(R.id.signup_button);
+        signupButton = (Button) findViewById(R.id.button_signup_LoginActivity);
         assert signupButton != null;
         signupButton.setOnClickListener(this);
 
@@ -57,14 +57,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         boolean checked = ((RadioButton) view).isChecked();
         // Check which radio button was clicked
         switch(view.getId()) {
-            case R.id.radio_rider:
+            case R.id.radioButton_rider_LoginActivity:
                 if (checked)
                     riderRadio.setTypeface(null, Typeface.BOLD);
                     driverRadio.setTypeface(null, Typeface.NORMAL);
                     // will login as rider
                     roleSel = "R";
                     break;
-            case R.id.radio_driver:
+            case R.id.radioButton_driver_LoginActivity:
                 if (checked)
                     driverRadio.setTypeface(null, Typeface.BOLD);
                     riderRadio.setTypeface(null, Typeface.NORMAL);

@@ -19,7 +19,7 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
     <ListView
-        android:id="@+id/accepted_request_list"
+        android:id="@+id/listView_acceptedRequest_DriverBrowseRequestActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true">
@@ -34,7 +34,7 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
     <ListView
-        android:id="@+id/pending_request_list"
+        android:id="@+id/listView_pendingRequest_DriverBrowseRequestActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true">

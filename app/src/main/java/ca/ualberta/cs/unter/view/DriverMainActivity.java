@@ -32,7 +32,7 @@ public class DriverMainActivity extends AppCompatActivity
         setContentView(R.layout.activity_driver_main);
 
         // https://developer.android.com/guide/topics/ui/controls/spinner.html#Populate
-        searchOptionSpinner = (Spinner) findViewById(R.id.search_option);
+        searchOptionSpinner = (Spinner) findViewById(R.id.spinner_searchOption_DriverMainActivity);
         searchOptionAdapter = ArrayAdapter.createFromResource(this,
                                 R.array.search_option, android.R.layout.simple_spinner_item);
         searchOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -23,11 +23,11 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        usernameText = (EditText) findViewById(R.id.username);
-        emailText = (EditText) findViewById(R.id.email);
-        mobileText = (EditText) findViewById(R.id.mobile);
+        usernameText = (EditText) findViewById(R.id.editText_userName_SignupActivity);
+        emailText = (EditText) findViewById(R.id.editText_email_SignupActivity);
+        mobileText = (EditText) findViewById(R.id.editText_mobile_SignupActivity);
 
-        signupButton = (Button) findViewById(R.id.signup_button);
+        signupButton = (Button) findViewById(R.id.button_signup_SignupActivity);
         assert signupButton != null;
         signupButton.setOnClickListener(this);
 

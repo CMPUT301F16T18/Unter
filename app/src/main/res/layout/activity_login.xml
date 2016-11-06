@@ -12,7 +12,7 @@
 
     <!--username-->
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/editText_userName_LoginActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/username_input"
@@ -39,13 +39,13 @@
         android:layout_margin="10dp"
         android:paddingEnd="50dp">
         <RadioButton
-            android:id="@+id/radio_rider"
+            android:id="@+id/radioButton_rider_LoginActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/rider_radio"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton
-            android:id="@+id/radio_driver"
+            android:id="@+id/radioButton_driver_LoginActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/driver_radio"
@@ -54,7 +54,7 @@
 
     <!--login button-->
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/button_login_LoginActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/login_button"
@@ -63,7 +63,7 @@
 
     <!--sign up button-->
     <Button
-        android:id="@+id/signup_button"
+        android:id="@+id/button_signup_LoginActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/signup_button"
