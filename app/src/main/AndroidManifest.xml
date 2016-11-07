@@ -33,7 +33,7 @@
         <activity android:name=".view.EditUserProfileActivity" />
         <activity android:name=".view.DriverBrowseRequestActivity" />
         <activity android:name=".view.DriverSearchRequestActivity" />
-        <activity android:name=".view.DriverAcceptRequestActivity" />
+        <activity android:name=".view.BrowseRequestRouteActivity" />
         <activity android:name=".view.RiderBrowseRequestActivity" />
         <activity android:name=".view.DriverCompletedRequestActivity"></activity>
     </application>
