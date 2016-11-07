@@ -47,13 +47,12 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         @Override
         public void onTaskCompleted(Object o) {
             // Cast
-            ArrayList<Request> getRequest = (ArrayList<Request>) o;
-            searchRequestList.clear();
-            for (Request r : getRequest) {
-                if (r.getDriverUserName() != null) {
-                    // If the request has been confirmed by the rider
-                    // Dont't display it
-                    searchRequestList.add(r);
+            searchRequestList = (ArrayList<Request>) o;
+            for (Request r : searchRequestList) {
+                // If the request has been confirmed by rider
+                // or the request has been confirmed by the current driver
+                if (r.getDriverUserName() != null || r.getDriverList().contains(driver.getUserName())) {
+                    searchRequestList.remove(r);
                 }
             }
             // Notify the adapter things is changed
