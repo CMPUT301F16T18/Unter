@@ -380,6 +380,7 @@ public abstract class Request implements FareCalculator{
      */
     @Override
     public String toString() {
+        if (requestDescription == null) return null;
         return requestDescription;
     }
     /**
@@ -395,6 +396,7 @@ public abstract class Request implements FareCalculator{
      * @return the rider user name
      */
     public String getRiderUserName() {
+        if (riderUserName == null) return null;
         return riderUserName;
     }
 
@@ -404,6 +406,7 @@ public abstract class Request implements FareCalculator{
      * @return the driver user name
      */
     public String getDriverUserName() {
+        if (driverUserName == null) return null;
         return driverUserName;
     }
 
