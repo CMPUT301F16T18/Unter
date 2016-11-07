@@ -55,9 +55,9 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
                 .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO intent to MainActivity/DriverAcceptRequestActivity, send request
+                        // TODO intent to MainActivity/BrowseRequestRouteActivity, send request
                         // TODO display route on one of two above activities
-                        // TODO note: new MainActivity is DriverAcceptRequestActivity without cancel and ok buttons
+                        // TODO note: new MainActivity is BrowseRequestRouteActivity without cancel and ok buttons
                         Intent intentDriverMain = new Intent(DriverCompletedRequestActivity.this, DriverMainActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
                         intentDriverMain.putExtra("request", "testRequest");   // TODO replace testRequest with actuall request object

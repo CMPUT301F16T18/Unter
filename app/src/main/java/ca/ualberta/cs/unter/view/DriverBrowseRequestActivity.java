@@ -1,9 +1,9 @@
 package ca.ualberta.cs.unter.view;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -72,9 +72,9 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
                 .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO intent to MainActivity/DriverAcceptRequestActivity, send request
+                        // TODO intent to MainActivity/BrowseRequestRouteActivity, send request
                         // TODO display route on one of two above activities
-                        // TODO new MainActivity is DriverAcceptRequestActivity without cancel and ok buttons
+                        // TODO new MainActivity is BrowseRequestRouteActivity without cancel and ok buttons
                         Intent intentDriverMain = new Intent(DriverBrowseRequestActivity.this, DriverMainActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
                         intentDriverMain.putExtra("request", "testRequest");   // TODO replace testRequest with actuall request object
