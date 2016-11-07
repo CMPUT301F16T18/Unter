@@ -30,7 +30,6 @@ import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.exception.RequestException;
@@ -41,7 +40,6 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
 
 /**
  * This is a class that contains all attributes a Request should have.
@@ -353,6 +351,7 @@ public abstract class Request implements FareCalculator{
                 if (result.isSucceeded()) {
                     List<NormalRequest> findRequest = result.getSourceAsObjectList(NormalRequest.class);
                     requests.addAll(findRequest);
+                    Log.i("Debug", "Successful get the request list");
                 }
                 else {
                     Log.i("Error", "The search query failed to find any tweets that matched.");
@@ -364,6 +363,14 @@ public abstract class Request implements FareCalculator{
             return requests;
         }
 
+        @Override
+        protected void onPostExecute(ArrayList<NormalRequest> normalRequests) {
+            ArrayList<Request> requestsList = new ArrayList<>();
+            for (NormalRequest r : normalRequests) {
+                requestsList.add(r);
+            }
+            listener.onTaskCompleted(requestsList);
+        }
     }
 
     /**
@@ -382,6 +389,14 @@ public abstract class Request implements FareCalculator{
         }
     }
 
+    /**
+     * Overide toString method
+     * @return the descitipion
+     */
+    @Override
+    public String toString() {
+        return requestDescription;
+    }
     /**
      * Rider confirm request complete.
      */
