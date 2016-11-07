@@ -86,27 +86,6 @@ public class RiderMainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.rider_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -118,8 +97,8 @@ public class RiderMainActivity extends AppCompatActivity
             Intent intentUserProfile = new Intent(this, EditUserProfileActivity.class);
             startActivity(intentUserProfile);
         } else if (id == R.id.nav_request) {
-            //Intent intentRiderBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
-            //startActivity(intentRiderBrowseRequest);
+            Intent intentRiderBrowseRequest = new Intent(this, RiderBrowseRequestActivity.class);
+            startActivity(intentRiderBrowseRequest);
         } else if (id == R.id.nav_logout) {
             finish();
         }

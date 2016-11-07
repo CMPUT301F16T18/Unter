@@ -9,7 +9,11 @@
         <item
             android:id="@+id/nav_request"
             android:icon="@drawable/ic_menu_send"
-            android:title="Request" />
+            android:title="Pending/Accepted Request" />
+        <item
+            android:id="@+id/nav_complated_request"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Completed Request" />
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_menu_camera"
