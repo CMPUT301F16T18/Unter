@@ -55,7 +55,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     @Override
     public void onStart() {
         super.onStart();
-        searchRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_accepted_list_item, searchRequestList);
+        searchRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_search_list_item, searchRequestList);
         searchRequestListView.setAdapter(searchRequestAdapter);
     }
 
