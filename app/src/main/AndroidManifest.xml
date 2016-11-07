@@ -9,26 +9,33 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
         <activity android:name=".view.LoginActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".view.SignupActivity" />
+        <activity android:name=".view.SignupActivity"/>
         <activity
+                android:name=".view.DriverMainActivity"
+                android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+                android:name=".view.RiderMainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
             android:name=".view.DriverMainActivity"
-            android:label="@string/title_activity_driver_main"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".view.EditUserProfileActivity" />
-        <activity android:name=".view.DriverBrowseRequestActivity"></activity>
+        <activity android:name=".view.DriverBrowseRequestActivity" />
+        <activity android:name=".view.DriverSearchRequestActivity" />
+        <activity android:name=".view.DriverAcceptRequestActivity" />
     </application>
 
 </manifest>

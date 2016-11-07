@@ -10,6 +10,10 @@
             android:id="@+id/nav_request"
             android:icon="@drawable/ic_menu_send"
             android:title="Request" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Search" />
     </group>
 
     <item android:title="">
