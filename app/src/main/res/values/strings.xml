@@ -54,5 +54,9 @@
     <string name="cancel_button">Cancel</string>
     <string name="accept_button">Accept</string>
 
+    <!--RiderBrowseRequestActivity-->
+    <string name="completed_request">Completed</string>
+    <string name="inProgress_request">In Progress</string>
+
 
 </resources>

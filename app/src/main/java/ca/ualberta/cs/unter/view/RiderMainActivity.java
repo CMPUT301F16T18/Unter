@@ -97,8 +97,8 @@ public class RiderMainActivity extends AppCompatActivity
             Intent intentUserProfile = new Intent(this, EditUserProfileActivity.class);
             startActivity(intentUserProfile);
         } else if (id == R.id.nav_request) {
-            //Intent intentRiderBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
-            //startActivity(intentRiderBrowseRequest);
+            Intent intentRiderBrowseRequest = new Intent(this, RiderBrowseRequestActivity.class);
+            startActivity(intentRiderBrowseRequest);
         } else if (id == R.id.nav_logout) {
             finish();
         }
