@@ -16,7 +16,9 @@
 
 package ca.ualberta.cs.unter.model;
 
+
 import org.osmdroid.util.GeoPoint;
+
 
 /**
  * The type Route.
@@ -24,6 +26,8 @@ import org.osmdroid.util.GeoPoint;
 public class Route {
     private GeoPoint origin;
     private GeoPoint destination;
+	private double distance;
+	private double estimatedFare;
 
     /**
      * Instantiates a new Route.
@@ -53,4 +57,33 @@ public class Route {
     public GeoPoint getDestination() {
         return destination;
     }
+
+	/**
+	 * Gets distance between star/end points
+	 * @return the distance as a double
+	 */
+	public double getDistance() {
+		return distance;
+	}
+
+	/**
+	 * Set the distance between start/end points.
+	 * @param distance
+	 */
+	public void setDistance(Double distance) {
+		this.distance = distance;
+	}
+
+	public double getEstimatedFare() {
+		return estimatedFare;
+	}
+
+	public void setEstimatedFare(Double estimatedFare) {
+		this.estimatedFare = estimatedFare;
+	}
+
+	public void calculateFare(Double distance) {
+		setEstimatedFare(distance * 0.50);
+	}
+
 }

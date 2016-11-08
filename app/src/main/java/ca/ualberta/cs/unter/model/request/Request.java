@@ -51,8 +51,6 @@ public abstract class Request implements FareCalculator{
 
     private Route route;
 
-    private double estimatedFare;
-
     private String requestDescription;
 
     private Boolean isCompleted;
@@ -77,7 +75,6 @@ public abstract class Request implements FareCalculator{
     public Request(String riderUserName, Route route) {
         this.riderUserName = riderUserName;
         this.route = route;
-        this.estimatedFare = calculateEstimatedFare();
     }
 
     /**
@@ -92,7 +89,6 @@ public abstract class Request implements FareCalculator{
         this.riderUserName = riderUserName;
         this.driverUserName = driverUserName;
         this.route = route;
-        this.estimatedFare = estimatedFare;
     }
 
     /**
@@ -106,16 +102,6 @@ public abstract class Request implements FareCalculator{
         this.riderUserName = riderUserName;
         this.driverList = driverList;
         this.route = route;
-        this.estimatedFare = estimatedFare;
-    }
-
-    /**
-     * Calculate an estimated fare base on location
-     * @return the estimated fare
-     */
-    @Override
-    public double calculateEstimatedFare() {
-        return 100;
     }
 
     /**
@@ -443,8 +429,32 @@ public abstract class Request implements FareCalculator{
      * @return the estimated fare
      */
     public Double getEstimatedFare() {
-        return estimatedFare;
+        return route.getEstimatedFare();
     }
+
+	/**
+	 * Calculates the estimated fare for the route
+	 * @param distance
+	 */
+	public void calculateEstimatedFare(double distance) {
+		route.calculateFare(distance);
+	}
+
+	/**
+	 * Sets the distance of the route.
+	 * @param distance
+	 */
+	public void setDistance(double distance) {
+		route.setDistance(distance);
+	}
+
+	/**
+	 * Gets the distance of the route.
+	 * @return
+	 */
+	public double getDistance() {
+		return route.getDistance();
+	}
 
     public ArrayList<String> getDriverList() {
         return driverList;
@@ -457,15 +467,6 @@ public abstract class Request implements FareCalculator{
      */
     public void setDriverUserName(String driverUserName) {
         this.driverUserName = driverUserName;
-    }
-
-    /**
-     * Sets estimated fare.
-     *
-     * @param estimatedFare the estimated fare
-     */
-    public void setEstimatedFare(Double estimatedFare) {
-        this.estimatedFare = estimatedFare;
     }
 
 
