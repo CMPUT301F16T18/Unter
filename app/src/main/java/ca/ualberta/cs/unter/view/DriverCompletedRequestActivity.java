@@ -73,7 +73,7 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_search_list_item, completedRequestList);
+        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, completedRequestList);
         completedRequestListView.setAdapter(completedRequestAdapter);
         requestController.getDriverCompletedRequest(driver.getUserName());
     }
@@ -81,8 +81,8 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
 
     private void openRequestInfoDialog(final Request request) {
         // TODO get estimated fare price and description of the request
-        String actualFare = Integer.toString(100);   // replace 100 with actual price
-        String description = "hello";   // replace hello with actual request description
+        String actualFare = request.getEstimatedFare().toString();   // replace 100 with actual price
+        String description = request.getRequestDescription();   // replace hello with actual request description
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverCompletedRequestActivity.this);
         builder.setTitle("Request Information")
