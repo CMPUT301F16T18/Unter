@@ -125,11 +125,11 @@ public class RequestController {
 
     /**
      * Get a list of reuqest that has been accepted by the driver
-     * @param driverUserName
+     * @param driverUserName the driver's username
      */
     public void getDriverAcceptedRequest(String driverUserName) {
         String query = String.format(
-                "{\n" +
+                        "{\n" +
                         "    \"query\": {\n" +
                         "       \"match\" : {\n" +
                         "           \"driverUserName\" : \"%s\" \n" +
@@ -140,12 +140,19 @@ public class RequestController {
         task.execute(query);
     }
 
+    /**
+     * Get a list of requests that driver accepts but still waiting
+     * for confirmation from the rider
+     * @param driverUserName the driver's username
+     */
     public void getDriverPendingRequest(String driverUserName) {
         String query = String.format(
-                "{\n" +
-                        "    \"query\": {\n" +
-                        "       \"match\" : {\n" +
-                        "           \"driverUserName\" : \"%s\" \n" +
+                        "{\n" +
+                        "    \"filter\": {\n" +
+                        "       \"bool\" : {\n" +
+                        "           \"should\" : [\n " +
+                        "               { \"term\": {\"driverList\": \"%s\"} }\n" +
+                        "           ]\n" +
                         "       }\n" +
                         "    }\n" +
                         "}", driverUserName);
