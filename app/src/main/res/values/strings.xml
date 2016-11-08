@@ -64,5 +64,12 @@
     <string name="completed_request">Completed</string>
     <string name="inProgress_request">In Progress</string>
 
+    <!--RiderRequestDetailActivity-->
+    <string name="acceptance">Acceptance</string>
+    <string name="starting_location">Starting Location</string>
+    <string name="ending_location">Ending Location</string>
+    <string name="cancelRequest_button">Cancel Request</string>
+    <string name="completeRequest_button">Complete Request</string>
+
 
 </resources>
