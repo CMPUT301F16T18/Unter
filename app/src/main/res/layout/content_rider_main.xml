@@ -15,10 +15,11 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -29,4 +30,22 @@
         tools:showIn="@layout/app_bar_rider_main"
         tools:context="ca.ualberta.cs.unter.view.RiderMainActivity">
 
-</RelativeLayout>
+    <EditText
+        android:id="@+id/editText_searchStartLocation_RiderMainActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_start_location"
+        android:inputType="textNoSuggestions|textVisiblePassword"
+        android:paddingTop="30dp"
+        android:maxLines="1"/>
+
+    <EditText
+        android:id="@+id/editText_searchEndLocation_RiderMainActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_end_location"
+        android:inputType="textNoSuggestions|textVisiblePassword"
+        android:paddingTop="30dp"
+        android:maxLines="1"/>
+
+</LinearLayout>

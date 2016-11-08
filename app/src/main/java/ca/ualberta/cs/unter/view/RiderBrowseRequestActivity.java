@@ -60,8 +60,8 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO intent RiderRequestDetailActivity
-//                Intent intentRiderBrowseRequest = new Intent(this, RiderBrowseRequestActivity.class);
-//                startActivity(intentRiderBrowseRequest);
+//                Intent intentRiderRequestDetail = new Intent(this, RiderRequestDetailActivity.class);
+//                startActivity(intentRiderRequestDetail);
             }
         });
 
