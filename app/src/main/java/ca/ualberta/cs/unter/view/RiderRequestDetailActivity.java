@@ -46,7 +46,7 @@ public class RiderRequestDetailActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        acceptanceAdapter = new ArrayAdapter<>(this, R.layout.rider_acceptance_list_item, acceptanceList);
+        acceptanceAdapter = new ArrayAdapter<>(this, R.layout.list_item, acceptanceList);
         acceptanceListView.setAdapter(acceptanceAdapter);
     }
 }

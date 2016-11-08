@@ -50,7 +50,7 @@ public class RiderEnterLocationActivity extends AppCompatActivity implements Vie
     @Override
     public void onStart() {
         super.onStart();
-        searchLocationAdapter = new ArrayAdapter<>(this, R.layout.driver_search_list_item, searchLocationList);
+        searchLocationAdapter = new ArrayAdapter<>(this, R.layout.list_item, searchLocationList);
         searchLocationListView.setAdapter(searchLocationAdapter);
     }
 

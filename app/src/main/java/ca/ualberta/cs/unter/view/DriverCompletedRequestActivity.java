@@ -39,7 +39,7 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_completed_list_item, completedRequestList);
+        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, completedRequestList);
         completedRequestListView.setAdapter(completedRequestAdapter);
     }
 

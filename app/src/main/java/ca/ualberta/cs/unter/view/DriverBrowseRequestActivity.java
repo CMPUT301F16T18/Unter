@@ -55,8 +55,8 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        acceptedRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_accepted_list_item, acceptedRequestList);
-        pendingRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_pending_list_item, pendingRequestList);
+        acceptedRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, acceptedRequestList);
+        pendingRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, pendingRequestList);
         acceptedRequestListView.setAdapter(acceptedRequestAdapter);
         pendingRequestListView.setAdapter(pendingRequestAdapter);
     }

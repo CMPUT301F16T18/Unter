@@ -70,8 +70,8 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        inProgressRequestAdapter = new ArrayAdapter<>(this, R.layout.rider_inprogress_list_item, inProgressRequestList);
-        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.rider_completed_list_item, completedRequestList);
+        inProgressRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, inProgressRequestList);
+        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, completedRequestList);
         inProgressRequestListView.setAdapter(inProgressRequestAdapter);
         completedRequestListView.setAdapter(completedRequestAdapter);
     }
