@@ -52,7 +52,7 @@ public class BrowseRequestRouteActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_map);
+		setContentView(R.layout.activity_browse_request_route);
 		map = (MapView) findViewById(R.id.map);
 		map.setTileSource(TileSourceFactory.MAPNIK);
 		map.setBuiltInZoomControls(true);
