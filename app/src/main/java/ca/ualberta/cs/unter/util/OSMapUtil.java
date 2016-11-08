@@ -16,6 +16,9 @@
 
 package ca.ualberta.cs.unter.util;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 
 import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
@@ -24,6 +27,7 @@ import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
@@ -66,6 +70,48 @@ public class OSMapUtil {
         @Override
         protected void onPostExecute(Road[] roads) {
             listener.onTaskCompleted(roads);
+        }
+    }
+
+    /**
+     * Static class for geocoding a street address
+     */
+    public static class GeocoderTask extends AsyncTask<String, Void, GeoPoint> {
+
+        private Context context;
+
+        public GeocoderTask(Context context) {
+            this.context = context;
+        }
+
+        /**
+         * Converts a street address to a set of coordinates
+         * @param strAddress the street address to be converted
+         * @return the coordinates of the street address as a GeoPoint
+         */
+        @Override
+        protected GeoPoint doInBackground(String... strAddress) {
+            Geocoder coder = new Geocoder(context);
+            List<Address> address;
+            GeoPoint p1 = null;
+
+            try {
+                address = coder.getFromLocationName(strAddress[0], 5);
+                if (address == null) {
+                    return null;
+                }
+                Address location = address.get(0);
+                location.getLatitude();
+                location.getLongitude();
+
+                p1 = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+            } catch (Exception ex) {
+
+                ex.printStackTrace();
+            }
+
+            return p1;
         }
     }
 }
