@@ -42,9 +42,11 @@ import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.RequestIntentUtil;
 
 // Code adapted from:
+// CMPUT 301 lab 8.
+// https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0
+// accessed on November 7th, 2016.
 // http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception
-// accessed on October 27th, 2016
-// author: yubaraj poudel
+// accessed on November 7th, 2016; written by yubaraj poudel.
 
 public class MapActivity extends Activity {
 
@@ -90,9 +92,6 @@ public class MapActivity extends Activity {
 		overlayItemArray.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
 		overlayItemArray.add(new OverlayItem("Destination", "This is the destination point", destinationPoint));
 		getRoadAsync(startPoint, destinationPoint);
-
-		request.calculateEstimatedFare(distance);
-		request.setDistance(distance);
 	}
 
 	public void getRoadAsync(GeoPoint startPoint, GeoPoint destinationPoint) {
@@ -115,7 +114,7 @@ public class MapActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(Road[] roads) {
-			mRoads = roads;
+			mRoads = roads;  // not sure if this needs to be here, but it works
 			if (roads == null)
 				return;
 			if (roads[0].mStatus == Road.STATUS_TECHNICAL_ISSUE)
@@ -138,8 +137,9 @@ public class MapActivity extends Activity {
 				Toast.makeText(ourActivity, "durée="+roads[i].mDuration,Toast.LENGTH_LONG).show();
 
 				distance = roads[i].mLength;
-				double price = distance * 0.50;
-				Toast.makeText(ourActivity, "price="+price, Toast.LENGTH_LONG).show();
+				request.setDistance(distance);
+				request.calculateEstimatedFare(distance);
+				Toast.makeText(ourActivity, "price="+request.getEstimatedFare(), Toast.LENGTH_LONG).show();
 				//we insert the road overlays at the "bottom", just above the MapEventsOverlay,
 				//to avoid covering the other overlays.
 			}
