@@ -124,6 +124,36 @@ public class RequestController {
     }
 
     /**
+     * Get a list of reuqest that has been accepted by the driver
+     * @param driverUserName
+     */
+    public void getDriverAcceptedRequest(String driverUserName) {
+        String query = String.format(
+                "{\n" +
+                        "    \"query\": {\n" +
+                        "       \"match\" : {\n" +
+                        "           \"driverUserName\" : \"%s\" \n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", driverUserName);
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+    }
+
+    public void getDriverPendingRequest(String driverUserName) {
+        String query = String.format(
+                "{\n" +
+                        "    \"query\": {\n" +
+                        "       \"match\" : {\n" +
+                        "           \"driverUserName\" : \"%s\" \n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", driverUserName);
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+    }
+
+    /**
      * Driver confirm request.
      *
      * @param driverUserName the driver user name
