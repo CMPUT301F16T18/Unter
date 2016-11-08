@@ -1,5 +1,5 @@
 # Unter
-[![Build Status](https://travis-ci.org/CMPUT301F16T18/Unter.svg?branch=master)](https://travis-ci.org/CMPUT301F16T18/Unter)  
+[![CircleCI](https://circleci.com/gh/CMPUT301F16T18/Unter.svg?style=svg)](https://circleci.com/gh/CMPUT301F16T18/Unter)
 
 A CMPUT 301 Project
 
