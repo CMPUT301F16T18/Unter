@@ -44,14 +44,14 @@ import io.searchbox.core.SearchResult;
 /**
  * This is a class that contains all attributes a Request should have.
  */
-public abstract class Request implements FareCalculator{
+public abstract class Request {
     private String riderUserName;
     private String driverUserName;
     private ArrayList<String> driverList = new ArrayList<>();
 
     private Route route;
 
-    private double estimatedFare;
+	private double estimatedFare;
 
     private String requestDescription;
 
@@ -77,7 +77,6 @@ public abstract class Request implements FareCalculator{
     public Request(String riderUserName, Route route) {
         this.riderUserName = riderUserName;
         this.route = route;
-        this.estimatedFare = calculateEstimatedFare();
     }
 
     /**
@@ -85,14 +84,13 @@ public abstract class Request implements FareCalculator{
      *
      * @param riderUserName         the rider user name
      * @param driverUserName        the driver user name
-     * @param estimatedFare         the estimated fare
      * @param route the path from pickup location to destination
      */
     public Request(String riderUserName, String driverUserName, Route route, double estimatedFare) {
         this.riderUserName = riderUserName;
         this.driverUserName = driverUserName;
         this.route = route;
-        this.estimatedFare = estimatedFare;
+		this.estimatedFare = estimatedFare;
     }
 
     /**
@@ -100,22 +98,12 @@ public abstract class Request implements FareCalculator{
      *
      * @param riderUserName the rider user name
      * @param driverList the list of drivers username who accept the request
-     * @param estimatedFare the estimated fare
      */
     public Request(String riderUserName, ArrayList<String> driverList, Route route, double estimatedFare) {
         this.riderUserName = riderUserName;
         this.driverList = driverList;
         this.route = route;
-        this.estimatedFare = estimatedFare;
-    }
-
-    /**
-     * Calculate an estimated fare base on location
-     * @return the estimated fare
-     */
-    @Override
-    public double calculateEstimatedFare() {
-        return 100;
+		this.estimatedFare = estimatedFare;
     }
 
     /**
@@ -446,6 +434,30 @@ public abstract class Request implements FareCalculator{
         return estimatedFare;
     }
 
+	/**
+	 * Sets the estimated fare.
+	 * @param fare
+	 */
+	public void setEstimatedFare(double fare) {
+		estimatedFare = fare;
+	}
+
+	/**
+	 * Sets the distance of the route.
+	 * @param distance
+	 */
+	public void setDistance(double distance) {
+		route.setDistance(distance);
+	}
+
+	/**
+	 * Gets the distance of the route.
+	 * @return
+	 */
+	public double getDistance() {
+		return route.getDistance();
+	}
+
     public ArrayList<String> getDriverList() {
         return driverList;
     }
@@ -457,15 +469,6 @@ public abstract class Request implements FareCalculator{
      */
     public void setDriverUserName(String driverUserName) {
         this.driverUserName = driverUserName;
-    }
-
-    /**
-     * Sets estimated fare.
-     *
-     * @param estimatedFare the estimated fare
-     */
-    public void setEstimatedFare(Double estimatedFare) {
-        this.estimatedFare = estimatedFare;
     }
 
 

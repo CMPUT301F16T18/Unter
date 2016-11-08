@@ -231,4 +231,10 @@ public class RequestController {
 
         updateRequest(request);
     }
+
+
+    public void calculateEstimatedFare(Request request) {
+        double fare = request.getDistance() * 0.50;
+		request.setEstimatedFare(fare);
+    }
 }
