@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
@@ -148,8 +149,9 @@ public class RequestController {
      * @param request the request to be confirmed by the rider
      * @param driverUserName the driver user name
      */
-    public void riderConfirmDriver(Request request, String driverUserName) {
+    public void riderConfirmDriver(Request request, String driverUserName) throws RequestException {
         request.riderConfirmDriver(driverUserName);
+
         updateRequest(request);
     }
 }

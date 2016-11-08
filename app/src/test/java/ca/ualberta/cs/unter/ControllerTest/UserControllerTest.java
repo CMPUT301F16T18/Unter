@@ -23,12 +23,8 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import java.io.IOException;
-
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.User;
-import io.searchbox.core.DocumentResult;
-import io.searchbox.core.Index;
 
 public class UserControllerTest extends ApplicationTestCase<Application> {
     private static JestDroidClient client;
@@ -40,15 +36,15 @@ public class UserControllerTest extends ApplicationTestCase<Application> {
 
     public void testAddUser() {
         verifySettings();
-        user = new Driver("Test Driver", "780-716-4073", "test@cs.ualberta.ca");
-        Index index = new Index.Builder(user).index("unter").type("user").build();
-
-        try {
-            DocumentResult result = client.execute(index);
-            assertTrue(result.isSucceeded());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        user = new Driver("Test Driver", "780-716-4073", "test@cs.ualberta.ca");
+//        Index index = new Index.Builder(user).index("unter").type("user").build();
+//
+//        try {
+//            DocumentResult result = client.execute(index);
+//            assertTrue(result.isSucceeded());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 //        Search search = new Search.Builder("Test Driver")
 //                .addIndex("unter")

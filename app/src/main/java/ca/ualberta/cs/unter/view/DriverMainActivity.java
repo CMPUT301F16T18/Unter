@@ -66,6 +66,9 @@ public class DriverMainActivity extends AppCompatActivity
         } else if (id == R.id.nav_request) {
             Intent intentDriverBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
             startActivity(intentDriverBrowseRequest);
+        } else if (id == R.id.nav_complated_request){
+            Intent intentDriverCompletedRequest = new Intent(this, DriverCompletedRequestActivity.class);
+            startActivity(intentDriverCompletedRequest);
         } else if (id == R.id.nav_search){
             Intent intentDriverSearchRequest = new Intent(this, DriverSearchRequestActivity.class);
             startActivity(intentDriverSearchRequest);

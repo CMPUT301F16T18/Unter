@@ -18,6 +18,7 @@ package ca.ualberta.cs.unter.model.request;
 
 import java.util.ArrayList;
 
+import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.Route;
 
 /**
@@ -36,7 +37,7 @@ public class AcceptedRequest extends Request {
     }
 
     @Override
-    public void riderConfirmDriver(String driverUserName) {
+    public void riderConfirmDriver(String driverUserName) throws RequestException{
         super.riderConfirmDriver(driverUserName);
     }
 }

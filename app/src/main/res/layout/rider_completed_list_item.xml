@@ -15,26 +15,10 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:textSize="16sp" >
 
-    <group android:checkableBehavior="single">
-        <item
-                android:id="@+id/nav_user_profile"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="User Profile"/>
-        <item
-                android:id="@+id/nav_request"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="Request"/>
-    </group>
-
-    <item android:title="">
-        <menu>
-            <item
-                    android:id="@+id/nav_logout"
-                    android:icon="@drawable/ic_menu_manage"
-                    android:title="Log Out"/>
-        </menu>
-    </item>
-
-</menu>
+</LinearLayout>

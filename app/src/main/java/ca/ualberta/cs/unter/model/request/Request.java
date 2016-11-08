@@ -30,7 +30,6 @@ import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.exception.RequestException;
@@ -41,7 +40,6 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
 
 /**
  * This is a class that contains all attributes a Request should have.
@@ -49,7 +47,7 @@ import io.searchbox.core.Update;
 public abstract class Request implements FareCalculator{
     private String riderUserName;
     private String driverUserName;
-    private ArrayList<String> driverList;
+    private ArrayList<String> driverList = new ArrayList<>();
 
     private Route route;
 
@@ -126,20 +124,7 @@ public abstract class Request implements FareCalculator{
      * @param driverUserName the driver user name who accepts the ride request
      */
     public void driverAcceptRequest(String driverUserName) { // changed from driverConfirmRequest
-        if (this.driverUserName == null) {
-            // If the request has not been accepted
-            this.driverUserName = driverUserName;
-        } else if (driverList == null && !this.driverUserName.isEmpty()) {
-            // If the request has been confirmed by only one driver
-            driverList = new ArrayList<>();
-            // add existing accepted driver username first
-            driverList.add(this.driverUserName);
-            // add the new accepted driver
-            driverList.add(driverUserName);
-        } else if (driverList != null && !driverList.isEmpty()) {
-            // If the request has been accepted by more than one driver
-            driverList.add(driverUserName);
-        }
+        driverList.add(driverUserName);
     }
 
     /**
@@ -148,18 +133,16 @@ public abstract class Request implements FareCalculator{
      * @param driverUserName the driver user name
      * @exception RequestException raise exception when request has not been confirmed
      */
-    public void riderConfirmDriver(String driverUserName) {
-        try {
-            if (this.driverUserName.isEmpty() || driverList.isEmpty()) {
-                // If the request has not been accpeted yet
-                throw new RequestException("This request has not been accepted by any driver yet");
-            } else {
-                // Confirmed driver
-                this.driverUserName = driverUserName;
-            }
-        } catch (RequestException e) {
-            e.printStackTrace();
+    public void riderConfirmDriver(String driverUserName) throws RequestException {
+        if (this.driverUserName.isEmpty() || driverList.isEmpty()) {
+            // If the request has not been accepted yet
+            throw new RequestException("This request has not been accepted by any driver yet");
+        } else {
+            // Confirmed driver
+            this.driverUserName = driverUserName;
+            driverList.clear();
         }
+
     }
 
     /**
@@ -353,6 +336,7 @@ public abstract class Request implements FareCalculator{
                 if (result.isSucceeded()) {
                     List<NormalRequest> findRequest = result.getSourceAsObjectList(NormalRequest.class);
                     requests.addAll(findRequest);
+                    Log.i("Debug", "Successful get the request list");
                 }
                 else {
                     Log.i("Error", "The search query failed to find any tweets that matched.");
@@ -364,6 +348,14 @@ public abstract class Request implements FareCalculator{
             return requests;
         }
 
+        @Override
+        protected void onPostExecute(ArrayList<NormalRequest> normalRequests) {
+            ArrayList<Request> requestsList = new ArrayList<>();
+            for (NormalRequest r : normalRequests) {
+                requestsList.add(r);
+            }
+            listener.onTaskCompleted(requestsList);
+        }
     }
 
     /**
@@ -383,6 +375,15 @@ public abstract class Request implements FareCalculator{
     }
 
     /**
+     * Overide toString method
+     * @return the descitipion
+     */
+    @Override
+    public String toString() {
+        if (requestDescription == null) return null;
+        return requestDescription;
+    }
+    /**
      * Rider confirm request complete.
      */
     public void riderConfirmRequestComplete() {
@@ -395,6 +396,7 @@ public abstract class Request implements FareCalculator{
      * @return the rider user name
      */
     public String getRiderUserName() {
+        if (riderUserName == null) return null;
         return riderUserName;
     }
 
@@ -404,6 +406,7 @@ public abstract class Request implements FareCalculator{
      * @return the driver user name
      */
     public String getDriverUserName() {
+        if (driverUserName == null) return null;
         return driverUserName;
     }
 
