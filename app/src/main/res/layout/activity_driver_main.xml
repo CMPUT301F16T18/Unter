@@ -22,4 +22,8 @@
         app:headerLayout="@layout/nav_header_driver_main"
         app:menu="@menu/activity_driver_main_drawer" />
 
+    <org.osmdroid.views.MapView android:id="@+id/map_driverMainActivity"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent" />
+
 </android.support.v4.widget.DrawerLayout>
