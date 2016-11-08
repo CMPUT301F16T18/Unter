@@ -27,7 +27,6 @@ public class Route {
     private GeoPoint origin;
     private GeoPoint destination;
 	private transient double distance;
-	private transient double estimatedFare;
 
     /**
      * Instantiates a new Route.
@@ -73,17 +72,4 @@ public class Route {
 	public void setDistance(Double distance) {
 		this.distance = distance;
 	}
-
-	public double getEstimatedFare() {
-		return estimatedFare;
-	}
-
-	public void setEstimatedFare(Double estimatedFare) {
-		this.estimatedFare = estimatedFare;
-	}
-
-	public void calculateFare(Double distance) {
-		setEstimatedFare(distance * 0.50);
-	}
-
 }
