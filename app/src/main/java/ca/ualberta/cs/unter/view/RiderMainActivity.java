@@ -185,9 +185,9 @@ public class RiderMainActivity extends AppCompatActivity
                 .setNeutralButton(R.string.dialog_view_request_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO intent to RiderRequestDetailActivity
-//                        Intent intentRiderRequestDetail = new Intent(this, RiderRequestDetailActivity.class);
-//                        startActivity(intentRiderRequestDetail);
+                        // intent RiderRequestDetailActivity
+                        Intent intentRiderRequestDetail = new Intent(RiderMainActivity.this, RiderRequestDetailActivity.class);
+                        startActivity(intentRiderRequestDetail);
                     }
                 });
         // Create & Show the AlertDialog

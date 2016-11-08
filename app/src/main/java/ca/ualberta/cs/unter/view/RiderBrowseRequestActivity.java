@@ -49,9 +49,9 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         inProgressRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO intent RiderRequestDetailActivity
-//                Intent intentRiderRequestDetail = new Intent(this, RiderRequestDetailActivity.class);
-//                startActivity(intentRiderRequestDetail);
+                // intent RiderRequestDetailActivity
+                Intent intentRiderRequestDetail = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
+                startActivity(intentRiderRequestDetail);
             }
         });
 
@@ -59,9 +59,9 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         completedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO intent RiderRequestDetailActivity
-//                Intent intentRiderRequestDetail = new Intent(this, RiderRequestDetailActivity.class);
-//                startActivity(intentRiderRequestDetail);
+                // intent RiderRequestDetailActivity
+                Intent intentRiderRequestDetail = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
+                startActivity(intentRiderRequestDetail);
             }
         });
 

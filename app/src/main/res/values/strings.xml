@@ -70,6 +70,9 @@
     <string name="ending_location">Ending Location</string>
     <string name="cancelRequest_button">Cancel Request</string>
     <string name="completeRequest_button">Complete Request</string>
+    <string name="dialog_call_mobile_button">Mobile: </string>
+    <string name="dialog_send_email_button">Email: </string>
+    <string name="dialog_confirm_acceptance_button">Confirm Acceptance</string>
 
 
 </resources>
