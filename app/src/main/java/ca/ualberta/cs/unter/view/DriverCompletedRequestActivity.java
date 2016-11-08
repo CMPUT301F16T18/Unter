@@ -1,10 +1,26 @@
+/*
+ * Copyright (C) 2016 CMPUT301F16T18 - Alan(Xutong) Zhao, Michael(Zichun) Lin, Stephen Larsen, Yu Zhu, Zhenzhe Xu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ca.ualberta.cs.unter.view;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,13 +29,30 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.controller.RequestController;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
+import ca.ualberta.cs.unter.util.FileIOUtil;
+import ca.ualberta.cs.unter.util.RequestIntentUtil;
 
 public class DriverCompletedRequestActivity extends AppCompatActivity {
     private ListView completedRequestListView;
     private ArrayAdapter<Request> completedRequestAdapter;
     private ArrayList<Request> completedRequestList = new ArrayList<>();
 
+    private User driver;
+
+    private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            completedRequestList = (ArrayList<Request>) o; // cast
+            // Update the list view
+            completedRequestAdapter.clear();
+            completedRequestAdapter.addAll(completedRequestList);
+            completedRequestAdapter.notifyDataSetChanged();
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +64,22 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // open request info dialog
-                openRequestInfoDialog();
+                openRequestInfoDialog(completedRequestList.get(position));
             }
         });
+        driver = FileIOUtil.loadUserFromFile(getApplicationContext());
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_completed_list_item, completedRequestList);
+        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.driver_search_list_item, completedRequestList);
         completedRequestListView.setAdapter(completedRequestAdapter);
+        requestController.getDriverCompletedRequest(driver.getUserName());
     }
 
 
-    private void openRequestInfoDialog() {
+    private void openRequestInfoDialog(final Request request) {
         // TODO get estimated fare price and description of the request
         String actualFare = Integer.toString(100);   // replace 100 with actual price
         String description = "hello";   // replace hello with actual request description
@@ -58,10 +93,10 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
                         // TODO intent to MainActivity/BrowseRequestRouteActivity, send request
                         // TODO display route on one of two above activities
                         // TODO note: new MainActivity is BrowseRequestRouteActivity without cancel and ok buttons
-                        Intent intentDriverMain = new Intent(DriverCompletedRequestActivity.this, DriverMainActivity.class);
+                        Intent intent = new Intent(DriverCompletedRequestActivity.this, BrowseRequestRouteActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-                        intentDriverMain.putExtra("request", "testRequest");   // TODO replace testRequest with actuall request object
-                        startActivity(intentDriverMain);
+                        intent.putExtra("request", RequestIntentUtil.serializer(request));   // TODO replace testRequest with actuall request object
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
