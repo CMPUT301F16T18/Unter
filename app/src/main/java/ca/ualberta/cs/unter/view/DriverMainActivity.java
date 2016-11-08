@@ -21,8 +21,6 @@ import ca.ualberta.cs.unter.util.FileIOUtil;
 public class DriverMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private User driver;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +41,11 @@ public class DriverMainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View navHeader = navigationView.getHeaderView(0);
-
         TextView username = (TextView) navHeader.findViewById(R.id.nav_drawer_driver_username);
         TextView email = (TextView) navHeader.findViewById(R.id.nav_drawer_driver_email);
 
         // Get user profile
-        driver = FileIOUtil.loadUserFromFile(getApplicationContext());
+        User driver = FileIOUtil.loadUserFromFile(getApplicationContext());
 
         // Set drawer text
         username.setText(driver.getUserName());
