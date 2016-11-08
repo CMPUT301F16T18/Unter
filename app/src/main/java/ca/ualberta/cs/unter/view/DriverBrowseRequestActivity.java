@@ -13,8 +13,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.controller.RequestController;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.request.Request;
 
+/**
+ * Activity that driver could browse for current
+ * evolved request
+ */
 public class DriverBrowseRequestActivity extends AppCompatActivity {
 
     private ListView acceptedRequestListView;
@@ -26,6 +32,19 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
     private ArrayList<Request> acceptedRequestList = new ArrayList<>();
     private ArrayList<Request> pendingRequestList = new ArrayList<>();
 
+    private RequestController acceptedRequestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+
+        }
+    });
+
+    private RequestController pendingRequestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,5 +110,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
+    private void updateRequestList() {
+        
+    }
 }

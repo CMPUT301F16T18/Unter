@@ -63,7 +63,10 @@ public class UserControllerTest extends ApplicationTestCase<Application> {
 
     }
 
+    // TODO
+    public void testUpdateUser() {
 
+    }
 
     /**
      * Set up the connection with server
