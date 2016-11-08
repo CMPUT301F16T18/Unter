@@ -95,13 +95,13 @@ public class RiderMainActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         if (view == searchStartLocationEditText) {
-            // TODO display the location after returning
             Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
             startActivity(intentRiderEnterLocation);
+            // TODO after returning from RiderEnterLocationActivity, set location result string to searchStartLocationEditText
         } else if (view == searchEndLocationEditText) {
-            // TODO display the location after returning
             Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
             startActivity(intentRiderEnterLocation);
+            // TODO after returning from RiderEnterLocationActivity, set location result string to searchEndLocationEditText
         }
     }
 

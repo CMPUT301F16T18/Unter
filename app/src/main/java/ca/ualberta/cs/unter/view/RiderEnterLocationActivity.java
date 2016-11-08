@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.model.request.Request;
 
 public class RiderEnterLocationActivity extends AppCompatActivity implements View.OnClickListener {
+    private EditText searchLocationEditText;
+
     private ListView searchLocationListView;
     private ArrayAdapter<String> searchLocationAdapter;
     private ArrayList<String> searchLocationList = new ArrayList<>();
@@ -25,6 +28,10 @@ public class RiderEnterLocationActivity extends AppCompatActivity implements Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_enter_location);
 
+        searchLocationEditText = (EditText) findViewById(R.id.editText_searchLocation_RiderEnterLocationActivity);
+        assert searchLocationEditText != null;
+        searchLocationEditText.setOnClickListener(this);
+
         searchButton = (Button) findViewById(R.id.button_search_RiderEnterLocationActivity);
         assert searchButton != null;
         searchButton.setOnClickListener(this);
@@ -33,7 +40,9 @@ public class RiderEnterLocationActivity extends AppCompatActivity implements Vie
         searchLocationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO return to RiderMainActivity
+                // TODO set the text of this search result item to searchLocationEditText
+                String text = "test location item";
+                searchLocationEditText.setText(text);
             }
         });
     }
