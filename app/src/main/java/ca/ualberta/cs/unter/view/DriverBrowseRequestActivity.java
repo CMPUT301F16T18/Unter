@@ -1,10 +1,10 @@
 package ca.ualberta.cs.unter.view;
 
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,13 +15,18 @@ import java.util.ArrayList;
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
+import ca.ualberta.cs.unter.util.FileIOUtil;
+import ca.ualberta.cs.unter.util.RequestIntentUtil;
 
 /**
  * Activity that driver could browse for current
  * evolved request
  */
 public class DriverBrowseRequestActivity extends AppCompatActivity {
+
+    private User driver;
 
     private ListView acceptedRequestListView;
     private ListView pendingRequestListView;
@@ -35,14 +40,19 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
     private RequestController acceptedRequestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
-
+            acceptedRequestList = (ArrayList<Request>) o;
+            acceptedRequestAdapter.clear();
+            acceptedRequestAdapter.addAll(acceptedRequestList);
+            acceptedRequestAdapter.notifyDataSetChanged();
         }
     });
 
     private RequestController pendingRequestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
-
+            pendingRequestList = (ArrayList<Request>) o;
+            pendingRequestAdapter.clear();
+            pendingRequestAdapter.addAll(pendingRequestList);
         }
     });
 
@@ -56,7 +66,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // open request info dialog
-                openRequestInfoDialog();
+                openRequestInfoDialog(acceptedRequestList.get(position));
             }
         });
 
@@ -65,10 +75,11 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // open request info dialog
-                openRequestInfoDialog();
+                openRequestInfoDialog(pendingRequestList.get(position));
             }
         });
 
+        driver = FileIOUtil.loadUserFromFile(getApplicationContext());
     }
 
     @Override
@@ -80,14 +91,14 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
         pendingRequestListView.setAdapter(pendingRequestAdapter);
     }
 
-    private void openRequestInfoDialog() {
+    private void openRequestInfoDialog(final Request request) {
         // TODO get estimated fare price and description of the request
-        String estimatedFare = Integer.toString(100);   // replace 100 with estimated price
-        String description = "hello";   // replace hello with actual request description
+        String estimatedFare = request.getEstimatedFare().toString();   // replace 100 with estimated price
+        String description = request.getRequestDescription();   // replace hello with actual request description
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverBrowseRequestActivity.this);
         builder.setTitle("Request Information")
-                .setMessage("Estimated Fare: " + estimatedFare + "\\n" + "Description" + description)
+                .setMessage("Estimated Fare: " + estimatedFare + "\n" + "Description" + description)
                 .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -96,7 +107,8 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
                         // TODO new MainActivity is BrowseRequestRouteActivity without cancel and ok buttons
                         Intent intentDriverMain = new Intent(DriverBrowseRequestActivity.this, DriverMainActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-                        intentDriverMain.putExtra("request", "testRequest");   // TODO replace testRequest with actuall request object
+                        // Serialize the request object and pass it over through the intent
+                        intentDriverMain.putExtra("request", RequestIntentUtil.serializer(request));
                         startActivity(intentDriverMain);
                     }
                 })
@@ -111,6 +123,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
     }
 
     private void updateRequestList() {
-        
+        acceptedRequestController.getDriverAcceptedRequest(driver.getUserName());
+        pendingRequestController.getDriverPendingRequest(driver.getUserName());
     }
 }

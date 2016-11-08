@@ -19,11 +19,8 @@ package ca.ualberta.cs.unter.ControllerTest;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.searchly.jestdroid.DroidClientConfig;
-import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.User;
 
 public class UserControllerTest extends ApplicationTestCase<Application> {
@@ -72,15 +69,15 @@ public class UserControllerTest extends ApplicationTestCase<Application> {
      * Set up the connection with server
      */
     private static void verifySettings() {
-        // if the client hasn't been initialized then we should make it!
-        if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL);
-            //DroidClientConfig.Builder builder = new DroidClientConfig.Builder("https://api.vfree.org");
-            DroidClientConfig config = builder.build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client = (JestDroidClient) factory.getObject();
-        }
+//        // if the client hasn't been initialized then we should make it!
+//        if (client == null) {
+//            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL);
+//            //DroidClientConfig.Builder builder = new DroidClientConfig.Builder("https://api.vfree.org");
+//            DroidClientConfig config = builder.build();
+//
+//            JestClientFactory factory = new JestClientFactory();
+//            factory.setDroidClientConfig(config);
+//            client = (JestDroidClient) factory.getObject();
+//        }
     }
 }
