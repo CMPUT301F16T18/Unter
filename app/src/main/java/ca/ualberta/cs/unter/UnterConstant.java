@@ -25,4 +25,5 @@ public class UnterConstant {
     public static final String USER_PROFILE_FILENAME = "user.json";
     public static final String MAP_QUEST_KEY = "jYSs7vV0XMAMdCTXhFlnFAHzc6EAXGyi";
     public static final GeoPoint UALBERTA_COORDS = new GeoPoint(53.522881, -113.525578);
+    public static final String GMAPS_API_KEY = "AIzaSyB1L-YfWPYaRL87_rlJc_yQy4kcHiGFPDs";
 }

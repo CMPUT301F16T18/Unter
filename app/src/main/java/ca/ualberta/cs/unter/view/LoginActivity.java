@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import ca.ualberta.cs.unter.MapsActivity;
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.controller.UserController;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
@@ -89,7 +90,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             login();
         } else if (view == signupButton){
             // intent to SignupActivity
-            Intent intentSignup = new Intent(this, SignupActivity.class);
+            //Intent intentSignup = new Intent(this, SignupActivity.class);
+            Intent intentSignup = new Intent(this, MapsActivity.class);
             startActivity(intentSignup);
         }
     }
