@@ -18,6 +18,7 @@
 package ca.ualberta.cs.unter.model.request;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -35,6 +36,7 @@ import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.Route;
+import ca.ualberta.cs.unter.util.GeoPointConverter;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
@@ -352,7 +354,9 @@ public abstract class Request {
     private static void verifySettings() {
         // if the client hasn't been initialized then we should make it!
         if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL);
+            // Custom gson Serializer and JsonDeserializer
+            Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL).gson(gson);
             //DroidClientConfig.Builder builder = new DroidClientConfig.Builder("https://api.vfree.org");
             DroidClientConfig config = builder.build();
 
