@@ -31,7 +31,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.views.MapView;
+
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.util.FileIOUtil;
@@ -39,12 +44,25 @@ import ca.ualberta.cs.unter.util.FileIOUtil;
 public class RiderMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+	private MapView map;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // map stuff
+
+		map = (MapView) findViewById(R.id.map);
+		map.setTileSource(TileSourceFactory.MAPNIK);
+		map.setBuiltInZoomControls(true);
+		map.setMultiTouchControls(true);
+
+		IMapController mapController = map.getController();
+		mapController.setZoom(15);
+		mapController.setCenter(UnterConstant.UALBERTA_COORDS);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
