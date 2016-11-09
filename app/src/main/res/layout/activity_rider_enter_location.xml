@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="ca.ualberta.cs.unter.view.RiderEnterLocationActivity">
+
+    <EditText
+        android:id="@+id/editText_searchLocation_RiderEnterLocationActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_location"
+        android:inputType="textNoSuggestions|textVisiblePassword"
+        android:paddingTop="30dp"
+        android:maxLines="1"/>
+
+    <Button
+        android:id="@+id/button_search_RiderEnterLocationActivity"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/search_button"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search_result"
+        android:paddingTop="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <ListView
+        android:id="@+id/listView_searchLocationList_RiderEnterLocationActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:clickable="true" >
+    </ListView>
+
+</LinearLayout>

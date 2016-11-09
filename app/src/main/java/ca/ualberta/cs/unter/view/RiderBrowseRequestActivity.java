@@ -49,9 +49,9 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         inProgressRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO intent RiderRequestDetailActivity
-//                Intent intentRiderRequestDetail = new Intent(this, RiderRequestDetailActivity.class);
-//                startActivity(intentRiderRequestDetail);
+                // intent RiderRequestDetailActivity
+                Intent intentRiderRequestDetail = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
+                startActivity(intentRiderRequestDetail);
             }
         });
 
@@ -59,9 +59,9 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         completedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO intent RiderRequestDetailActivity
-//                Intent intentRiderBrowseRequest = new Intent(this, RiderBrowseRequestActivity.class);
-//                startActivity(intentRiderBrowseRequest);
+                // intent RiderRequestDetailActivity
+                Intent intentRiderRequestDetail = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
+                startActivity(intentRiderRequestDetail);
             }
         });
 
@@ -70,8 +70,8 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        inProgressRequestAdapter = new ArrayAdapter<>(this, R.layout.rider_inprogress_list_item, inProgressRequestList);
-        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.rider_completed_list_item, completedRequestList);
+        inProgressRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, inProgressRequestList);
+        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, completedRequestList);
         inProgressRequestListView.setAdapter(inProgressRequestAdapter);
         completedRequestListView.setAdapter(completedRequestAdapter);
     }
