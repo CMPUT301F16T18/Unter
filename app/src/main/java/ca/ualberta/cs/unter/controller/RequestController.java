@@ -124,6 +124,83 @@ public class RequestController {
     }
 
     /**
+     * Get a list of reuqest that has been accepted by the driver
+     * @param driverUserName the driver's username
+     */
+    public void getDriverAcceptedRequest(String driverUserName) {
+        String query = String.format(
+                        "{\n" +
+                        "    \"query\": {\n" +
+                        "       \"match\" : {\n" +
+                        "           \"driverUserName\" : \"%s\" \n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", driverUserName);
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+    }
+
+    /**
+     * Get a list of requests that driver accepts but still waiting
+     * for confirmation from the rider
+     * @param driverUserName the driver's username
+     */
+    public void getDriverPendingRequest(String driverUserName) {
+        String query = String.format(
+                        "{\n" +
+                        "    \"filter\": {\n" +
+                        "       \"bool\" : {\n" +
+                        "           \"should\" : [\n " +
+                        "               { \"term\": {\"driverList\": \"%s\"} }\n" +
+                        "           ]\n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", driverUserName);
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+    }
+
+    /**
+     * Get a list of requests of driver's past request
+     * @param driverUserName the driver's user name
+     */
+    public void getDriverCompletedRequest(String driverUserName) {
+        String query = String.format(
+                        "{\n" +
+                        "    \"filter\": {\n" +
+                        "       \"bool\" : {\n" +
+                        "           \"should\" : [\n " +
+                        "               { \"term\": {\"driverUserName\": \"%s\"} },\n" +
+                        "               { \"term\": {\"isCompleted\": \"true\"} }\n" +
+                        "           ]\n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", driverUserName);
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+    }
+
+    /**
+     * Get a list of requests of driver's past request
+     * @param riderUserName the rider's user name
+     */
+    public void getRiderCompletedRequest(String riderUserName) {
+        String query = String.format(
+                "{\n" +
+                        "    \"filter\": {\n" +
+                        "       \"bool\" : {\n" +
+                        "           \"should\" : [\n " +
+                        "               { \"term\": {\"riderUserName\": \"%s\"} },\n" +
+                        "               { \"term\": {\"isCompleted\": \"true\"} }\n" +
+                        "           ]\n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", riderUserName);
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+    }
+
+    /**
      * Driver confirm request.
      *
      * @param driverUserName the driver user name
@@ -153,5 +230,11 @@ public class RequestController {
         request.riderConfirmDriver(driverUserName);
 
         updateRequest(request);
+    }
+
+
+    public void calculateEstimatedFare(Request request) {
+        double fare = request.getDistance() * 0.50;
+		request.setEstimatedFare(fare);
     }
 }

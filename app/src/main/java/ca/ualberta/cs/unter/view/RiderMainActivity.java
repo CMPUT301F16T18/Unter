@@ -20,22 +20,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.views.MapView;
+
 import ca.ualberta.cs.unter.R;
-import ca.ualberta.cs.unter.controller.RequestController;
+import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 
@@ -45,21 +49,34 @@ public class RiderMainActivity extends AppCompatActivity
     private EditText searchEndLocationEditText;
 
 
+	private MapView map;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
 
-        searchStartLocationEditText = (EditText) findViewById(R.id.editText_searchStartLocation_RiderMainActivity);
+        searchStartLocationEditText = (EditText) findViewById(R.id.editDeparture);
         assert searchStartLocationEditText != null;
         searchStartLocationEditText.setOnClickListener(this);
 
-        searchEndLocationEditText = (EditText) findViewById(R.id.editText_searchEndLocation_RiderMainActivity);
+        searchEndLocationEditText = (EditText) findViewById(R.id.editDestination);
         assert searchEndLocationEditText != null;
         searchEndLocationEditText.setOnClickListener(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // map stuff
+
+		map = (MapView) findViewById(R.id.map);
+		map.setTileSource(TileSourceFactory.MAPNIK);
+		map.setBuiltInZoomControls(true);
+		map.setMultiTouchControls(true);
+
+		IMapController mapController = map.getController();
+		mapController.setZoom(15);
+		mapController.setCenter(UnterConstant.UALBERTA_COORDS);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;

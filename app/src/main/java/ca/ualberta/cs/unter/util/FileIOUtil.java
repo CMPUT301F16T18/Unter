@@ -27,9 +27,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.User;
+import ca.ualberta.cs.unter.model.request.Request;
 
 public class FileIOUtil {
     /**
@@ -69,4 +71,38 @@ public class FileIOUtil {
         }
         return user;
     }
+
+    public static void saveRequestInFile(ArrayList<Request> requestList, Context context) {
+		try {
+			Gson gson = new Gson();
+			String jsonStr = gson.toJson(requestList);
+			FileOutputStream fos = context.openFileOutput(UnterConstant.REQUEST_FILENAME, 0);
+			if (fos == null) {
+				Log.i("Debug", "null fos in save request");
+			}
+			try {
+				fos.write(jsonStr.getBytes());
+			} catch (NullPointerException e) {
+				Log.i("Debug", "getBytes() threw null pointer exception");
+			}
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	public static ArrayList<Request> loadRequestFromFile(Context context) {
+		ArrayList<Request> requestList = new ArrayList<>();
+		try {
+			Gson gson = new Gson();
+			FileInputStream fis = context.openFileInput(UnterConstant.REQUEST_FILENAME);
+			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+//			requestList = gson.fromJson(in, Request.class);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		return requestList;
+	}
 }

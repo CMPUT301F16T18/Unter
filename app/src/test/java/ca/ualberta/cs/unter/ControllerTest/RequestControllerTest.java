@@ -19,10 +19,15 @@
 //
 //import junit.framework.TestCase;
 //
+//import org.osmdroid.util.GeoPoint;
+//
 //import java.util.ArrayList;
 //
 //import ca.ualberta.cs.unter.controller.RequestController;
+//import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 //import ca.ualberta.cs.unter.model.Route;
+//import ca.ualberta.cs.unter.model.request.AcceptedRequest;
+//import ca.ualberta.cs.unter.model.request.PendingRequest;
 //import ca.ualberta.cs.unter.model.request.Request;
 //
 //
@@ -32,20 +37,24 @@
 // * @see RequestController
 // */
 //public class RequestListControllerTest extends TestCase {
-//    Route origin = {300.12, 200.12};
-//    double[] dest = {123.12, 500.12};
+//    Route route = new Route(new GeoPoint(222.0003, 33.33), new GeoPoint(33.33, 22,33));
 //    /**
 //     * The R 1.
 //     */
-//    Request r1 = new Request("John Doe", origin);
+//    Request r1 = new PendingRequest("John Doe", route);
 //    /**
 //     * The R 2.
 //     */
-//    Request r2 = new Request("John", "White", origin, dest, 13.22);
+//    Request r2 = new AcceptedRequest("John", "White", route, 13.22);
 //    /**
 //     * The Rlc.
 //     */
-//    RequestController rlc = new RequestController();
+//    RequestController rlc = new RequestController(new OnAsyncTaskCompleted() {
+//        @Override
+//        public void onTaskCompleted(Object o) {
+//
+//        }
+//    });
 //
 //    @Override
 //    public void setUp() throws Exception {

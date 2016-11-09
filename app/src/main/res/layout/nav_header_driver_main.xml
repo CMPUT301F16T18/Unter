@@ -19,7 +19,7 @@
         android:src="@android:drawable/sym_def_app_icon" />
 
     <TextView
-        android:id="@+id/username"
+        android:id="@+id/nav_drawer_driver_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -27,7 +27,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/nav_drawer_driver_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="android.studio@android.com" />
