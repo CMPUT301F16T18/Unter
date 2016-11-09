@@ -17,6 +17,9 @@
 package ca.ualberta.cs.unter.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.osmdroid.util.GeoPoint;
 
 import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
@@ -26,12 +29,12 @@ import ca.ualberta.cs.unter.model.request.Request;
  */
 public class RequestIntentUtil {
     public static String serializer(Request request) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
         return gson.toJson(request);
     }
 
     public static Request deserializer(String string) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
         return gson.fromJson(string, NormalRequest.class);
     }
 }

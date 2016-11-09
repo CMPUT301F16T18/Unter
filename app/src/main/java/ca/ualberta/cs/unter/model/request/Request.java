@@ -211,7 +211,7 @@ public abstract class Request {
         protected Request doInBackground(Request... requests) {
             verifySettings();
             // Constructs json string
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
             String query = String.format(gson.toJson(requests[0]));
             Log.i("Debug", query);
             Index index = new Index.Builder(query)
