@@ -97,15 +97,15 @@ public class RiderMainActivity extends AppCompatActivity
     public void onClick(View view) {
         if (view == searchStartLocationEditText) {
             Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
-            startActivity(intentRiderEnterLocation);
-            // TODO after returning from RiderEnterLocationActivity, set location result string to searchStartLocationEditText
+            startActivityForResult(intentRiderEnterLocation, 1);
         } else if (view == searchEndLocationEditText) {
             Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
             startActivity(intentRiderEnterLocation);
-            // TODO after returning from RiderEnterLocationActivity, set location result string to searchEndLocationEditText
+            startActivityForResult(intentRiderEnterLocation, 2);
         }
     }
 
+    // http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -138,6 +138,22 @@ public class RiderMainActivity extends AppCompatActivity
         assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                String strEditText = data.getStringExtra("edittextvalue");
+                searchStartLocationEditText.setText(strEditText);
+            }
+        } else if (requestCode == 2) {
+            if(resultCode == RESULT_OK){
+                String strEditText = data.getStringExtra("edittextvalue");
+                searchEndLocationEditText.setText(strEditText);
+            }
+        }
     }
 
     private void openRiderSendRequestDialog() {

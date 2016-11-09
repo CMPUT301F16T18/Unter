@@ -79,7 +79,7 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         } else if (view == completeRequestButton) {
             // TODO complete this request
             // use this button temporarily to test the dialog
-            openRiderChooseAcceptanceDialog();
+            // openRiderChooseAcceptanceDialog();
         }
     }
 

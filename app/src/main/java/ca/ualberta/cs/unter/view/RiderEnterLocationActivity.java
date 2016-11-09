@@ -1,5 +1,6 @@
 package ca.ualberta.cs.unter.view;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -52,6 +53,14 @@ public class RiderEnterLocationActivity extends AppCompatActivity implements Vie
         super.onStart();
         searchLocationAdapter = new ArrayAdapter<>(this, R.layout.list_item, searchLocationList);
         searchLocationListView.setAdapter(searchLocationAdapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("edittextvalue",searchLocationEditText.getText().toString());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
