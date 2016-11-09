@@ -4,19 +4,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_user_profile"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_person_black_24dp"
             android:title="User Profile" />
         <item
             android:id="@+id/nav_request"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/ic_work_black_24dp"
             android:title="Pending/Accepted Request" />
         <item
             android:id="@+id/nav_complated_request"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/ic_list_black_24dp"
             android:title="Completed Request" />
         <item
             android:id="@+id/nav_search"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_search_black_24dp"
             android:title="Search" />
     </group>
 
@@ -24,7 +24,7 @@
         <menu>
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
                 android:title="Log Out" />
         </menu>
     </item>
