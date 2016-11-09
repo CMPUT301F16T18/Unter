@@ -9,9 +9,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.model.request.Request;
 
-public class RiderRequestDetailActivity extends AppCompatActivity {
+public class RiderRequestDetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ListView acceptanceListView;
     private ArrayAdapter<String> acceptanceAdapter;
@@ -29,6 +31,9 @@ public class RiderRequestDetailActivity extends AppCompatActivity {
 
     private TextView startingLocationTextView;
     private TextView endingLocationTextView;
+
+    private Button cancelRequestButton;
+    private Button completeRequestButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,14 @@ public class RiderRequestDetailActivity extends AppCompatActivity {
                 openRiderChooseAcceptanceDialog();
             }
         });
+
+        cancelRequestButton = (Button) findViewById(R.id.button__cancelRequest_RiderRequestDetailActivity);
+        assert cancelRequestButton != null;
+        cancelRequestButton.setOnClickListener(this);
+
+        completeRequestButton = (Button) findViewById(R.id.button__completeRequest_RiderRequestDetailActivity);
+        assert completeRequestButton != null;
+        completeRequestButton.setOnClickListener(this);
     }
 
     @Override
@@ -59,61 +72,78 @@ public class RiderRequestDetailActivity extends AppCompatActivity {
         acceptanceListView.setAdapter(acceptanceAdapter);
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view == cancelRequestButton ) {
+            // TODO cancel this request
+        } else if (view == completeRequestButton) {
+            // TODO complete this request
+            // use this button temporarily to test the dialog
+            openRiderChooseAcceptanceDialog();
+        }
+    }
+
     private void openRiderChooseAcceptanceDialog() {
         // TODO get the driver of this acceptance
         String driverName = "yuzhu";    // replace it with actual driver's name
-        final String driverMobile = "tel:7801234567";   // replace it with actual driver's mobile
+        final String driverMobile = "tel:7803407914";   // replace it with actual driver's mobile
         String driverEmail = "yz6@ua.ca";   // replace it with actual driver's email
 
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderRequestDetailActivity.this);
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View promptView = layoutInflater.inflate(R.layout.rider_choose_acceptance_dialog, null);
+        Button mobileButton = (Button) promptView.findViewById(R.id.button__callMobile_RiderRequestDetailActivity);
+        Button emailButton = (Button) promptView.findViewById(R.id.button__sendEmail_RiderRequestDetailActivity);
+        Button acceptButton = (Button) promptView.findViewById(R.id.button__confirmAcceptance_RiderRequestDetailActivity);
+        Button cancelButton = (Button) promptView.findViewById(R.id.button__cancel_RiderRequestDetailActivity);
+
+        // click to make a phone call
+        // http://stackoverflow.com/questions/4816683/how-to-make-a-phone-call-programatically
+        mobileButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent intentCall = new Intent(Intent.ACTION_CALL);
+                intentCall.setData(Uri.parse(driverMobile));
+                if (ActivityCompat.checkSelfPermission(RiderRequestDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(intentCall);
+            }
+        });
+
+        // click to send an email
+        // http://stackoverflow.com/questions/3935009/how-to-open-gmail-compose-when-a-button-is-clicked-in-android-app
+        emailButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("text/plain");
+                startActivity(emailIntent);
+            }
+        });
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                // TODO confirm driver's acceptance, driver will be notified
+                // TODO modify acceptanceList so that only this driver's acceptance will appear on acceptanceListView
+            }
+        });
+
         builder.setTitle("Confirm Acceptance")
                 .setMessage("Driver's Information\n"
-                        + "Name: " + driverName + "\n")
-                // click to make a phone call
-                // http://stackoverflow.com/questions/4816683/how-to-make-a-phone-call-programatically
-                .setNeutralButton(R.string.dialog_call_mobile_button, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent intentCall = new Intent(Intent.ACTION_CALL);
-                        intentCall.setData(Uri.parse(driverMobile));
-                        if (ActivityCompat.checkSelfPermission(RiderRequestDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
-                            return;
-                        }
-                        startActivity(intentCall);
-                    }
-                })
-                // click to send an email
-                // http://stackoverflow.com/questions/3935009/how-to-open-gmail-compose-when-a-button-is-clicked-in-android-app
-                .setNeutralButton(R.string.dialog_send_email_button, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                        emailIntent.setType("text/plain");
-                        startActivity(emailIntent);
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                })
-                .setNeutralButton(R.string.dialog_confirm_acceptance_button, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // TODO confirm driver's acceptance, driver will be notified
-                        // TODO modify acceptanceList so that only this driver's acceptance will appear on acceptanceListView
-                    }
-                });
+                        + "Name: " + driverName)
+                .setView(promptView);
+
         // Create & Show the AlertDialog
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
+
+        // http://stackoverflow.com/questions/4053395/android-dialog-cancel-button
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
         dialog.show();
     }
+
 
 }

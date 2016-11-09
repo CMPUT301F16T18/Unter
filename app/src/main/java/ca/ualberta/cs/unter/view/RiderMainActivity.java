@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -142,11 +143,14 @@ public class RiderMainActivity extends AppCompatActivity
     private void openRiderSendRequestDialog() {
         // TODO get estimated fare price and description of the request
         String estimatedFare = Integer.toString(100);   // replace 100 with estimated price
-        String description = "hello";   // replace hello with actual request description
 
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View promptView = inflater.inflate(R.layout.rider_send_request_dialog, null);
+
         builder.setTitle("Send Request")
-                .setMessage("Estimated Fare: " + estimatedFare + "\n" + "Description" + description)
+                .setMessage("Estimated Fare: " + estimatedFare + "\n" + "Description")
+                .setView(promptView)
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
