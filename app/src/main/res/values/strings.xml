@@ -4,9 +4,9 @@
     <string name="app_name">Unter</string>
 
     <!--LoginActivity and SignupActivity-->
-    <string name="username_input">Enter User Name</string>
-    <string name="email_input">Enter Email Address</string>
-    <string name="mobile_input">Enter Mobile Phone Number</string>
+    <string name="username_input">Username</string>
+    <string name="email_input">Email</string>
+    <string name="mobile_input">Phone</string>
     <string name="select_role_text">Select A Role</string>
     <string name="rider_radio">Rider</string>
     <string name="driver_radio">Driver</string>
@@ -57,6 +57,7 @@
     <!--RiderBrowseRequestActivity-->
     <string name="completed_request">Completed</string>
     <string name="inProgress_request">In Progress</string>
+    <string name="title_activity_google_maps">Map</string>
 
 
 </resources>
