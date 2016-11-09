@@ -17,6 +17,10 @@
 
 package ca.ualberta.cs.unter.controller;
 
+import android.util.Log;
+
+import org.osmdroid.util.GeoPoint;
+
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -89,6 +93,26 @@ public class RequestController {
             e.printStackTrace();
         }
         return requests;
+    }
+
+    /**
+     * Get a list of request that match the geo-location
+     * @param location the coordinate of the location
+     */
+    public void searchRequestByGeoLocation(GeoPoint location) {
+        Log.i("Debug", location.toString());
+        String query = String.format(
+                        "{\n" +
+                        "    \"filter\": {\n" +
+                        "       \"geo_distance\" : {\n" +
+                        "           \"distance\" : \"5km\" ,\n" +
+                        "           \"route.origin\": [%.6f, %.6f]\n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", location.getLongitude(), location.getLatitude());
+
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
     }
 
     /**
