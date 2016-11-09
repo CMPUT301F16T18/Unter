@@ -120,7 +120,7 @@ public class RequestController {
      * @param keyword The keyword
      * @return An arraylist of matching request.
      */
-    public ArrayList<Request> searchRequestByKeyword(String keyword) {
+    public void searchRequestByKeyword(String keyword) {
         String query = String.format(
                         "{\n" +
                         "    \"query\": {\n" +
@@ -130,21 +130,8 @@ public class RequestController {
                         "    }\n" +
                         "}", keyword);
 
-        ArrayList<Request> requestList = new ArrayList<>();
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
-        try {
-            ArrayList<NormalRequest> getRequest = task.get();
-            for (NormalRequest r : getRequest) {
-                requestList.add(r);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return requestList;
     }
 
     /**
@@ -159,7 +146,7 @@ public class RequestController {
                         "           \"driverUserName\" : \"%s\" \n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName);
+                        "}", driverUserName.toLowerCase());
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -179,7 +166,7 @@ public class RequestController {
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName);
+                        "}", driverUserName.toLowerCase());
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -199,7 +186,7 @@ public class RequestController {
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName);
+                        "}", driverUserName).toLowerCase();
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -219,7 +206,7 @@ public class RequestController {
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", riderUserName);
+                        "}", riderUserName.toLowerCase());
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
