@@ -44,7 +44,6 @@
         <activity android:name=".view.BrowseRequestRouteActivity" />
         <activity android:name=".view.RiderBrowseRequestActivity" />
         <activity android:name=".view.DriverCompletedRequestActivity" />
-        <activity android:name=".view.RiderEnterLocationActivity" />
         <activity android:name=".view.RiderRequestDetailActivity" />
 
     </application>
