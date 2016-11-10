@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -20,7 +19,7 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
     <ListView
-        android:id="@+id/listView_inProgressRequest_RiderBrowseRequestActivity"
+        android:id="@+id/listview_inprogress_riderbrowserequestactivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true">
@@ -35,7 +34,7 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
     <ListView
-        android:id="@+id/listView_completedRequest_RiderBrowseRequestActivity"
+        android:id="@+id/listview_completed_riderwrowseqequestactivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true">
