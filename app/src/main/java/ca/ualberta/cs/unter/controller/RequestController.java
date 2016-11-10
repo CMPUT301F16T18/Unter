@@ -141,12 +141,17 @@ public class RequestController {
     public void getDriverAcceptedRequest(String driverUserName) {
         String query = String.format(
                         "{\n" +
-                        "    \"query\": {\n" +
-                        "       \"match\" : {\n" +
-                        "           \"driverUserName\" : \"%s\" \n" +
+                        "    \"filter\": {\n" +
+                        "       \"bool\" : {\n" +
+                        "           \"must_not\" : {" +
+                        "               \"term\": {\"isCompleted\": true}\n" +
+                        "           },\n" +
+                        "           \"should\" : [\n " +
+                        "               { \"term\": {\"driverUserName\": \"%s\"} }\n" +
+                        "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName.toLowerCase());
+                        "}", driverUserName);
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -161,12 +166,15 @@ public class RequestController {
                         "{\n" +
                         "    \"filter\": {\n" +
                         "       \"bool\" : {\n" +
+                        "           \"must_not\" : {" +
+                        "               \"term\": {\"isCompleted\": true}\n" +
+                        "           },\n" +
                         "           \"should\" : [\n " +
                         "               { \"term\": {\"driverList\": \"%s\"} }\n" +
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName.toLowerCase());
+                        "}", driverUserName);
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -180,13 +188,15 @@ public class RequestController {
                         "{\n" +
                         "    \"filter\": {\n" +
                         "       \"bool\" : {\n" +
+                        "           \"must\" : {" +
+                        "               \"term\": {\"isCompleted\": true}\n" +
+                        "           },\n" +
                         "           \"should\" : [\n " +
-                        "               { \"term\": {\"driverUserName\": \"%s\"} },\n" +
-                        "               { \"term\": {\"isCompleted\": \"true\"} }\n" +
+                        "               { \"term\": {\"driverUserName\": \"%s\"} }\n" +
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName).toLowerCase();
+                        "}", driverUserName);
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -197,16 +207,40 @@ public class RequestController {
      */
     public void getRiderCompletedRequest(String riderUserName) {
         String query = String.format(
-                "{\n" +
+                        "{\n" +
                         "    \"filter\": {\n" +
                         "       \"bool\" : {\n" +
+                        "           \"must\" : {" +
+                        "               \"term\": {\"isCompleted\": true}\n" +
+                        "           },\n" +
                         "           \"should\" : [\n " +
-                        "               { \"term\": {\"riderUserName\": \"%s\"} },\n" +
-                        "               { \"term\": {\"isCompleted\": \"true\"} }\n" +
+                        "               { \"term\": {\"riderUserName\": \"%s\"} }\n" +
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", riderUserName.toLowerCase());
+                        "}", riderUserName);
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+    }
+
+    /**
+     * Get a list of inprogress request of rider
+     * @param riderUserName the rider's username
+     */
+    public void getRiderInProgressRequest(String riderUserName) {
+        String query = String.format(
+                        "{\n" +
+                        "    \"filter\": {\n" +
+                        "       \"bool\" : {\n" +
+                        "           \"must_not\" : {" +
+                        "               \"term\": {\"isCompleted\": true}\n" +
+                        "           },\n" +
+                        "           \"should\" : [\n " +
+                        "               { \"term\": {\"riderUserName\": \"%s\"} }\n" +
+                        "           ]\n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", riderUserName);
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }

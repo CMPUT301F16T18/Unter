@@ -426,7 +426,10 @@ public abstract class Request {
      * @return the completed
      */
     public Boolean getCompleted() {
-        return isCompleted;
+        if (isCompleted != null) {
+            return isCompleted;
+        }
+        return false;
     }
 
     /**
