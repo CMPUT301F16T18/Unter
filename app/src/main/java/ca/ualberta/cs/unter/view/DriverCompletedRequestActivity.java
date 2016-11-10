@@ -89,7 +89,7 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverCompletedRequestActivity.this);
         builder.setTitle("Request Information")
-                .setMessage("Actual Fare: " + actualFare + "\n" + "Description" + description)
+                .setMessage("Actual Fare: " + actualFare + "\n" + "Description:" + description)
                 .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

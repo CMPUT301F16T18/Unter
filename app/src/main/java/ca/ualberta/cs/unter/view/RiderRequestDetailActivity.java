@@ -1,6 +1,7 @@
 package ca.ualberta.cs.unter.view;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -15,41 +16,76 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.controller.RequestController;
+import ca.ualberta.cs.unter.controller.UserController;
+import ca.ualberta.cs.unter.exception.RequestException;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.User;
+import ca.ualberta.cs.unter.model.request.Request;
+import ca.ualberta.cs.unter.util.OSMapUtil;
+import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import cz.msebera.android.httpclient.Header;
 
 public class RiderRequestDetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ListView acceptanceListView;
-    private ArrayAdapter<String> acceptanceAdapter;
-    private ArrayList<String> acceptanceList = new ArrayList<>();
+    private ArrayAdapter<String> acceptedDriverAdapter;
+    private ArrayList<String> acceptedDriverList = new ArrayList<>();
 
-    private TextView startingLocationTextView;
-    private TextView endingLocationTextView;
+    private TextView originalLocationTextView;
+    private TextView destinationLocationTextView;
 
     private Button cancelRequestButton;
     private Button completeRequestButton;
+
+    private Request request;
+    private ArrayList<User> driverList;
+
+    protected Activity activity = this;
+
+    private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+
+        }
+    });
+
+    private UserController userController = new UserController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_request_detail);
 
-        startingLocationTextView = (TextView) findViewById(R.id.textView_startingLocation_RiderRequestDetailActivity);
-        endingLocationTextView = (TextView) findViewById(R.id.textView_endingLocation_RiderRequestDetailActivity);
+        request = RequestIntentUtil.deserializer(getIntent().getStringExtra("request"));
 
-        // TODO set text with actual starting and ending location
-        startingLocationTextView.setText("UOFA HUB");
-        endingLocationTextView.setText("UOFA CAB");
+        originalLocationTextView = (TextView) findViewById(R.id.textView_startingLocation_RiderRequestDetailActivity);
+        destinationLocationTextView = (TextView) findViewById(R.id.textView_endingLocation_RiderRequestDetailActivity);
+
+        getAddress();
 
         acceptanceListView = (ListView) findViewById(R.id.listView_acceptance_RiderRequestDetailActivity);
         acceptanceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // intent RiderChooseAcceptanceDialog
-                openRiderChooseAcceptanceDialog();
+                openRiderChooseAcceptanceDialog(acceptedDriverList.get(position));
             }
         });
 
@@ -65,26 +101,76 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
     @Override
     public void onStart() {
         super.onStart();
-        acceptanceAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, acceptanceList);
-        acceptanceListView.setAdapter(acceptanceAdapter);
+        acceptedDriverAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, acceptedDriverList);
+        acceptanceListView.setAdapter(acceptedDriverAdapter);
+        updateDriverList();
     }
 
     @Override
     public void onClick(View view) {
         if (view == cancelRequestButton ) {
             // TODO cancel this request
+            requestController.deleteRequest(request);
         } else if (view == completeRequestButton) {
             // TODO complete this request
-            // use this button temporarily to test the dialog
-            // openRiderChooseAcceptanceDialog();
+            requestController.riderConfirmRequestComplete(request);
         }
     }
 
-    private void openRiderChooseAcceptanceDialog() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateDriverList();
+    }
+
+    /**
+     * Reverse geocoding the lat and lon
+     */
+    private void getAddress() {
+        OSMapUtil.ReverseGeoCoding(request.getOriginCoordinate(), new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // If the response is JSONObject instead of expected JSONArray
+                try {
+                    JSONArray jsonArr = response.getJSONArray("results");
+                    String address = jsonArr.getJSONObject(0).getString("formatted_address");
+                    originalLocationTextView.setText(address);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
+            }
+        });
+
+        OSMapUtil.ReverseGeoCoding(request.getDestinationCoordinate(), new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // If the response is JSONObject instead of expected JSONArray
+                try {
+                    JSONArray jsonArr = response.getJSONArray("results");
+                    String address = jsonArr.getJSONObject(0).getString("formatted_address");
+                    destinationLocationTextView.setText(address);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
+            }
+        });
+    }
+
+    private void openRiderChooseAcceptanceDialog(final String driverUserName) {
+        User driver = userController.getUser(driverUserName);
+
         // TODO get the driver of this acceptance
-        String driverName = "yuzhu";    // replace it with actual driver's name
-        final String driverMobile = "tel:7803407914";   // replace it with actual driver's mobile
-        String driverEmail = "yz6@ua.ca";   // replace it with actual driver's email
+        String driverName = driver.getUserName();    // replace it with actual driver's name
+        final String driverMobile = driver.getMobileNumber();   // replace it with actual driver's mobile
+        String driverEmail = driver.getEmailAddress();   // replace it with actual driver's email
 
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderRequestDetailActivity.this);
 
@@ -121,7 +207,12 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         acceptButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 // TODO confirm driver's acceptance, driver will be notified
-                // TODO modify acceptanceList so that only this driver's acceptance will appear on acceptanceListView
+                // TODO modify acceptedDriverList so that only this driver's acceptance will appear on acceptanceListView
+                try {
+                    requestController.riderConfirmDriver(request, driverUserName);
+                } catch (RequestException e) {
+                    Toast.makeText(activity, "The request has not been confirmed by any driver", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -142,5 +233,12 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         dialog.show();
     }
 
+    protected void updateDriverList() {
+        if (request.getDriverList() == null) return;
+        acceptedDriverList = request.getDriverList();
+        acceptedDriverAdapter.clear();
+        acceptedDriverAdapter.addAll(acceptedDriverList);
+        acceptedDriverAdapter.notifyDataSetChanged();
+    }
 
 }

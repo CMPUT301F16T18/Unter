@@ -124,7 +124,7 @@ public abstract class Request {
      * @exception RequestException raise exception when request has not been confirmed
      */
     public void riderConfirmDriver(String driverUserName) throws RequestException {
-        if (this.driverUserName.isEmpty() || driverList.isEmpty()) {
+        if (driverList == null || driverList.isEmpty()) {
             // If the request has not been accepted yet
             throw new RequestException("This request has not been accepted by any driver yet");
         } else {
@@ -132,7 +132,6 @@ public abstract class Request {
             this.driverUserName = driverUserName;
             driverList.clear();
         }
-
     }
 
     /**
@@ -426,7 +425,10 @@ public abstract class Request {
      * @return the completed
      */
     public Boolean getCompleted() {
-        return isCompleted;
+        if (isCompleted != null) {
+            return isCompleted;
+        }
+        return false;
     }
 
     /**
@@ -463,6 +465,9 @@ public abstract class Request {
 	}
 
     public ArrayList<String> getDriverList() {
+        if (driverList.isEmpty()) {
+            return null;
+        }
         return driverList;
     }
 

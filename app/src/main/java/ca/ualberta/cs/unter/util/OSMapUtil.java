@@ -21,6 +21,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -79,9 +81,15 @@ public class OSMapUtil {
     public static class GeocoderTask extends AsyncTask<String, Void, GeoPoint> {
 
         private Context context;
+        private OnAsyncTaskCompleted listner;
 
         public GeocoderTask(Context context) {
             this.context = context;
+        }
+
+        public GeocoderTask(Context context, OnAsyncTaskCompleted listner) {
+            this.context = context;
+            this.listner = listner;
         }
 
         /**
@@ -113,5 +121,21 @@ public class OSMapUtil {
 
             return p1;
         }
+
+        @Override
+        protected void onPostExecute(GeoPoint geoPoint) {
+            listner.onTaskCompleted(geoPoint);
+        }
+    }
+
+    public static void GeoCoding(String address, AsyncHttpResponseHandler responseHandler) {
+        HttpClientUtil.get("address=" + address, null, responseHandler);
+    }
+
+    public static void ReverseGeoCoding(GeoPoint coordinate, AsyncHttpResponseHandler responseHandler) {
+        String url = "latlng=" +
+                Double.toString(coordinate.getLatitude()) + "," +
+                Double.toString(coordinate.getLongitude());
+        HttpClientUtil.get(url, null, responseHandler);
     }
 }

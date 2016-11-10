@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -67,14 +66,14 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         public void onTaskCompleted(Object o) {
             // Cast
             searchRequestList = (ArrayList<Request>) o;
-            for (Request r : searchRequestList) {
-                // If the request has been confirmed by rider
-                // or the request has been confirmed by the current driver
-                Log.i("Debug", r.getRequestDescription());
-                if (r.getDriverUserName() != null || r.getDriverList().contains(driver.getUserName())) {
-                    searchRequestList.remove(r);
-                }
-            }
+//            for (Request r : searchRequestList) {
+//                // If the request has been confirmed by rider
+//                // or the request has been confirmed by the current driver
+//                Log.i("Debug", r.getRequestDescription());
+//                if (r.getDriverUserName() != null || r.getDriverList().contains(driver.getUserName())) {
+//                    searchRequestList.remove(r);
+//                }
+//            }
             // Notify the adapter things is changed
             searchRequestAdapter.clear();
             searchRequestAdapter.addAll(searchRequestList);
@@ -157,7 +156,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                 }
             } else if (searchOption == 1) {
                 // If search by keyword
-                requestController.searchRequestByKeyword(searchContextEditText.getText().toString());
+                requestController.searchRequestByKeyword(searchContextEditText.getText().toString(), driver.getUserName());
             }
         }
     }

@@ -39,8 +39,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:completionThreshold="1" />
-            <Button
+            <android.support.v7.widget.AppCompatButton
                     android:id="@+id/buttonSearchDep"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -60,8 +61,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:completionThreshold="1" />
-            <Button
+            <android.support.v7.widget.AppCompatButton
                     android:id="@+id/buttonSearchDest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

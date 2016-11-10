@@ -178,7 +178,6 @@ public class User {
                     .addIndex("unter")
                     .addType("user")
                     .build();
-            Log.i("Error", query[0]);
             try {
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
