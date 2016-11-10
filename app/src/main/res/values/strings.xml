@@ -18,10 +18,9 @@
     <string name="title_activity_driver_main">DriverMainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
 
 
-    <!--DriverMainActivity-->
+    <!--DriverSearchRequestActivity-->
     <string name="search_request">Search Request</string>
     <string name="search_result">Search Result</string>
     <string-array name="search_option">
@@ -42,8 +41,6 @@
     <string name="accepted_request">Accepted Request</string>
     <string name="pending_request">Pending Request</string>
     <string name="title_activity_rider_main">Unter</string>
-
-    <!--DriverBrowseRequestActivity-->
     <string name="dialog_view_map_button">View Map</string>
     <string name="dialog_cancel_button">Cancel</string>
 
@@ -54,10 +51,31 @@
     <string name="cancel_button">Cancel</string>
     <string name="accept_button">Accept</string>
 
+    <!--RiderMainActivity-->
+    <string name="dialog_view_request_button">View Request</string>
+    <string name="dialog_send_request_button">Send Request</string>
+    <string name="search_start_location">Search Starting Location</string>
+    <string name="search_end_location">Search Destination Location</string>
+
+    <!--RiderEnterLocationActivity-->
+    <string name="search_location">Search Location</string>
+
     <!--RiderBrowseRequestActivity-->
     <string name="completed_request">Completed</string>
     <string name="inProgress_request">In Progress</string>
     <string name="title_activity_google_maps">Map</string>
+
+    <!--RiderRequestDetailActivity-->
+    <string name="acceptance">Acceptance</string>
+    <string name="starting_location">Starting Location</string>
+    <string name="ending_location">Ending Location</string>
+    <string name="cancelRequest_button">Cancel Request</string>
+    <string name="completeRequest_button">Complete Request</string>
+    <string name="dialog_call_mobile_button">Call Mobile</string>
+    <string name="dialog_send_email_button">Send Email</string>
+    <string name="dialog_confirm_acceptance_button">Confirm Acceptance</string>
+    <string name="dialog_description_editText">Enter Description</string>
+
 
 
 </resources>

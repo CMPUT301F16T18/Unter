@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="ca.ualberta.cs.unter.view.RiderRequestDetailActivity">
+
+    <!--starting_location-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/starting_location"
+        android:paddingTop="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textView_startingLocation_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:paddingTop="20dp"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+
+    <!--ending_location-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ending_location"
+        android:paddingTop="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textView_endingLocation_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:paddingTop="20dp"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+
+    <!--acceptance_list-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/acceptance"
+        android:paddingTop="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+    <ListView
+        android:id="@+id/listView_acceptance_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true">
+    </ListView>
+
+    <!--cancel request button-->
+    <Button
+        android:id="@+id/button__cancelRequest_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancelRequest_button"
+        android:paddingTop="20dp"
+        android:paddingBottom="15dp"/>
+
+    <!--complete Request button-->
+    <Button
+        android:id="@+id/button__completeRequest_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/completeRequest_button"
+        android:paddingTop="20dp"
+        android:paddingBottom="15dp"/>
+
+</LinearLayout>

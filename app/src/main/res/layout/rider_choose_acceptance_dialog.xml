@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <!--call mobile button-->
+    <Button
+        android:id="@+id/button__callMobile_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_call_mobile_button"
+        android:paddingTop="20dp"
+        android:paddingBottom="15dp"/>
+
+    <!--send email button-->
+    <Button
+        android:id="@+id/button__sendEmail_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_send_email_button"
+        android:paddingTop="20dp"
+        android:paddingBottom="15dp"/>
+
+    <!--confirm acceptance button-->
+    <Button
+        android:id="@+id/button__confirmAcceptance_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_confirm_acceptance_button"
+        android:paddingTop="20dp"
+        android:paddingBottom="15dp"/>
+
+    <!--cancel button-->
+    <Button
+        android:id="@+id/button__cancel_RiderRequestDetailActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_button"
+        android:paddingTop="20dp"
+        android:paddingBottom="15dp"/>
+
+</LinearLayout>
