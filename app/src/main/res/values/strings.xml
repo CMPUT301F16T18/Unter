@@ -75,6 +75,7 @@
     <string name="dialog_send_email_button">Send Email</string>
     <string name="dialog_confirm_acceptance_button">Confirm Acceptance</string>
     <string name="dialog_description_editText">Enter Description</string>
+    <string name="dialog_fare_edittext">Estimated Fare</string>
 
 
 
