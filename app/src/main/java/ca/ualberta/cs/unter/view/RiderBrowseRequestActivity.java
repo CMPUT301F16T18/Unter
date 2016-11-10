@@ -17,8 +17,9 @@
 package ca.ualberta.cs.unter.view;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,7 +28,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.controller.RequestController;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
+import ca.ualberta.cs.unter.util.FileIOUtil;
+import ca.ualberta.cs.unter.util.RequestIntentUtil;
 
 public class RiderBrowseRequestActivity extends AppCompatActivity {
 
@@ -40,31 +46,53 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
     private ArrayList<Request> inProgressRequestList = new ArrayList<>();
     private ArrayList<Request> completedRequestList = new ArrayList<>();
 
+    private RequestController inProgressRequestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            inProgressRequestList = (ArrayList<Request>) o;
+            inProgressRequestAdapter.clear();
+            inProgressRequestAdapter.addAll(inProgressRequestList);
+            inProgressRequestAdapter.notifyDataSetChanged();
+        }
+    });
+
+    private RequestController completedRequestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            completedRequestList = (ArrayList<Request>) o;
+            completedRequestAdapter.clear();
+            completedRequestAdapter.addAll(completedRequestList);
+            completedRequestAdapter.notifyDataSetChanged();
+        }
+    });
+
+    private User rider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_browse_request);
 
-        inProgressRequestListView = (ListView) findViewById(R.id.listView_inProgressRequest_RiderBrowseRequestActivity);
+        inProgressRequestListView = (ListView) findViewById(R.id.listview_inprogress_riderbrowserequestactivity);
         inProgressRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // intent RiderRequestDetailActivity
-                Intent intentRiderRequestDetail = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
-                startActivity(intentRiderRequestDetail);
+                Intent intent = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
+                intent.putExtra("request", RequestIntentUtil.serializer(inProgressRequestList.get(position)));
+                startActivity(intent);
             }
         });
 
-        completedRequestListView = (ListView) findViewById(R.id.listView_completedRequest_RiderBrowseRequestActivity);
+        completedRequestListView = (ListView) findViewById(R.id.listview_inprogress_riderbrowserequestactivity);
         completedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // intent RiderRequestDetailActivity
-                Intent intentRiderRequestDetail = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
-                startActivity(intentRiderRequestDetail);
+                // TODO customize dialog to show info
             }
         });
 
+        rider = FileIOUtil.loadUserFromFile(getApplicationContext());
     }
 
     @Override
@@ -74,5 +102,15 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         completedRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, completedRequestList);
         inProgressRequestListView.setAdapter(inProgressRequestAdapter);
         completedRequestListView.setAdapter(completedRequestAdapter);
+        updateRequest();
+    }
+
+    /**
+     * Update view
+     */
+    protected void updateRequest() {
+        Log.i("Debug", rider.getUserName());
+        inProgressRequestController.getRiderInProgressRequest(rider.getUserName());
+        completedRequestController.getRiderCompletedRequest(rider.getUserName());
     }
 }

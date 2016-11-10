@@ -41,8 +41,6 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import java.util.concurrent.ExecutionException;
-
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.controller.RequestController;
@@ -96,30 +94,31 @@ public class RiderMainActivity extends AppCompatActivity
                 OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(), new OnAsyncTaskCompleted() {
                     @Override
                     public void onTaskCompleted(Object o) {
+                        // Call back method after the coordinate is obtained
+                        // TODO drop a marker on the map once the location is obtain
                         departureLocation = (GeoPoint) o;
                     }
                 });
 
                 task.execute(searchDepartureLocationEditText.getText().toString());
-                try {
-                    departureLocation = task.get();
-                    Log.i("Debug", departureLocation.toString());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
             }
         });
 
         // The search button for destination location
-        // TODO geocoder is broken on the Galaxy Note 3
-        // Implement with the google map api instead, someday
         searchDestinationButton = (Button) findViewById(R.id.buttonSearchDest);
         searchDestinationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext());
+                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(), new OnAsyncTaskCompleted() {
+                    @Override
+                    public void onTaskCompleted(Object o) {
+                        // Call back method after the coordinate is obtained
+                        // TODO drop a marker on the map once the location is obtained
+                        // also the route
+                        destinationLocation = (GeoPoint) o;
+
+                    }
+                });
                 task.execute(searchDestinationLocationEditText.getText().toString());
             }
         });
@@ -235,12 +234,14 @@ public class RiderMainActivity extends AppCompatActivity
 
     private void openRiderSendRequestDialog() {
 
-        final Request request = new PendingRequest(rider.getUserName(), new Route(departureLocation, destinationLocation));
-        requestController.calculateEstimatedFare(request);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
         LayoutInflater inflater = this.getLayoutInflater();
         View promptView = inflater.inflate(R.layout.rider_send_request_dialog, null);
+
+        // TODO
+        // Set the default fare
+        final Request request = new PendingRequest(rider.getUserName(), new Route(departureLocation, destinationLocation));
+        requestController.calculateEstimatedFare(request);
 
         final EditText fareEditText = (EditText) promptView.findViewById(R.id.edittext_fare_ridermainactivity);
         final EditText descriptionEditText = (EditText) promptView.findViewById(R.id.edittext_description_ridermainactivity);
