@@ -27,42 +27,102 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+
+import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
+import ca.ualberta.cs.unter.controller.RequestController;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.Route;
 import ca.ualberta.cs.unter.model.User;
+import ca.ualberta.cs.unter.model.request.PendingRequest;
+import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
+import ca.ualberta.cs.unter.util.OSMapUtil;
 
 public class RiderMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-    private EditText searchStartLocationEditText;
-    private EditText searchEndLocationEditText;
 
-
+    private EditText searchDepartureLocationEditText;
+    private EditText searchDestinationLocationEditText;
+    private Button searchDepartureButton;
+    private Button searchDestinationButton;
+    protected GeoPoint departureLocation;
+    protected GeoPoint destinationLocation;
 	private MapView map;
+    private User rider;
+
+    private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
 
-        searchStartLocationEditText = (EditText) findViewById(R.id.editDeparture);
-        assert searchStartLocationEditText != null;
-        searchStartLocationEditText.setOnClickListener(this);
+        searchDepartureLocationEditText = (EditText) findViewById(R.id.editDeparture);
+        assert searchDepartureLocationEditText != null;
+        //searchDepartureLocationEditText.setOnClickListener(this);
 
-        searchEndLocationEditText = (EditText) findViewById(R.id.editDestination);
-        assert searchEndLocationEditText != null;
-        searchEndLocationEditText.setOnClickListener(this);
+        searchDestinationLocationEditText = (EditText) findViewById(R.id.editDestination);
+        assert searchDestinationLocationEditText != null;
+        //searchDestinationLocationEditText.setOnClickListener(this);
+
+        // The search button for departure location
+        // TODO geocoder is broken on the Galaxy Note 3
+        // Implement with the google map api instead, someday
+        searchDepartureButton = (Button) findViewById(R.id.buttonSearchDep);
+        searchDepartureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(), new OnAsyncTaskCompleted() {
+                    @Override
+                    public void onTaskCompleted(Object o) {
+                        departureLocation = (GeoPoint) o;
+                    }
+                });
+
+                task.execute(searchDepartureLocationEditText.getText().toString());
+                try {
+                    departureLocation = task.get();
+                    Log.i("Debug", departureLocation.toString());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // The search button for destination location
+        // TODO geocoder is broken on the Galaxy Note 3
+        // Implement with the google map api instead, someday
+        searchDestinationButton = (Button) findViewById(R.id.buttonSearchDest);
+        searchDestinationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext());
+                task.execute(searchDestinationLocationEditText.getText().toString());
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,7 +135,7 @@ public class RiderMainActivity extends AppCompatActivity
 		map.setMultiTouchControls(true);
 
 		IMapController mapController = map.getController();
-		mapController.setZoom(15);
+		mapController.setZoom(20);
 		mapController.setCenter(UnterConstant.UALBERTA_COORDS);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -104,7 +164,7 @@ public class RiderMainActivity extends AppCompatActivity
         TextView email = (TextView) navHeader.findViewById(R.id.nav_drawer_rider_email);
 
         // Get user profile
-        User rider = FileIOUtil.loadUserFromFile(getApplicationContext());
+        rider = FileIOUtil.loadUserFromFile(getApplicationContext());
         // Set text
         username.setText(rider.getUserName());
         email.setText(rider.getEmailAddress());
@@ -112,10 +172,10 @@ public class RiderMainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-        if (view == searchStartLocationEditText) {
+        if (view == searchDepartureLocationEditText) {
             Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
             startActivityForResult(intentRiderEnterLocation, 1);
-        } else if (view == searchEndLocationEditText) {
+        } else if (view == searchDestinationLocationEditText) {
             Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
             startActivity(intentRiderEnterLocation);
             startActivityForResult(intentRiderEnterLocation, 2);
@@ -163,41 +223,57 @@ public class RiderMainActivity extends AppCompatActivity
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
                 String strEditText = data.getStringExtra("edittextvalue");
-                searchStartLocationEditText.setText(strEditText);
+                searchDepartureLocationEditText.setText(strEditText);
             }
         } else if (requestCode == 2) {
             if(resultCode == RESULT_OK){
                 String strEditText = data.getStringExtra("edittextvalue");
-                searchEndLocationEditText.setText(strEditText);
+                searchDestinationLocationEditText.setText(strEditText);
             }
         }
     }
 
     private void openRiderSendRequestDialog() {
-        // TODO get estimated fare price and description of the request
-        String estimatedFare = Integer.toString(100);   // replace 100 with estimated price
+
+        final Request request = new PendingRequest(rider.getUserName(), new Route(departureLocation, destinationLocation));
+        requestController.calculateEstimatedFare(request);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
         LayoutInflater inflater = this.getLayoutInflater();
         View promptView = inflater.inflate(R.layout.rider_send_request_dialog, null);
 
+        final EditText fareEditText = (EditText) promptView.findViewById(R.id.edittext_fare_ridermainactivity);
+        final EditText descriptionEditText = (EditText) promptView.findViewById(R.id.edittext_description_ridermainactivity);
+        fareEditText.setText(request.getEstimatedFare().toString());
+
         builder.setTitle("Send Request")
-                .setMessage("Estimated Fare: " + estimatedFare + "\n" + "Description")
                 .setView(promptView)
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 })
-                .setNeutralButton(R.string.dialog_send_request_button, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_send_request_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // TODO send request to drivers
-                        String searchStartLocation = searchStartLocationEditText.getText().toString().trim();
-                        String searchEndLocation = searchEndLocationEditText.getText().toString().trim();
+                        String searchStartLocation = searchDepartureLocationEditText.getText().toString().trim();
+                        String searchEndLocation = searchDestinationLocationEditText.getText().toString().trim();
+                        String description = descriptionEditText.getText().toString();
+                        double fare = Double.parseDouble(fareEditText.getText().toString());
                         if (searchStartLocation.isEmpty() || searchEndLocation.isEmpty()) {
                             Toast.makeText(RiderMainActivity.this,
                                     "Starting/Ending Location is empty", Toast.LENGTH_SHORT).show();
+                        } else if (fare == 0) {
+                           fareEditText.setError("Fare cannot be empty");
+                        } else if (description.isEmpty()) {
+                            descriptionEditText.setError("Description cannot be empty");
+                        } else {
+                            Request req = new PendingRequest(rider.getUserName(),new Route(departureLocation, destinationLocation));
+                            Log.i("Debug", String.format("%.2f", fare));
+                            req.setEstimatedFare(fare);
+                            req.setRequestDescription(description);
+                            requestController.createRequest(req);
                         }
                     }
                 });

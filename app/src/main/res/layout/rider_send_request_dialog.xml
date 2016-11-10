@@ -6,12 +6,32 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+        <EditText
+                android:id="@+id/edittext_fare_ridermainactivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/dialog_fare_edittext"
+                android:digits="0123456789."
+                android:inputType="numberDecimal"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
     <EditText
-        android:id="@+id/editText_requestDescription_RiderRequestDetailActivity"
+        android:id="@+id/edittext_description_ridermainactivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:maxLines="3"
         android:hint="@string/dialog_description_editText"/>
+    </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

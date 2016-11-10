@@ -79,9 +79,15 @@ public class OSMapUtil {
     public static class GeocoderTask extends AsyncTask<String, Void, GeoPoint> {
 
         private Context context;
+        private OnAsyncTaskCompleted listner;
 
         public GeocoderTask(Context context) {
             this.context = context;
+        }
+
+        public GeocoderTask(Context context, OnAsyncTaskCompleted listner) {
+            this.context = context;
+            this.listner = listner;
         }
 
         /**
@@ -112,6 +118,11 @@ public class OSMapUtil {
             }
 
             return p1;
+        }
+
+        @Override
+        protected void onPostExecute(GeoPoint geoPoint) {
+            listner.onTaskCompleted(geoPoint);
         }
     }
 }
