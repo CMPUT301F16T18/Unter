@@ -109,16 +109,10 @@ public class RiderMainActivity extends AppCompatActivity
                     @Override
                     public void onTaskCompleted(Object o) {
                         // Call back method after the coordinate is obtained
-                        // TODO drop a marker on the map once the location is obtain
+                        // TODO drop a marker on the map once the location is obtain // done
                         departureLocation = (GeoPoint) o;
+
 						startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
-						if (departureLocation == null) {
-							Log.i("mDebug", "Geocoding failed");
-						}
-						Log.i("mDebug", departureLocation.toString());
-						if (startMarker == null) {
-							Log.i("mDebug", "Null marker value");
-						}
 						mapController.setCenter(departureLocation);
 
 					}
@@ -141,6 +135,7 @@ public class RiderMainActivity extends AppCompatActivity
                         // also the route
                         destinationLocation = (GeoPoint) o;
 						endMarker = createMarker(departureLocation, "Drop-Off");  // hard-coded string for now
+						mapController.setCenter(destinationLocation);
 					}
                 });
                 task.execute(searchDestinationLocationEditText.getText().toString());
@@ -328,6 +323,7 @@ public class RiderMainActivity extends AppCompatActivity
 		marker.setPosition(geoPoint);
 		marker.setTitle(title);
 		marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+		map.getOverlays().add(marker);
 		return marker;
 	}
 
