@@ -117,11 +117,13 @@ public class BrowseRequestRouteActivity extends Activity {
 		endMarker.setTitle("End Point");
 		map.getOverlays().add(endMarker);
 
-		ArrayList<OverlayItem> overlayItemArray;
-		overlayItemArray = new ArrayList<>();
+		// TODO - see if this code is ever used
+		// (I don't think it is)
+		ArrayList<OverlayItem> overlayItemArray;  //
+		overlayItemArray = new ArrayList<>();  //
 
-		overlayItemArray.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
-		overlayItemArray.add(new OverlayItem("Destination", "This is the destination point", destinationPoint));
+		overlayItemArray.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));  //
+		overlayItemArray.add(new OverlayItem("Destination", "This is the destination point", destinationPoint));  //
 
         // Get the route
         OSMapUtil.getRoad(startPoint, destinationPoint, updateMap);

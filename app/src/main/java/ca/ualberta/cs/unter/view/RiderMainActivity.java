@@ -148,7 +148,7 @@ public class RiderMainActivity extends AppCompatActivity
 						map.getOverlays().add(endMarker);
 						mapController.setCenter(destinationLocation);
 
-//						OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
+						OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
 					}
                 });
                 task.execute(searchDestinationLocationEditText.getText().toString());
