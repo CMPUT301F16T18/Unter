@@ -17,6 +17,10 @@
 
 package ca.ualberta.cs.unter.controller;
 
+import android.util.Log;
+
+import org.osmdroid.util.GeoPoint;
+
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -92,11 +96,31 @@ public class RequestController {
     }
 
     /**
+     * Get a list of request that match the geo-location
+     * @param location the coordinate of the location
+     */
+    public void searchRequestByGeoLocation(GeoPoint location) {
+        Log.i("Debug", location.toString());
+        String query = String.format(
+                        "{\n" +
+                        "    \"filter\": {\n" +
+                        "       \"geo_distance\" : {\n" +
+                        "           \"distance\" : \"5km\" ,\n" +
+                        "           \"route.origin\": [%.6f, %.6f]\n" +
+                        "       }\n" +
+                        "    }\n" +
+                        "}", location.getLongitude(), location.getLatitude());
+
+        Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
+        task.execute(query);
+    }
+
+    /**
      * Get a list of request that match the keyword
      * @param keyword The keyword
      * @return An arraylist of matching request.
      */
-    public ArrayList<Request> searchRequestByKeyword(String keyword) {
+    public void searchRequestByKeyword(String keyword) {
         String query = String.format(
                         "{\n" +
                         "    \"query\": {\n" +
@@ -106,21 +130,8 @@ public class RequestController {
                         "    }\n" +
                         "}", keyword);
 
-        ArrayList<Request> requestList = new ArrayList<>();
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
-        try {
-            ArrayList<NormalRequest> getRequest = task.get();
-            for (NormalRequest r : getRequest) {
-                requestList.add(r);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return requestList;
     }
 
     /**
@@ -135,7 +146,7 @@ public class RequestController {
                         "           \"driverUserName\" : \"%s\" \n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName);
+                        "}", driverUserName.toLowerCase());
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -155,7 +166,7 @@ public class RequestController {
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName);
+                        "}", driverUserName.toLowerCase());
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -175,7 +186,7 @@ public class RequestController {
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", driverUserName);
+                        "}", driverUserName).toLowerCase();
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }
@@ -195,7 +206,7 @@ public class RequestController {
                         "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", riderUserName);
+                        "}", riderUserName.toLowerCase());
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
     }

@@ -11,6 +11,11 @@
     tools:context="ca.ualberta.cs.unter.view.LoginActivity">
 
     <!--username-->
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
     <EditText
         android:id="@+id/editText_userName_LoginActivity"
         android:layout_width="match_parent"
@@ -19,6 +24,7 @@
         android:inputType="textNoSuggestions|textVisiblePassword"
         android:paddingTop="30dp"
         android:maxLines="1"/>
+    </android.support.design.widget.TextInputLayout>
 
     <!--select a role (rider/driver)-->
     <TextView
@@ -53,7 +59,7 @@
     </RadioGroup>
 
     <!--login button-->
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_login_LoginActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +68,7 @@
         android:paddingBottom="15dp"/>
 
     <!--sign up button-->
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_signup_LoginActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -9,17 +9,38 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ca.ualberta.cs.unter.view.SignupActivity">
+    
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="72dp"
+            android:paddingTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="40dp"
+            android:text="Unter"/>
 
     <!--username-->
+    <!-- Name Label -->
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
     <EditText
         android:id="@+id/editText_userName_SignupActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/username_input"
         android:inputType="textNoSuggestions|textVisiblePassword"
-        android:paddingTop="30dp"
         android:maxLines="1"/>
+    </android.support.design.widget.TextInputLayout>
 
+    <!-- Email Label -->
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
     <!--email-->
     <EditText
         android:id="@+id/editText_email_SignupActivity"
@@ -27,25 +48,32 @@
         android:layout_height="wrap_content"
         android:hint="@string/email_input"
         android:inputType="textEmailAddress"
-        android:paddingTop="30dp"
         android:maxLines="1"/>
+    </android.support.design.widget.TextInputLayout>
 
     <!--mobile-->
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
     <EditText
         android:id="@+id/editText_mobile_SignupActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/mobile_input"
         android:inputType="phone"
-        android:paddingTop="30dp"
         android:maxLines="1"/>
+    </android.support.design.widget.TextInputLayout>
 
     <!--sign up button-->
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_signup_SignupActivity"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/signup_button"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"/>
 

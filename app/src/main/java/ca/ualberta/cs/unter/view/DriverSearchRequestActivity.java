@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,6 +31,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.controller.RequestController;
@@ -37,6 +39,7 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
+import ca.ualberta.cs.unter.util.OSMapUtil;
 import ca.ualberta.cs.unter.util.RequestIntentUtil;
 
 /**
@@ -67,6 +70,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
             for (Request r : searchRequestList) {
                 // If the request has been confirmed by rider
                 // or the request has been confirmed by the current driver
+                Log.i("Debug", r.getRequestDescription());
                 if (r.getDriverUserName() != null || r.getDriverList().contains(driver.getUserName())) {
                     searchRequestList.remove(r);
                 }
@@ -132,7 +136,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     public void onStart() {
         super.onStart();
         driver = FileIOUtil.loadUserFromFile(getApplicationContext());
-        searchRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, searchRequestList);
+        searchRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, searchRequestList);
         searchRequestListView.setAdapter(searchRequestAdapter);
     }
 
@@ -140,7 +144,17 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     public void onClick(View view) {
         if (view == searchButton) {
             if (searchOption == 0) {
-                //TODO geo-filter
+                // If search by geolocation
+                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext());
+                task.execute(searchContextEditText.getText().toString());
+
+                try {
+                    requestController.searchRequestByGeoLocation(task.get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
             } else if (searchOption == 1) {
                 // If search by keyword
                 requestController.searchRequestByKeyword(searchContextEditText.getText().toString());

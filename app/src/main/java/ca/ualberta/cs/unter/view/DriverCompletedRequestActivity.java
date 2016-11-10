@@ -36,6 +36,10 @@ import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.RequestIntentUtil;
 
+/**
+ * Activity that driver would be able to
+ * browse every past request
+ */
 public class DriverCompletedRequestActivity extends AppCompatActivity {
     private ListView completedRequestListView;
     private ArrayAdapter<Request> completedRequestAdapter;
@@ -73,26 +77,23 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.list_item, completedRequestList);
+        completedRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, completedRequestList);
         completedRequestListView.setAdapter(completedRequestAdapter);
         requestController.getDriverCompletedRequest(driver.getUserName());
     }
 
-
     private void openRequestInfoDialog(final Request request) {
         // TODO get estimated fare price and description of the request
-        String actualFare = Integer.toString(100);   // replace 100 with actual price
-        String description = "hello";   // replace hello with actual request description
+        String actualFare = request.getEstimatedFare().toString();   // replace 100 with actual price
+        String description = request.getRequestDescription();   // replace hello with actual request description
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverCompletedRequestActivity.this);
         builder.setTitle("Request Information")
-                .setMessage("Actual Fare: " + actualFare + "\\n" + "Description" + description)
+                .setMessage("Actual Fare: " + actualFare + "\n" + "Description" + description)
                 .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO intent to MainActivity/BrowseRequestRouteActivity, send request
-                        // TODO display route on one of two above activities
-                        // TODO note: new MainActivity is BrowseRequestRouteActivity without cancel and ok buttons
+                        // Take a look at the route
                         Intent intent = new Intent(DriverCompletedRequestActivity.this, BrowseRequestRouteActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
                         intent.putExtra("request", RequestIntentUtil.serializer(request));   // TODO replace testRequest with actuall request object
