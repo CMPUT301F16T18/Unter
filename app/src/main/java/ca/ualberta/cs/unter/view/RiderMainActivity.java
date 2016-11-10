@@ -40,6 +40,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
@@ -63,6 +64,8 @@ public class RiderMainActivity extends AppCompatActivity
     protected GeoPoint destinationLocation;
 	private MapView map;
     private User rider;
+	private Marker startMarker;
+	private Marker endMarker;
 
     private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
@@ -75,6 +78,17 @@ public class RiderMainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
+
+		// map stuff
+
+		map = (MapView) findViewById(R.id.map);
+		map.setTileSource(TileSourceFactory.MAPNIK);
+		map.setBuiltInZoomControls(true);
+		map.setMultiTouchControls(true);
+
+		final IMapController mapController = map.getController();
+		mapController.setZoom(20);
+		mapController.setCenter(UnterConstant.UALBERTA_COORDS);
 
         searchDepartureLocationEditText = (EditText) findViewById(R.id.editDeparture);
         assert searchDepartureLocationEditText != null;
@@ -97,11 +111,21 @@ public class RiderMainActivity extends AppCompatActivity
                         // Call back method after the coordinate is obtained
                         // TODO drop a marker on the map once the location is obtain
                         departureLocation = (GeoPoint) o;
-                    }
+						startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
+						if (departureLocation == null) {
+							Log.i("mDebug", "Geocoding failed");
+						}
+						Log.i("mDebug", departureLocation.toString());
+						if (startMarker == null) {
+							Log.i("mDebug", "Null marker value");
+						}
+						mapController.setCenter(departureLocation);
+
+					}
                 });
 
                 task.execute(searchDepartureLocationEditText.getText().toString());
-            }
+			}
         });
 
         // The search button for destination location
@@ -116,26 +140,16 @@ public class RiderMainActivity extends AppCompatActivity
                         // TODO drop a marker on the map once the location is obtained
                         // also the route
                         destinationLocation = (GeoPoint) o;
-
-                    }
+						endMarker = createMarker(departureLocation, "Drop-Off");  // hard-coded string for now
+					}
                 });
                 task.execute(searchDestinationLocationEditText.getText().toString());
-            }
+			}
         });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // map stuff
-
-		map = (MapView) findViewById(R.id.map);
-		map.setTileSource(TileSourceFactory.MAPNIK);
-		map.setBuiltInZoomControls(true);
-		map.setMultiTouchControls(true);
-
-		IMapController mapController = map.getController();
-		mapController.setZoom(20);
-		mapController.setCenter(UnterConstant.UALBERTA_COORDS);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -309,5 +323,12 @@ public class RiderMainActivity extends AppCompatActivity
         dialog.show();
     }
 
+	public Marker createMarker(GeoPoint geoPoint, String title) {
+		Marker marker = new Marker(map);
+		marker.setPosition(geoPoint);
+		marker.setTitle(title);
+		marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+		return marker;
+	}
 
 }
