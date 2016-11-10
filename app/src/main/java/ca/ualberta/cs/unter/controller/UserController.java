@@ -84,7 +84,6 @@ public class UserController {
                         "       \"term\" : { \"userName\" : \"%s\" }\n" +
                         "    }\n" +
                         "}", user.getUserName());
-        Log.i("Debug", user.getID());
         User.UpdateUserTask task = new User.UpdateUserTask(listener);
         User.SearchUserExistTask checkTask = new User.SearchUserExistTask();
         checkTask.execute(query);
