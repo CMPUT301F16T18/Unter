@@ -37,10 +37,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.Polyline;
+import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
+
+import java.util.List;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
@@ -66,6 +73,9 @@ public class RiderMainActivity extends AppCompatActivity
     private User rider;
 	private Marker startMarker;
 	private Marker endMarker;
+	private Road[] mRoads;
+	private double distance;
+	private double fare;
 
     private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
@@ -80,7 +90,6 @@ public class RiderMainActivity extends AppCompatActivity
         setContentView(R.layout.activity_rider_main);
 
 		// map stuff
-
 		map = (MapView) findViewById(R.id.map);
 		map.setTileSource(TileSourceFactory.MAPNIK);
 		map.setBuiltInZoomControls(true);
@@ -113,6 +122,7 @@ public class RiderMainActivity extends AppCompatActivity
                         departureLocation = (GeoPoint) o;
 
 						startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
+						map.getOverlays().add(startMarker);
 						mapController.setCenter(departureLocation);
 
 					}
@@ -134,8 +144,11 @@ public class RiderMainActivity extends AppCompatActivity
                         // TODO drop a marker on the map once the location is obtained
                         // also the route
                         destinationLocation = (GeoPoint) o;
-						endMarker = createMarker(departureLocation, "Drop-Off");  // hard-coded string for now
+						endMarker = createMarker(destinationLocation, "Drop-Off");  // hard-coded string for now
+						map.getOverlays().add(endMarker);
 						mapController.setCenter(destinationLocation);
+
+//						OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
 					}
                 });
                 task.execute(searchDestinationLocationEditText.getText().toString());
@@ -323,8 +336,36 @@ public class RiderMainActivity extends AppCompatActivity
 		marker.setPosition(geoPoint);
 		marker.setTitle(title);
 		marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-		map.getOverlays().add(marker);
 		return marker;
 	}
+
+	// the update method
+	private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
+		@Override
+		public void onTaskCompleted(Object o) {
+			mRoads = (Road[]) o;  // not sure if this needs to be here, but it works
+			if (mRoads == null)
+				return;
+			if (mRoads[0].mStatus == Road.STATUS_TECHNICAL_ISSUE)
+				Toast.makeText(map.getContext(), "Technical issue when getting the route", Toast.LENGTH_SHORT).show();
+			else if (mRoads[0].mStatus > Road.STATUS_TECHNICAL_ISSUE) //functional issues
+				Toast.makeText(map.getContext(), "No possible route here", Toast.LENGTH_SHORT).show();
+			Polyline[] mRoadOverlays = new Polyline[mRoads.length];
+			List<Overlay> mapOverlays = map.getOverlays();
+			for (int i = 0; i < mRoads.length; i++) {
+				Polyline roadPolyline = RoadManager.buildRoadOverlay(mRoads[i]);
+				mRoadOverlays[i] = roadPolyline;
+				String routeDesc = mRoads[i].getLengthDurationText(getApplication(), -1);
+				roadPolyline.setTitle(getString(R.string.app_name) + " - " + routeDesc);
+				roadPolyline.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
+				roadPolyline.setRelatedObject(i);
+				mapOverlays.add(1, roadPolyline);
+
+
+//				distance = mRoads[i].mLength;
+//				fare = distance * 0.50;
+			}
+		}
+	};
 
 }
