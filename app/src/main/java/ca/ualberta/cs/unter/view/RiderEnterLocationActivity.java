@@ -1,8 +1,8 @@
 package ca.ualberta.cs.unter.view;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,7 +13,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.R;
-import ca.ualberta.cs.unter.model.request.Request;
 
 public class RiderEnterLocationActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText searchLocationEditText;
@@ -51,7 +50,7 @@ public class RiderEnterLocationActivity extends AppCompatActivity implements Vie
     @Override
     public void onStart() {
         super.onStart();
-        searchLocationAdapter = new ArrayAdapter<>(this, R.layout.list_item, searchLocationList);
+        searchLocationAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, searchLocationList);
         searchLocationListView.setAdapter(searchLocationAdapter);
     }
 
