@@ -198,12 +198,12 @@ public class RiderMainActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         if (view == searchDepartureLocationEditText) {
-            Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
-            startActivityForResult(intentRiderEnterLocation, 1);
+            //Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
+            //startActivityForResult(intentRiderEnterLocation, 1);
         } else if (view == searchDestinationLocationEditText) {
-            Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
-            startActivity(intentRiderEnterLocation);
-            startActivityForResult(intentRiderEnterLocation, 2);
+            //Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
+            //startActivity(intentRiderEnterLocation);
+            ///startActivityForResult(intentRiderEnterLocation, 2);
         }
     }
 
