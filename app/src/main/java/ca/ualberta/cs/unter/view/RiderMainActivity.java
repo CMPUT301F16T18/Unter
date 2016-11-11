@@ -92,10 +92,11 @@ public class RiderMainActivity extends AppCompatActivity
 		map = (MapView) findViewById(R.id.map);
 		map.setTileSource(TileSourceFactory.MAPNIK);
 		map.setBuiltInZoomControls(true);
+		map.setMaxZoomLevel(16);
 		map.setMultiTouchControls(true);
 
 		final IMapController mapController = map.getController();
-		mapController.setZoom(20);
+		mapController.setZoom(15);
 		mapController.setCenter(UnterConstant.UALBERTA_COORDS);
 
         searchDepartureLocationEditText = (EditText) findViewById(R.id.editDeparture);
