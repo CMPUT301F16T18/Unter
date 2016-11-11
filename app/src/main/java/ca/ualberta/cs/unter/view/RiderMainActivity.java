@@ -75,7 +75,6 @@ public class RiderMainActivity extends AppCompatActivity
 	private Marker endMarker;
 	private Road[] mRoads;
 	private double distance;
-	private double fare;
 
     private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
@@ -119,7 +118,7 @@ public class RiderMainActivity extends AppCompatActivity
                     @Override
                     public void onTaskCompleted(Object o) {
                         // Call back method after the coordinate is obtained
-                        // TODO drop a marker on the map once the location is obtain // done
+                        // drop a marker on the map once the location is obtain // done
                         departureLocation = (GeoPoint) o;
 
 						startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
@@ -143,7 +142,7 @@ public class RiderMainActivity extends AppCompatActivity
                     @Override
                     public void onTaskCompleted(Object o) {
                         // Call back method after the coordinate is obtained
-                        // TODO drop a marker on the map once the location is obtained
+                        // drop a marker on the map once the location is obtained
                         // also the route
                         destinationLocation = (GeoPoint) o;
 						endMarker = createMarker(destinationLocation, "Drop-Off");  // hard-coded string for now
@@ -151,7 +150,7 @@ public class RiderMainActivity extends AppCompatActivity
 						mapController.setCenter(destinationLocation);
 						mapController.setZoom(15);
 
-						// this breaks the code
+						// TODO - this breaks the code if you zoom in too far
 						OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
 					}
                 });
