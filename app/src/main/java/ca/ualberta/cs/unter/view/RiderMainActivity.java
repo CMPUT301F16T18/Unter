@@ -271,7 +271,7 @@ public class RiderMainActivity extends AppCompatActivity
 
         final EditText fareEditText = (EditText) promptView.findViewById(R.id.edittext_fare_ridermainactivity);
         final EditText descriptionEditText = (EditText) promptView.findViewById(R.id.edittext_description_ridermainactivity);
-        fareEditText.setText(request.getEstimatedFare().toString());  // shows price rounded to 2 dec places
+        fareEditText.setText(request.getRoundedFare());  // shows fare rounded to 2 dec places
 
         builder.setTitle("Send Request")
                 .setView(promptView)
