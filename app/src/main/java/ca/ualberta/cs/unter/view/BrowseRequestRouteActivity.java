@@ -102,11 +102,11 @@ public class BrowseRequestRouteActivity extends Activity {
 		GeoPoint startPoint = request.getOriginCoordinate();  // Start point
 		IMapController mapController = map.getController();
 		mapController.setZoom(9);
-		mapController.setCenter(startPoint);
+		mapController.setCenter(startPoint);  // sets map to centre here
 
 		Marker startMarker = new Marker(map);
 		startMarker.setPosition(startPoint);
-		startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM); // sets map to centre here
+		startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 		startMarker.setTitle("Start Point");
 		map.getOverlays().add(startMarker);
 
@@ -117,11 +117,13 @@ public class BrowseRequestRouteActivity extends Activity {
 		endMarker.setTitle("End Point");
 		map.getOverlays().add(endMarker);
 
-		ArrayList<OverlayItem> overlayItemArray;
-		overlayItemArray = new ArrayList<>();
+		// TODO - see if this code is ever used
+		// (I don't think it is)
+		ArrayList<OverlayItem> overlayItemArray;  //
+		overlayItemArray = new ArrayList<>();  //
 
-		overlayItemArray.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
-		overlayItemArray.add(new OverlayItem("Destination", "This is the destination point", destinationPoint));
+		overlayItemArray.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));  //
+		overlayItemArray.add(new OverlayItem("Destination", "This is the destination point", destinationPoint));  //
 
         // Get the route
         OSMapUtil.getRoad(startPoint, destinationPoint, updateMap);
