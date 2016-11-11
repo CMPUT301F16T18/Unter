@@ -114,7 +114,8 @@ public class RiderMainActivity extends AppCompatActivity
         searchDepartureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(), new OnAsyncTaskCompleted() {
+                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(),
+						new OnAsyncTaskCompleted() {
                     @Override
                     public void onTaskCompleted(Object o) {
                         // Call back method after the coordinate is obtained
@@ -137,7 +138,8 @@ public class RiderMainActivity extends AppCompatActivity
         searchDestinationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(), new OnAsyncTaskCompleted() {
+                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(),
+						new OnAsyncTaskCompleted() {
                     @Override
                     public void onTaskCompleted(Object o) {
                         // Call back method after the coordinate is obtained
@@ -147,7 +149,9 @@ public class RiderMainActivity extends AppCompatActivity
 						endMarker = createMarker(destinationLocation, "Drop-Off");  // hard-coded string for now
 						map.getOverlays().add(endMarker);
 						mapController.setCenter(destinationLocation);
+						mapController.setZoom(15);
 
+						// this breaks the code
 						OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
 					}
                 });
@@ -292,7 +296,8 @@ public class RiderMainActivity extends AppCompatActivity
                         } else if (description.isEmpty()) {
                             descriptionEditText.setError("Description cannot be empty");
                         } else {
-                            Request req = new PendingRequest(rider.getUserName(),new Route(departureLocation, destinationLocation));
+                            Request req = new PendingRequest(rider.getUserName(),
+									new Route(departureLocation, destinationLocation));
                             Log.i("Debug", String.format("%.2f", fare));
                             req.setEstimatedFare(fare);
                             req.setRequestDescription(description);
@@ -360,6 +365,8 @@ public class RiderMainActivity extends AppCompatActivity
 				roadPolyline.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
 				roadPolyline.setRelatedObject(i);
 				mapOverlays.add(1, roadPolyline);
+
+				Toast.makeText(map.getContext(), "Distance ="+mRoads[i].mLength, Toast.LENGTH_LONG).show();
 
 
 //				distance = mRoads[i].mLength;

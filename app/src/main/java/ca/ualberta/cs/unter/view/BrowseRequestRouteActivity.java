@@ -102,11 +102,11 @@ public class BrowseRequestRouteActivity extends Activity {
 		GeoPoint startPoint = request.getOriginCoordinate();  // Start point
 		IMapController mapController = map.getController();
 		mapController.setZoom(9);
-		mapController.setCenter(startPoint);
+		mapController.setCenter(startPoint);  // sets map to centre here
 
 		Marker startMarker = new Marker(map);
 		startMarker.setPosition(startPoint);
-		startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM); // sets map to centre here
+		startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 		startMarker.setTitle("Start Point");
 		map.getOverlays().add(startMarker);
 
