@@ -434,10 +434,11 @@ public abstract class Request {
     /**
      * Gets estimated fare.
      *
-     * @return the estimated fare
+     * @return the estimated fare formatted to 2 decimal places
      */
-    public Double getEstimatedFare() {
-        return estimatedFare;
+    public String getEstimatedFare() {
+        String fare = String.format("%.2f", estimatedFare);
+        return fare;
     }
 
 	/**

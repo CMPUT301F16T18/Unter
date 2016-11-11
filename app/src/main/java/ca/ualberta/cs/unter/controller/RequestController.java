@@ -287,4 +287,8 @@ public class RequestController {
         double fare = request.getDistance() * 0.50;
 		request.setEstimatedFare(fare);
     }
+
+    public void setDistance(Request request, double distance) {
+        request.setDistance(distance);
+    }
 }

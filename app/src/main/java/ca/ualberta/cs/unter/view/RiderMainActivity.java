@@ -264,14 +264,14 @@ public class RiderMainActivity extends AppCompatActivity
         LayoutInflater inflater = this.getLayoutInflater();
         View promptView = inflater.inflate(R.layout.rider_send_request_dialog, null);
 
-        // TODO
         // Set the default fare
         final Request request = new PendingRequest(rider.getUserName(), new Route(departureLocation, destinationLocation));
+		requestController.setDistance(request, distance);  // set the distance before estimating fare
         requestController.calculateEstimatedFare(request);
 
         final EditText fareEditText = (EditText) promptView.findViewById(R.id.edittext_fare_ridermainactivity);
         final EditText descriptionEditText = (EditText) promptView.findViewById(R.id.edittext_description_ridermainactivity);
-        fareEditText.setText(request.getEstimatedFare().toString());
+        fareEditText.setText(request.getEstimatedFare().toString());  // shows price rounded to 2 dec places
 
         builder.setTitle("Send Request")
                 .setView(promptView)
@@ -366,11 +366,9 @@ public class RiderMainActivity extends AppCompatActivity
 				roadPolyline.setRelatedObject(i);
 				mapOverlays.add(1, roadPolyline);
 
+				// displays route distance on map overlay
 				Toast.makeText(map.getContext(), "Distance ="+mRoads[i].mLength, Toast.LENGTH_LONG).show();
-
-
-//				distance = mRoads[i].mLength;
-//				fare = distance * 0.50;
+				distance = mRoads[i].mLength;
 			}
 		}
 	};
