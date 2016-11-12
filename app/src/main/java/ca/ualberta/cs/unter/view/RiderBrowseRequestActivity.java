@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -73,6 +74,10 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_browse_request);
 
+        // Back button on action bar
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         inProgressRequestListView = (ListView) findViewById(R.id.listview_inprogress_riderbrowserequestactivity);
         inProgressRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -102,6 +107,17 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         inProgressRequestListView.setAdapter(inProgressRequestAdapter);
         completedRequestListView.setAdapter(completedRequestAdapter);
         updateRequest();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(this, RiderMainActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

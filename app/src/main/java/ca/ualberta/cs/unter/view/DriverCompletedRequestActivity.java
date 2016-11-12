@@ -64,6 +64,8 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_completed_request);
 
+        // Back button on action bar
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         completedRequestListView = (ListView) findViewById(R.id.listView_completedRequest_DriverCompletedRequestActivity);
