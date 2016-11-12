@@ -36,7 +36,8 @@
                 android:name=".view.RiderMainActivity"
                 android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-                android:name=".view.EditUserProfileActivity" />
+                android:name=".view.EditUserProfileActivity"
+                android:label="@string/label_edit_user_profile_activity"/>
         <activity
                 android:name=".view.DriverBrowseRequestActivity" />
         <activity
@@ -46,7 +47,9 @@
         <activity
                 android:name=".view.BrowseRequestRouteActivity" />
         <activity
-                android:name=".view.RiderBrowseRequestActivity"/>
+                android:name=".view.RiderBrowseRequestActivity"
+                android:label="@string/label_rider_browse_request_activity"
+                android:theme="@style/AppTheme.Custom.Base"/>
         <activity
                 android:name=".view.DriverCompletedRequestActivity"
                 android:label="@string/label_driver_completed_request_activity"
