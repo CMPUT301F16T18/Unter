@@ -37,6 +37,7 @@ import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.Route;
 import ca.ualberta.cs.unter.util.GeoPointConverter;
+import ca.ualberta.cs.unter.util.RequestUtil;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
@@ -239,7 +240,9 @@ public abstract class Request {
          */
         @Override
         protected void onPostExecute(Request request) {
-            listener.onTaskCompleted(request);
+            if (listener != null) {
+                listener.onTaskCompleted(request);
+            }
         }
     }
 
@@ -289,7 +292,9 @@ public abstract class Request {
          */
         @Override
         protected void onPostExecute(Request request) {
-            listener.onTaskCompleted(request);
+            if (listener != null) {
+                listener.onTaskCompleted(request);
+            }
         }
     }
 
@@ -339,11 +344,13 @@ public abstract class Request {
 
         @Override
         protected void onPostExecute(ArrayList<NormalRequest> normalRequests) {
-            ArrayList<Request> requestsList = new ArrayList<>();
-            for (NormalRequest r : normalRequests) {
-                requestsList.add(r);
+            if (listener != null) {
+                ArrayList<Request> requestsList = new ArrayList<>();
+                for (NormalRequest r : normalRequests) {
+                    requestsList.add(r);
+                }
+                listener.onTaskCompleted(requestsList);
             }
-            listener.onTaskCompleted(requestsList);
         }
     }
 
@@ -354,9 +361,8 @@ public abstract class Request {
         // if the client hasn't been initialized then we should make it!
         if (client == null) {
             // Custom gson Serializer and JsonDeserializer
-            Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
+            Gson gson = RequestUtil.customGsonBuilder();
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder(UnterConstant.ELASTIC_SEARCH_URL).gson(gson);
-            //DroidClientConfig.Builder builder = new DroidClientConfig.Builder("https://api.vfree.org");
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();

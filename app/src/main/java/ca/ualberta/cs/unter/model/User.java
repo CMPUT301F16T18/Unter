@@ -27,6 +27,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 
 import ca.ualberta.cs.unter.UnterConstant;
+import ca.ualberta.cs.unter.util.UserUtil;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
@@ -106,7 +107,9 @@ public class User {
 
         @Override
         protected void onPostExecute(User user) {
-            listener.onTaskCompleted(user);
+            if (listener != null) {
+                listener.onTaskCompleted(user);
+            }
         }
     }
 
@@ -122,17 +125,8 @@ public class User {
         @Override
         protected User doInBackground(User... users) {
             verifySettings();
-
-            String query = String.format(
-                            "{\n" +
-                            "    \"userName\": \"%s\"     ,\n" +
-                            "    \"mobileNumber\": \"%s\" ,\n" +
-                            "    \"emailAddress\": \"%s\" ,\n" +
-                            "    \"ID\": \"%s\" \n" +
-                            "}",
-                    users[0].getUserName(), users[0].getMobileNumber(),
-                    users[0].getEmailAddress(), users[0].getID());
-            Log.i("Debug", query);
+            // Serialize object into Json string
+            String query = UserUtil.serializer(users[0]);
             Index index = new Index.Builder(query)
                     .index("unter").type("user").id(users[0].getID()).build();
 
@@ -151,7 +145,9 @@ public class User {
 
         @Override
         protected void onPostExecute(User user) {
-            listener.onTaskCompleted(user);
+            if (listener != null) {
+                listener.onTaskCompleted(user);
+            }
         }
     }
 
@@ -198,7 +194,9 @@ public class User {
 
         @Override
         protected void onPostExecute(User user) {
-            listener.onTaskCompleted(user);
+            if (listener != null) {
+                listener.onTaskCompleted(user);
+            }
         }
     }
 
@@ -248,7 +246,6 @@ public class User {
         if (client == null) {
             DroidClientConfig.Builder builder = new DroidClientConfig
                     .Builder(UnterConstant.ELASTIC_SEARCH_URL);
-
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();
@@ -293,7 +290,7 @@ public class User {
     }
 
     /**
-     * Gets email addr.
+     * Gets email address.
      *
      * @return the email addr
      */
@@ -302,7 +299,7 @@ public class User {
     }
 
     /**
-     * Sets email addr.
+     * Sets email address.
      *
      * @param emailAddress the email addr
      */
@@ -320,7 +317,6 @@ public class User {
     }
 
     public String getID() {
-
         return ID;
     }
 }
