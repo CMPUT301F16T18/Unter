@@ -27,6 +27,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -125,11 +126,14 @@ public class RiderMainActivity extends AppCompatActivity
 						startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
 						map.getOverlays().add(startMarker);
 						mapController.setCenter(departureLocation);
-
 					}
                 });
-
-                task.execute(searchDepartureLocationEditText.getText().toString());
+                String departureStr = searchDepartureLocationEditText.getText().toString();
+                if (TextUtils.isEmpty(departureStr)) {
+                    searchDepartureLocationEditText.setError("Please enter an address");
+                    return;
+                }
+                task.execute(departureStr);
 			}
         });
 
@@ -155,13 +159,17 @@ public class RiderMainActivity extends AppCompatActivity
 						OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
 					}
                 });
-                task.execute(searchDestinationLocationEditText.getText().toString());
+                String destinationStr = searchDestinationLocationEditText.getText().toString();
+                if (TextUtils.isEmpty(destinationStr)) {
+                    searchDestinationLocationEditText.setError("Please enter an address");
+                    return;
+                }
+                task.execute(destinationStr);
 			}
         });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -233,6 +241,7 @@ public class RiderMainActivity extends AppCompatActivity
             Intent intentRiderBrowseRequest = new Intent(this, RiderBrowseRequestActivity.class);
             startActivity(intentRiderBrowseRequest);
         } else if (id == R.id.nav_logout) {
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
 
