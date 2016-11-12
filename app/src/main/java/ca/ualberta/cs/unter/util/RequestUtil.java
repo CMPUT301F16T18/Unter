@@ -25,9 +25,10 @@ import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
 
 /**
- * Utilify class to help pass request object throught intent
+ * Utility class to help pass request object through intent
+ * or update to the server
  */
-public class RequestIntentUtil {
+public class RequestUtil {
     public static String serializer(Request request) {
         Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
         return gson.toJson(request);
@@ -36,5 +37,9 @@ public class RequestIntentUtil {
     public static Request deserializer(String string) {
         Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
         return gson.fromJson(string, NormalRequest.class);
+    }
+
+    public static Gson customGsonBuilder() {
+        return new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
     }
 }
