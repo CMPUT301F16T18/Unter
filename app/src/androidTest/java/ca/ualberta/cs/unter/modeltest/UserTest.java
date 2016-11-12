@@ -85,6 +85,7 @@ public class UserTest extends ActivityInstrumentationTestCase2<LoginActivity> {
 
     /**
      * Test case for creating new user
+     * and get user profile method
      */
     public void testCreateUser() {
         String userName = new RandomNameGenerator(new Random().nextInt(100)).next();
@@ -132,6 +133,7 @@ public class UserTest extends ActivityInstrumentationTestCase2<LoginActivity> {
             e.printStackTrace();
         }
         assertEquals(user.getID(), getUser.getID());
+        assertEquals(user, getUser);
     }
 
     /**
