@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -63,6 +64,8 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_completed_request);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         completedRequestListView = (ListView) findViewById(R.id.listView_completedRequest_DriverCompletedRequestActivity);
         completedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -80,6 +83,17 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
         completedRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, completedRequestList);
         completedRequestListView.setAdapter(completedRequestAdapter);
         requestController.getDriverCompletedRequest(driver.getUserName());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(this, DriverMainActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void openRequestInfoDialog(final Request request) {

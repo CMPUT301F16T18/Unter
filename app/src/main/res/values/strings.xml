@@ -77,6 +77,7 @@
     <string name="dialog_description_editText">Enter Description</string>
     <string name="dialog_fare_edittext">Estimated Fare</string>
 
-
-
+    <!--Activity label name-->
+    <string name="label_driver_completed_request_activity">Your past request</string>
+    <string name="label_driver_search_request_activity">Search request</string>
 </resources>

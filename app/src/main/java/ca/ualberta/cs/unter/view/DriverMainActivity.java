@@ -88,6 +88,7 @@ public class DriverMainActivity extends AppCompatActivity
             Intent intentDriverSearchRequest = new Intent(this, DriverSearchRequestActivity.class);
             startActivity(intentDriverSearchRequest);
         } else if (id == R.id.nav_logout) {
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
 
