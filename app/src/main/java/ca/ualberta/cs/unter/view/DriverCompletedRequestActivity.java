@@ -35,7 +35,7 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 /**
  * Activity that driver would be able to
@@ -112,7 +112,7 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
                         // Take a look at the route
                         Intent intent = new Intent(DriverCompletedRequestActivity.this, BrowseRequestRouteActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-                        intent.putExtra("request", RequestIntentUtil.serializer(request));   // TODO replace testRequest with actuall request object
+                        intent.putExtra("request", RequestUtil.serializer(request));   // TODO replace testRequest with actuall request object
                         startActivity(intent);
                     }
                 })

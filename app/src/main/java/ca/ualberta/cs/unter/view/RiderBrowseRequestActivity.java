@@ -34,7 +34,7 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 public class RiderBrowseRequestActivity extends AppCompatActivity {
 
@@ -83,7 +83,7 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
-                intent.putExtra("request", RequestIntentUtil.serializer(inProgressRequestList.get(position)));
+                intent.putExtra("request", RequestUtil.serializer(inProgressRequestList.get(position)));
                 startActivity(intent);
             }
         });

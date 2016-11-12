@@ -34,7 +34,7 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.OSMapUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 import cz.msebera.android.httpclient.Header;
 
 public class RiderRequestDetailActivity extends AppCompatActivity implements View.OnClickListener {
@@ -73,7 +73,7 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_request_detail);
 
-        request = RequestIntentUtil.deserializer(getIntent().getStringExtra("request"));
+        request = RequestUtil.deserializer(getIntent().getStringExtra("request"));
 
         originalLocationTextView = (TextView) findViewById(R.id.textView_startingLocation_RiderRequestDetailActivity);
         destinationLocationTextView = (TextView) findViewById(R.id.textView_endingLocation_RiderRequestDetailActivity);

@@ -40,7 +40,7 @@ import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 /**
  * Activity that driver can search for request
@@ -179,7 +179,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                         // Serialize the request to pass it over the intent
                         Intent intentDriverMain = new Intent(DriverSearchRequestActivity.this, BrowseRequestRouteActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-                        intentDriverMain.putExtra("request", RequestIntentUtil.serializer(request));   // TODO replace testRequest with actuall request object
+                        intentDriverMain.putExtra("request", RequestUtil.serializer(request));   // TODO replace testRequest with actuall request object
                         startActivity(intentDriverMain);
                     }
                 })

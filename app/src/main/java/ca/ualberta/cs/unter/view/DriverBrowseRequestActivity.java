@@ -19,7 +19,7 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 /**
  * Activity that driver could browse for current
@@ -122,7 +122,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
                         Intent intentDriverMain = new Intent(DriverBrowseRequestActivity.this, DriverMainActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
                         // Serialize the request object and pass it over through the intent
-                        intentDriverMain.putExtra("request", RequestIntentUtil.serializer(request));
+                        intentDriverMain.putExtra("request", RequestUtil.serializer(request));
                         startActivity(intentDriverMain);
                     }
                 })

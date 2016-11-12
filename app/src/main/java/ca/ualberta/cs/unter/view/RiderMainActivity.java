@@ -362,7 +362,9 @@ public class RiderMainActivity extends AppCompatActivity
         return marker;
     }
 
-    // the update method
+    /**
+     * An async
+     */
     private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
