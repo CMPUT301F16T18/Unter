@@ -47,7 +47,6 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
     private TextView destinationLocationTextView;
 
     private Button cancelRequestButton;
-    private Button completeRequestButton;
 
     private Request request;
     private ArrayList<User> driverList;
@@ -64,7 +63,7 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
     private UserController userController = new UserController(new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
-
+            openRiderChooseAcceptanceDialog((User) o);
         }
     });
 
@@ -85,17 +84,14 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // intent RiderChooseAcceptanceDialog
-                openRiderChooseAcceptanceDialog(acceptedDriverList.get(position));
+                userController.getUser(acceptedDriverList.get(position));
+                //openRiderChooseAcceptanceDialog(acceptedDriverList.get(position));
             }
         });
 
         cancelRequestButton = (Button) findViewById(R.id.button__cancelRequest_RiderRequestDetailActivity);
         assert cancelRequestButton != null;
         cancelRequestButton.setOnClickListener(this);
-
-        completeRequestButton = (Button) findViewById(R.id.button__completeRequest_RiderRequestDetailActivity);
-        assert completeRequestButton != null;
-        completeRequestButton.setOnClickListener(this);
     }
 
     @Override
@@ -111,9 +107,6 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         if (view == cancelRequestButton ) {
             // TODO cancel this request
             requestController.deleteRequest(request);
-        } else if (view == completeRequestButton) {
-            // TODO complete this request
-            requestController.riderConfirmRequestComplete(request);
         }
     }
 
@@ -164,13 +157,13 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         });
     }
 
-    private void openRiderChooseAcceptanceDialog(final String driverUserName) {
-        User driver = userController.getUser(driverUserName);
-
+    private void openRiderChooseAcceptanceDialog(final User driver) {
+        //User driver = userController.getUser(driverUserName);
+        final String driverUserName = driver.getUserName();
         // TODO get the driver of this acceptance
         String driverName = driver.getUserName();    // replace it with actual driver's name
         final String driverMobile = driver.getMobileNumber();   // replace it with actual driver's mobile
-        String driverEmail = driver.getEmailAddress();   // replace it with actual driver's email
+        final String driverEmail = driver.getEmailAddress();   // replace it with actual driver's email
 
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderRequestDetailActivity.this);
 
@@ -186,7 +179,7 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         mobileButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent intentCall = new Intent(Intent.ACTION_CALL);
-                intentCall.setData(Uri.parse(driverMobile));
+                intentCall.setData(Uri.parse("tel:" + Uri.parse(driverMobile)));
                 if (ActivityCompat.checkSelfPermission(RiderRequestDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
@@ -199,8 +192,10 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         emailButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                emailIntent.setType("text/plain");
-                startActivity(emailIntent);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{driverEmail});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Hello" + driverUserName);
+                emailIntent.setType("message/rfc822");
+                startActivity(Intent.createChooser(emailIntent, "Select Email Sending App :"));
             }
         });
 

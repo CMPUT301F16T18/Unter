@@ -16,9 +16,12 @@
 
 package ca.ualberta.cs.unter.view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +39,11 @@ import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.RequestUtil;
 
+/**
+ * Activity that allows rider to browse request
+ * including completed request and the reuqest that
+ * the rider currently envolve
+ */
 public class RiderBrowseRequestActivity extends AppCompatActivity {
 
     private ListView inProgressRequestListView;
@@ -54,6 +62,13 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
             inProgressRequestAdapter.clear();
             inProgressRequestAdapter.addAll(inProgressRequestList);
             inProgressRequestAdapter.notifyDataSetChanged();
+        }
+    });
+
+    private RequestController confirmRequestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            updateRequest();
         }
     });
 
@@ -82,9 +97,17 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         inProgressRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
-                intent.putExtra("request", RequestUtil.serializer(inProgressRequestList.get(position)));
-                startActivity(intent);
+                Request req = inProgressRequestList.get(position);
+                if (req.getDriverUserName() == null || TextUtils.isEmpty(req.getDriverUserName())) {
+                    // If the request has not been confirmed by the rider
+                    // Direct to the activity that allow rider to select driver
+                    Intent intent = new Intent(RiderBrowseRequestActivity.this, RiderRequestDetailActivity.class);
+                    intent.putExtra("request", RequestUtil.serializer(req));
+                    startActivity(intent);
+                } else {
+                    // If the request has been confirmed by the rider
+                    openInProgressRequestInfoDialog(req);
+                }
             }
         });
 
@@ -92,10 +115,11 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         completedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO customize dialog to show info
+                openCompletedRequestInfodialog(completedRequestList.get(position));
             }
         });
 
+        // Get user info from the internal storage
         rider = FileIOUtil.loadUserFromFile(getApplicationContext());
     }
 
@@ -118,6 +142,68 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // TODO
+    private void openInProgressRequestInfoDialog(final Request request) {
+        String actualFare = request.getEstimatedFare().toString();   // replace 100 with actual price
+        String description = request.getRequestDescription();   // replace hello with actual request description
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(RiderBrowseRequestActivity.this);
+        builder.setTitle("Your request has been accepted")
+                .setMessage("Actual Fare: " + actualFare + "\n" + "Description:" + description)
+                .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Take a look at the route
+                        Intent intent = new Intent(RiderBrowseRequestActivity.this, BrowseRequestRouteActivity.class);
+                        // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+                        intent.putExtra("request", RequestUtil.serializer(request));
+                        startActivity(intent);
+                    }
+                })
+                .setPositiveButton(R.string.dialog_confirm_completion_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        confirmRequestController.riderConfirmRequestComplete(request);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        // Create & Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // cutomize the dialog to display more information (driver info)
+    private void openCompletedRequestInfodialog(final Request request) {
+        String actualFare = request.getEstimatedFare().toString();   // replace 100 with actual price
+        String description = request.getRequestDescription();   // replace hello with actual request description
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(RiderBrowseRequestActivity.this);
+        builder.setTitle("Request Information")
+                .setMessage("Actual Fare: " + actualFare + "\n" + "Description:" + description)
+                .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Take a look at the route
+                        Intent intent = new Intent(RiderBrowseRequestActivity.this, BrowseRequestRouteActivity.class);
+                        // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+                        intent.putExtra("request", RequestUtil.serializer(request));
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        // Create & Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     /**

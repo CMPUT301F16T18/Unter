@@ -43,6 +43,7 @@
     <string name="dialog_view_map_button">View Map</string>
     <string name="dialog_cancel_button">Cancel</string>
     <string name="dialog_ok_button">Ok</string>
+    <string name="dialog_confirm_completion_button">Confirm Complete</string>
 
     <!--DriverSearchRequestActivity-->
     <string name="search_button">Search</string>

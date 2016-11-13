@@ -70,13 +70,4 @@
         android:paddingTop="20dp"
         android:paddingBottom="15dp"/>
 
-    <!--complete Request button-->
-    <Button
-        android:id="@+id/button__completeRequest_RiderRequestDetailActivity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/completeRequest_button"
-        android:paddingTop="20dp"
-        android:paddingBottom="15dp"/>
-
 </LinearLayout>
