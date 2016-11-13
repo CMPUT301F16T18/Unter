@@ -99,17 +99,32 @@ public class RequestController {
      * Get a list of request that match the geo-location
      * @param location the coordinate of the location
      */
-    public void searchRequestByGeoLocation(GeoPoint location) {
+    public void searchRequestByGeoLocation(GeoPoint location, String driverUserName) {
         Log.i("Debug", location.toString());
         String query = String.format(
                         "{\n" +
                         "    \"filter\": {\n" +
-                        "       \"geo_distance\" : {\n" +
-                        "           \"distance\" : \"5km\" ,\n" +
-                        "           \"route.origin\": [%.6f, %.6f]\n" +
+                        "       \"bool\" : {\n" +
+                        "           \"must_not\" : [\n" +
+                        "               { \"term\": {\"isCompleted\": true} },\n" +
+                        "               { \"term\": {\"driverList\": \"%s\"} }\n" +
+                        "           ],\n" +
+                        "           \"must\": [\n" +
+                        "               {\n" +
+                        "                   \"nested\": {\n" +
+                        "                       \"path\": \"route\",\n" +
+                        "                       \"filter\": {\n" +
+                        "                           \"geo_distance\": {\n" +
+                        "                               \"distance\": \"5km\",\n" +
+                        "                               \"origin\": [%.6f, %.6f]\n" +
+                        "                           }\n" +
+                        "                       }\n" +
+                        "                   }\n" +
+                        "               }\n" +
+                        "           ]\n" +
                         "       }\n" +
                         "    }\n" +
-                        "}", location.getLongitude(), location.getLatitude());
+                        "}", driverUserName, location.getLongitude(), location.getLatitude());
 
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);

@@ -152,7 +152,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                 task.execute(searchContextEditText.getText().toString());
 
                 try {
-                    requestController.searchRequestByGeoLocation(task.get());
+                    requestController.searchRequestByGeoLocation(task.get(), driver.getUserName());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
