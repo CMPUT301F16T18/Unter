@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,7 +40,7 @@ import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 /**
  * Activity that driver can search for request
@@ -66,18 +67,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         public void onTaskCompleted(Object o) {
             // Cast
             searchRequestList = (ArrayList<Request>) o;
-//            for (Request r : searchRequestList) {
-//                // If the request has been confirmed by rider
-//                // or the request has been confirmed by the current driver
-//                Log.i("Debug", r.getRequestDescription());
-//                if (r.getDriverUserName() != null || r.getDriverList().contains(driver.getUserName())) {
-//                    searchRequestList.remove(r);
-//                }
-//            }
-            // Notify the adapter things is changed
-            searchRequestAdapter.clear();
-            searchRequestAdapter.addAll(searchRequestList);
-            searchRequestAdapter.notifyDataSetChanged();
+            updateRequest();
         }
     });
 
@@ -86,7 +76,8 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     private RequestController confirmedRequestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
-            Request request = (Request) o;
+            searchRequestList.remove((Request) o);
+            updateRequest();
         }
     });
 
@@ -94,6 +85,8 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_search_request);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         searchContextEditText = (EditText) findViewById(R.id.editText_searchRequest_DriverSearchRequestActivity);
 
@@ -140,6 +133,17 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(this, DriverMainActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onClick(View view) {
         if (view == searchButton) {
             if (searchOption == 0) {
@@ -175,7 +179,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                         // Serialize the request to pass it over the intent
                         Intent intentDriverMain = new Intent(DriverSearchRequestActivity.this, BrowseRequestRouteActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-                        intentDriverMain.putExtra("request", RequestIntentUtil.serializer(request));   // TODO replace testRequest with actuall request object
+                        intentDriverMain.putExtra("request", RequestUtil.serializer(request));   // TODO replace testRequest with actuall request object
                         startActivity(intentDriverMain);
                     }
                 })
@@ -200,4 +204,9 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         dialog.show();
     }
 
+    private void updateRequest() {
+        searchRequestAdapter.clear();
+        searchRequestAdapter.addAll(searchRequestList);
+        searchRequestAdapter.notifyDataSetChanged();
+    }
 }

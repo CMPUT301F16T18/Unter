@@ -24,7 +24,7 @@ import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.OSMapUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 // Code adapted from:
 // CMPUT 301 lab 8.
@@ -97,7 +97,7 @@ public class BrowseRequestRouteActivity extends Activity {
 		map.setMultiTouchControls(true);
 
 		String requestStr = getIntent().getStringExtra("request");
-		request = RequestIntentUtil.deserializer(requestStr);
+		request = RequestUtil.deserializer(requestStr);
 
 		GeoPoint startPoint = request.getOriginCoordinate();  // Start point
 		IMapController mapController = map.getController();

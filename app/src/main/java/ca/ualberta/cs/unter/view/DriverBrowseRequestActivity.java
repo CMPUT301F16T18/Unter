@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,7 +19,7 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 /**
  * Activity that driver could browse for current
@@ -61,6 +62,10 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_browse_request);
 
+        // Back button on action bar
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         acceptedRequestListView = (ListView) findViewById(R.id.listView_acceptedRequest_DriverBrowseRequestActivity);
         acceptedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -92,6 +97,17 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
         updateRequestList();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(this, DriverMainActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void openRequestInfoDialog(final Request request) {
         // TODO get estimated fare price and description of the request
         String estimatedFare = request.getEstimatedFare().toString();   // replace 100 with estimated price
@@ -106,7 +122,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity {
                         Intent intentDriverMain = new Intent(DriverBrowseRequestActivity.this, DriverMainActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
                         // Serialize the request object and pass it over through the intent
-                        intentDriverMain.putExtra("request", RequestIntentUtil.serializer(request));
+                        intentDriverMain.putExtra("request", RequestUtil.serializer(request));
                         startActivity(intentDriverMain);
                     }
                 })

@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -34,7 +35,7 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
-import ca.ualberta.cs.unter.util.RequestIntentUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 /**
  * Activity that driver would be able to
@@ -63,6 +64,10 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_completed_request);
 
+        // Back button on action bar
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         completedRequestListView = (ListView) findViewById(R.id.listView_completedRequest_DriverCompletedRequestActivity);
         completedRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -82,6 +87,17 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
         requestController.getDriverCompletedRequest(driver.getUserName());
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(this, DriverMainActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void openRequestInfoDialog(final Request request) {
         // TODO get estimated fare price and description of the request
         String actualFare = request.getEstimatedFare().toString();   // replace 100 with actual price
@@ -96,7 +112,7 @@ public class DriverCompletedRequestActivity extends AppCompatActivity {
                         // Take a look at the route
                         Intent intent = new Intent(DriverCompletedRequestActivity.this, BrowseRequestRouteActivity.class);
                         // http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-                        intent.putExtra("request", RequestIntentUtil.serializer(request));   // TODO replace testRequest with actuall request object
+                        intent.putExtra("request", RequestUtil.serializer(request));   // TODO replace testRequest with actuall request object
                         startActivity(intent);
                     }
                 })

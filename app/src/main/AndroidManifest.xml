@@ -35,17 +35,27 @@
         <activity
                 android:name=".view.RiderMainActivity"
                 android:theme="@style/AppTheme.NoActionBar"/>
-        android:name=".view.DriverMainActivity"
-        android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".view.EditUserProfileActivity" />
-        <activity android:name=".view.DriverBrowseRequestActivity" />
-        <activity android:name=".view.DriverSearchRequestActivity" />
-        <activity android:name=".view.BrowseRequestRouteActivity" />
-        <activity android:name=".view.RiderBrowseRequestActivity" />
-        <activity android:name=".view.DriverCompletedRequestActivity" />
-        <activity android:name=".view.RiderRequestDetailActivity" />
-
+        <activity
+                android:name=".view.EditUserProfileActivity"
+                android:label="@string/label_edit_user_profile_activity"/>
+        <activity
+                android:name=".view.DriverBrowseRequestActivity" />
+        <activity
+                android:name=".view.DriverSearchRequestActivity"
+                android:label="@string/label_driver_search_request_activity"
+                android:theme="@style/AppTheme.Custom.Base"/>
+        <activity
+                android:name=".view.BrowseRequestRouteActivity" />
+        <activity
+                android:name=".view.RiderBrowseRequestActivity"
+                android:label="@string/label_rider_browse_request_activity"
+                android:theme="@style/AppTheme.Custom.Base"/>
+        <activity
+                android:name=".view.DriverCompletedRequestActivity"
+                android:label="@string/label_driver_completed_request_activity"
+                android:theme="@style/AppTheme.Custom.Base"/>
+        <activity
+                android:name=".view.RiderRequestDetailActivity" />
     </application>
 
 </manifest>

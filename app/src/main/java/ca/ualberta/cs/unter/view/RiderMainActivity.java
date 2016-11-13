@@ -27,6 +27,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -61,7 +62,7 @@ import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
 
 public class RiderMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private EditText searchDepartureLocationEditText;
     private EditText searchDestinationLocationEditText;
@@ -69,12 +70,12 @@ public class RiderMainActivity extends AppCompatActivity
     private Button searchDestinationButton;
     protected GeoPoint departureLocation;
     protected GeoPoint destinationLocation;
-	private MapView map;
+    private MapView map;
     private User rider;
-	private Marker startMarker;
-	private Marker endMarker;
-	private Road[] mRoads;
-	private double distance;
+    private Marker startMarker;
+    private Marker endMarker;
+    private Road[] mRoads;
+    private double distance;
 
     private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
@@ -88,24 +89,22 @@ public class RiderMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
 
-		// map stuff
-		map = (MapView) findViewById(R.id.map);
-		map.setTileSource(TileSourceFactory.MAPNIK);
-		map.setBuiltInZoomControls(true);
-		map.setMaxZoomLevel(16);
-		map.setMultiTouchControls(true);
+        // map stuff
+        map = (MapView) findViewById(R.id.map);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setBuiltInZoomControls(true);
+        map.setMaxZoomLevel(16);
+        map.setMultiTouchControls(true);
 
-		final IMapController mapController = map.getController();
-		mapController.setZoom(15);
-		mapController.setCenter(UnterConstant.UALBERTA_COORDS);
+        final IMapController mapController = map.getController();
+        mapController.setZoom(15);
+        mapController.setCenter(UnterConstant.UALBERTA_COORDS);
 
         searchDepartureLocationEditText = (EditText) findViewById(R.id.editDeparture);
         assert searchDepartureLocationEditText != null;
-        //searchDepartureLocationEditText.setOnClickListener(this);
 
         searchDestinationLocationEditText = (EditText) findViewById(R.id.editDestination);
         assert searchDestinationLocationEditText != null;
-        //searchDestinationLocationEditText.setOnClickListener(this);
 
         // The search button for departure location
         // TODO geocoder is broken on the Galaxy Note 3
@@ -115,22 +114,25 @@ public class RiderMainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(),
-						new OnAsyncTaskCompleted() {
-                    @Override
-                    public void onTaskCompleted(Object o) {
-                        // Call back method after the coordinate is obtained
-                        // drop a marker on the map once the location is obtain // done
-                        departureLocation = (GeoPoint) o;
+                        new OnAsyncTaskCompleted() {
+                            @Override
+                            public void onTaskCompleted(Object o) {
+                                // Call back method after the coordinate is obtained
+                                // drop a marker on the map once the location is obtain // done
+                                departureLocation = (GeoPoint) o;
 
-						startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
-						map.getOverlays().add(startMarker);
-						mapController.setCenter(departureLocation);
-
-					}
-                });
-
-                task.execute(searchDepartureLocationEditText.getText().toString());
-			}
+                                startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
+                                map.getOverlays().add(startMarker);
+                                mapController.setCenter(departureLocation);
+                            }
+                        });
+                String departureStr = searchDepartureLocationEditText.getText().toString();
+                if (TextUtils.isEmpty(departureStr)) {
+                    searchDepartureLocationEditText.setError("Please enter an address");
+                    return;
+                }
+                task.execute(departureStr);
+            }
         });
 
         // The search button for destination location
@@ -139,29 +141,32 @@ public class RiderMainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(),
-						new OnAsyncTaskCompleted() {
-                    @Override
-                    public void onTaskCompleted(Object o) {
-                        // Call back method after the coordinate is obtained
-                        // drop a marker on the map once the location is obtained
-                        // also the route
-                        destinationLocation = (GeoPoint) o;
-						endMarker = createMarker(destinationLocation, "Drop-Off");  // hard-coded string for now
-						map.getOverlays().add(endMarker);
-						mapController.setCenter(destinationLocation);
-						mapController.setZoom(15);
-
-						// TODO - this breaks the code if you zoom in too far
-						OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
-					}
-                });
-                task.execute(searchDestinationLocationEditText.getText().toString());
-			}
+                        new OnAsyncTaskCompleted() {
+                            @Override
+                            public void onTaskCompleted(Object o) {
+                                // Call back method after the coordinate is obtained
+                                // drop a marker on the map once the location is obtained
+                                // also the route
+                                destinationLocation = (GeoPoint) o;
+                                endMarker = createMarker(destinationLocation, "Drop-Off");  // hard-coded string for now
+                                map.getOverlays().add(endMarker);
+                                mapController.setCenter(destinationLocation);
+                                mapController.setZoom(15);
+                                // open a dialog to confirm the location before getting the route
+                                openRiderConfirmPathDialog();
+                            }
+                        });
+                String destinationStr = searchDestinationLocationEditText.getText().toString();
+                if (TextUtils.isEmpty(destinationStr)) {
+                    searchDestinationLocationEditText.setError("Please enter an address");
+                    return;
+                }
+                task.execute(destinationStr);
+            }
         });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -182,29 +187,15 @@ public class RiderMainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
-
+        // Set text on drawer
         View navHeader = navigationView.getHeaderView(0);
-
         TextView username = (TextView) navHeader.findViewById(R.id.nav_drawer_rider_username);
         TextView email = (TextView) navHeader.findViewById(R.id.nav_drawer_rider_email);
-
         // Get user profile
         rider = FileIOUtil.loadUserFromFile(getApplicationContext());
         // Set text
         username.setText(rider.getUserName());
         email.setText(rider.getEmailAddress());
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view == searchDepartureLocationEditText) {
-            //Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
-            //startActivityForResult(intentRiderEnterLocation, 1);
-        } else if (view == searchDestinationLocationEditText) {
-            //Intent intentRiderEnterLocation = new Intent(this, RiderEnterLocationActivity.class);
-            //startActivity(intentRiderEnterLocation);
-            ///startActivityForResult(intentRiderEnterLocation, 2);
-        }
     }
 
     // http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
@@ -219,7 +210,6 @@ public class RiderMainActivity extends AppCompatActivity
         }
     }
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -233,6 +223,7 @@ public class RiderMainActivity extends AppCompatActivity
             Intent intentRiderBrowseRequest = new Intent(this, RiderBrowseRequestActivity.class);
             startActivity(intentRiderBrowseRequest);
         } else if (id == R.id.nav_logout) {
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
 
@@ -246,27 +237,48 @@ public class RiderMainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 String strEditText = data.getStringExtra("edittextvalue");
                 searchDepartureLocationEditText.setText(strEditText);
             }
         } else if (requestCode == 2) {
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 String strEditText = data.getStringExtra("edittextvalue");
                 searchDestinationLocationEditText.setText(strEditText);
             }
         }
     }
+    // A dialog allow user to confirm the location he enters
+    private void openRiderConfirmPathDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
+
+        builder.setTitle("Confirm location")
+                .setPositiveButton(R.string.dialog_ok_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO - this breaks the code if you zoom in too far
+                        OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        // Create & Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
     private void openRiderSendRequestDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
         LayoutInflater inflater = this.getLayoutInflater();
         View promptView = inflater.inflate(R.layout.rider_send_request_dialog, null);
 
         // Set the default fare
         final Request request = new PendingRequest(rider.getUserName(), new Route(departureLocation, destinationLocation));
-		requestController.setDistance(request, distance);  // set the distance before estimating fare
+        requestController.setDistance(request, distance);  // set the distance before estimating fare
         requestController.calculateEstimatedFare(request);
 
         final EditText fareEditText = (EditText) promptView.findViewById(R.id.edittext_fare_ridermainactivity);
@@ -292,12 +304,12 @@ public class RiderMainActivity extends AppCompatActivity
                             Toast.makeText(RiderMainActivity.this,
                                     "Starting/Ending Location is empty", Toast.LENGTH_SHORT).show();
                         } else if (fare == 0) {
-                           fareEditText.setError("Fare cannot be empty");
+                            fareEditText.setError("Fare cannot be empty");
                         } else if (description.isEmpty()) {
                             descriptionEditText.setError("Description cannot be empty");
                         } else {
                             Request req = new PendingRequest(rider.getUserName(),
-									new Route(departureLocation, destinationLocation));
+                                    new Route(departureLocation, destinationLocation));
                             Log.i("Debug", String.format("%.2f", fare));
                             req.setEstimatedFare(fare);
                             req.setRequestDescription(description);
@@ -336,41 +348,49 @@ public class RiderMainActivity extends AppCompatActivity
         dialog.show();
     }
 
-	public Marker createMarker(GeoPoint geoPoint, String title) {
-		Marker marker = new Marker(map);
-		marker.setPosition(geoPoint);
-		marker.setTitle(title);
-		marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-		return marker;
-	}
+    /**
+     * Create a point marker on the map
+     * @param geoPoint the geolocatoin of the point
+     * @param title the title to display
+     * @return
+     */
+    public Marker createMarker(GeoPoint geoPoint, String title) {
+        Marker marker = new Marker(map);
+        marker.setPosition(geoPoint);
+        marker.setTitle(title);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        return marker;
+    }
 
-	// the update method
-	private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
-		@Override
-		public void onTaskCompleted(Object o) {
-			mRoads = (Road[]) o;  // not sure if this needs to be here, but it works
-			if (mRoads == null)
-				return;
-			if (mRoads[0].mStatus == Road.STATUS_TECHNICAL_ISSUE)
-				Toast.makeText(map.getContext(), "Technical issue when getting the route", Toast.LENGTH_SHORT).show();
-			else if (mRoads[0].mStatus > Road.STATUS_TECHNICAL_ISSUE) //functional issues
-				Toast.makeText(map.getContext(), "No possible route here", Toast.LENGTH_SHORT).show();
-			Polyline[] mRoadOverlays = new Polyline[mRoads.length];
-			List<Overlay> mapOverlays = map.getOverlays();
-			for (int i = 0; i < mRoads.length; i++) {
-				Polyline roadPolyline = RoadManager.buildRoadOverlay(mRoads[i]);
-				mRoadOverlays[i] = roadPolyline;
-				String routeDesc = mRoads[i].getLengthDurationText(getApplication(), -1);
-				roadPolyline.setTitle(getString(R.string.app_name) + " - " + routeDesc);
-				roadPolyline.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
-				roadPolyline.setRelatedObject(i);
-				mapOverlays.add(1, roadPolyline);
+    /**
+     * An async
+     */
+    private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            mRoads = (Road[]) o;  // not sure if this needs to be here, but it works
+            if (mRoads == null)
+                return;
+            if (mRoads[0].mStatus == Road.STATUS_TECHNICAL_ISSUE)
+                Toast.makeText(map.getContext(), "Technical issue when getting the route", Toast.LENGTH_SHORT).show();
+            else if (mRoads[0].mStatus > Road.STATUS_TECHNICAL_ISSUE) //functional issues
+                Toast.makeText(map.getContext(), "No possible route here", Toast.LENGTH_SHORT).show();
+            Polyline[] mRoadOverlays = new Polyline[mRoads.length];
+            List<Overlay> mapOverlays = map.getOverlays();
+            for (int i = 0; i < mRoads.length; i++) {
+                Polyline roadPolyline = RoadManager.buildRoadOverlay(mRoads[i]);
+                mRoadOverlays[i] = roadPolyline;
+                String routeDesc = mRoads[i].getLengthDurationText(getApplication(), -1);
+                roadPolyline.setTitle(getString(R.string.app_name) + " - " + routeDesc);
+                roadPolyline.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
+                roadPolyline.setRelatedObject(i);
+                mapOverlays.add(1, roadPolyline);
 
-				// displays route distance on map overlay
-				Toast.makeText(map.getContext(), "Distance ="+mRoads[i].mLength, Toast.LENGTH_LONG).show();
-				distance = mRoads[i].mLength;
-			}
-		}
-	};
+                // displays route distance on map overlay
+                Toast.makeText(map.getContext(), "Distance =" + mRoads[i].mLength, Toast.LENGTH_LONG).show();
+                distance = mRoads[i].mLength;
+            }
+        }
+    };
 
 }

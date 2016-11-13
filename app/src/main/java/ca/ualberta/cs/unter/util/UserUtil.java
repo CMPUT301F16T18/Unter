@@ -17,24 +17,21 @@
 package ca.ualberta.cs.unter.util;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import org.osmdroid.util.GeoPoint;
-
-import ca.ualberta.cs.unter.model.request.NormalRequest;
-import ca.ualberta.cs.unter.model.request.Request;
+import ca.ualberta.cs.unter.model.User;
 
 /**
- * Utilify class to help pass request object throught intent
+ * Utility class that help to serilize
+ * and deserialize the user object
  */
-public class RequestIntentUtil {
-    public static String serializer(Request request) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
-        return gson.toJson(request);
+public class UserUtil {
+    public static String serializer(User user) {
+        Gson gson = new Gson();
+        return gson.toJson(user);
     }
 
-    public static Request deserializer(String string) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
-        return gson.fromJson(string, NormalRequest.class);
+    public static User deserializer(String string) {
+        Gson gson = new Gson();
+        return gson.fromJson(string, User.class);
     }
 }

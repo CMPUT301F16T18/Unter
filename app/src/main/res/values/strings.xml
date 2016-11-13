@@ -12,7 +12,6 @@
     <string name="driver_radio">Driver</string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
-    <string name="dialog_ok_button">OK</string>
 
     <!--DriverMainActivity-->
     <string name="title_activity_driver_main">DriverMainActivity</string>
@@ -43,6 +42,8 @@
     <string name="title_activity_rider_main">Unter</string>
     <string name="dialog_view_map_button">View Map</string>
     <string name="dialog_cancel_button">Cancel</string>
+    <string name="dialog_ok_button">Ok</string>
+    <string name="dialog_confirm_completion_button">Confirm Complete</string>
 
     <!--DriverSearchRequestActivity-->
     <string name="search_button">Search</string>
@@ -77,6 +78,9 @@
     <string name="dialog_description_editText">Enter Description</string>
     <string name="dialog_fare_edittext">Estimated Fare</string>
 
-
-
+    <!--Activity label name-->
+    <string name="label_driver_completed_request_activity">Your past request</string>
+    <string name="label_driver_search_request_activity">Search request</string>
+    <string name="label_rider_browse_request_activity">Your request</string>
+    <string name="label_edit_user_profile_activity">Edit user profile</string>
 </resources>
