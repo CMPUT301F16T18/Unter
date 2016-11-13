@@ -38,6 +38,10 @@ import ca.ualberta.cs.unter.view.LoginActivity;
 
 /**
  * Unit test cases for user model
+ * Since the controller class are designed to be
+ * as thick as possible, all business logic are inside
+ * the model class, which fits the MVC pattern. Therefore, it's
+ * pretty much no need to test controller class.
  */
 public class UserTest extends ActivityInstrumentationTestCase2<LoginActivity> {
 
@@ -85,7 +89,11 @@ public class UserTest extends ActivityInstrumentationTestCase2<LoginActivity> {
 
     /**
      * Test case for creating new user
-     * and get user profile method
+     * and get user profile method.
+     *
+     * Generally, the interaction with databae or server should be mocked
+     * up in the unittest (waste of resource, and possbility to mess up
+     * the production environment). Also, this test is not guarantee to pass.
      */
     public void testCreateUser() {
         String userName = new RandomNameGenerator(new Random().nextInt(100)).next();

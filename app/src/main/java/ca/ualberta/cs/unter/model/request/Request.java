@@ -185,7 +185,9 @@ public abstract class Request {
          */
         @Override
         protected void onPostExecute(Request request) {
-            listener.onTaskCompleted(request);
+            if (listener != null) {
+                listener.onTaskCompleted(request);
+            }
         }
     }
 
