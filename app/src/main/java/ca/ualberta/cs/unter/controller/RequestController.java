@@ -99,6 +99,8 @@ public class RequestController {
      * Get a list of request that match the geo-location
      * @param location the coordinate of the location
      */
+    // http://stackoverflow.com/questions/36805014/how-to-merge-geo-distance-filter-with-bool-term-query
+    // Author: Val
     public void searchRequestByGeoLocation(GeoPoint location, String driverUserName) {
         Log.i("Debug", location.toString());
         String query = String.format(
