@@ -21,7 +21,9 @@ import org.osmdroid.util.GeoPoint;
 
 
 /**
- * The type Route.
+ * The Route class that will be implements in
+ * the request class, contains the geo-coordinate
+ * of pickup location and destination.
  */
 public class Route {
     private GeoPoint origin;

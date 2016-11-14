@@ -74,8 +74,8 @@ public abstract class Request {
     /**
      * Constructor for a new request.
      *
-     * @param riderUserName  the rider user name
-     * @param route the path from pickup location to destination
+     * @param riderUserName the rider user name
+     * @param route         the path from pickup location to destination
      */
     public Request(String riderUserName, Route route) {
         this.riderUserName = riderUserName;
@@ -85,9 +85,10 @@ public abstract class Request {
     /**
      * Constructor for ConfirmedRequest or CompletedRequest.
      *
-     * @param riderUserName         the rider user name
-     * @param driverUserName        the driver user name
-     * @param route the path from pickup location to destination
+     * @param riderUserName  the rider user name
+     * @param driverUserName the driver user name
+     * @param route          the path from pickup location to destination
+     * @param estimatedFare  the estimated fare
      */
     public Request(String riderUserName, String driverUserName, Route route, double estimatedFare) {
         this.riderUserName = riderUserName;
@@ -100,7 +101,9 @@ public abstract class Request {
      * Constructor for AcceptedRequest
      *
      * @param riderUserName the rider user name
-     * @param driverList the list of drivers username who accept the request
+     * @param driverList    the list of drivers username who accept the request
+     * @param route         the route
+     * @param estimatedFare the estimated fare
      */
     public Request(String riderUserName, ArrayList<String> driverList, Route route, double estimatedFare) {
         this.riderUserName = riderUserName;
@@ -122,7 +125,8 @@ public abstract class Request {
      * Rider confirm driver.
      *
      * @param driverUserName the driver user name
-     * @exception RequestException raise exception when request has not been confirmed
+     * @throws RequestException the request exception
+     * @throws RequestException raise exception when request has not been confirmed
      */
     public void riderConfirmDriver(String driverUserName) throws RequestException {
         if (driverList == null || driverList.isEmpty()) {
@@ -139,11 +143,16 @@ public abstract class Request {
      * Static class that adds the request
      */
     public static class CreateRequestTask extends AsyncTask<Request, Void, Request> {
+        /**
+         * The Listener.
+         */
         public OnAsyncTaskCompleted listener;
         // http://stackoverflow.com/questions/9963691/android-asynctask-sending-callbacks-to-ui
         // Author: Dmitry Zaitsev
+
         /**
          * Constructor for CreateRequestTask class
+         *
          * @param listener the customize job after the async task is done
          */
         public CreateRequestTask(OnAsyncTaskCompleted listener) {
@@ -195,10 +204,14 @@ public abstract class Request {
      * Static class that update the request
      */
     public static class UpdateRequestTask extends AsyncTask<Request, Void, Request> {
+        /**
+         * The Listener.
+         */
         public OnAsyncTaskCompleted listener;
 
         /**
          * Constructor for updaterequesttask class
+         *
          * @param listener the customize job after the async task is done
          */
         public UpdateRequestTask(OnAsyncTaskCompleted listener) {
@@ -248,14 +261,18 @@ public abstract class Request {
         }
     }
 
-    /**TODO
-     * Static class that cancel the request
+    /**
+     * TODO Static class that cancel the request
      */
     public static class DeleteRequestTask extends AsyncTask<Request, Void, Request> {
+        /**
+         * The Listener.
+         */
         public OnAsyncTaskCompleted listener;
 
         /**
          * Constructor for DeleteRequestTask class
+         *
          * @param listener the customize job after the async task is done
          */
         public DeleteRequestTask(OnAsyncTaskCompleted listener) {
@@ -304,8 +321,16 @@ public abstract class Request {
      * Static class that fetch request from server
      */
     public static class GetRequestsListTask extends AsyncTask<String, Void, ArrayList<NormalRequest>> {
+        /**
+         * The Listener.
+         */
         public OnAsyncTaskCompleted listener;
 
+        /**
+         * Instantiates a new Get requests list task.
+         *
+         * @param listener the listener
+         */
         public GetRequestsListTask(OnAsyncTaskCompleted listener) {
             this.listener = listener;
         }
@@ -382,6 +407,7 @@ public abstract class Request {
         if (requestDescription == null) return null;
         return requestDescription;
     }
+
     /**
      * Rider confirm request complete.
      */
@@ -448,39 +474,48 @@ public abstract class Request {
         return estimatedFare;
     }
 
-	/**
-	 *  Gets the estimated fare rounded to 2 decimal places.
-	 * @return the rounded fare
-	 */
-	public String getRoundedFare() {
+    /**
+     * Gets the estimated fare rounded to 2 decimal places.
+     *
+     * @return the rounded fare
+     */
+    public String getRoundedFare() {
 		String fare = String.format("%.2f", estimatedFare);
 		return fare;
 	}
 
-	/**
-	 * Sets the estimated fare.
-	 * @param fare
-	 */
-	public void setEstimatedFare(double fare) {
+    /**
+     * Sets the estimated fare.
+     *
+     * @param fare the fare
+     */
+    public void setEstimatedFare(double fare) {
 		estimatedFare = fare;
 	}
 
-	/**
-	 * Sets the distance of the route.
-	 * @param distance
-	 */
-	public void setDistance(double distance) {
+    /**
+     * Sets the distance of the route.
+     *
+     * @param distance the distance
+     */
+    public void setDistance(double distance) {
 		route.setDistance(distance);
 	}
 
-	/**
-	 * Gets the distance of the route.
-	 * @return
-	 */
-	public double getDistance() {
+    /**
+     * Gets the distance of the route.
+     *
+     * @return distance
+     */
+    public double getDistance() {
 		return route.getDistance();
 	}
 
+    /**
+     * Gets driver list.
+     *
+     * @return the driver list
+     */
     public ArrayList<String> getDriverList() {
         if (driverList.isEmpty()) {
             return null;
@@ -498,22 +533,47 @@ public abstract class Request {
     }
 
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public String getID() {
         return ID;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param ID the id
+     */
     public void setID(String ID) {
         this.ID = ID;
     }
 
+    /**
+     * Gets request description.
+     *
+     * @return the request description
+     */
     public String getRequestDescription() {
         return requestDescription;
     }
 
+    /**
+     * Sets request description.
+     *
+     * @param requestDescription the request description
+     */
     public void setRequestDescription(String requestDescription) {
         this.requestDescription = requestDescription;
     }
 
+    /**
+     * Gets route.
+     *
+     * @return the route
+     */
     public Route getRoute() {
         return route;
     }

@@ -46,6 +46,9 @@ public class User {
 
     private transient static JestDroidClient client;
 
+    /**
+     * Instantiates a new User.
+     */
     public User() {
 
     }
@@ -67,8 +70,16 @@ public class User {
      * Static class that create user profile
      */
     public static class CreateUserTask extends AsyncTask<User, Void, User> {
+        /**
+         * The Listener.
+         */
         public OnAsyncTaskCompleted listener;
 
+        /**
+         * Instantiates a new Create user task.
+         *
+         * @param listener the listener
+         */
         public CreateUserTask(OnAsyncTaskCompleted listener) {
             this.listener = listener;
         }
@@ -117,8 +128,16 @@ public class User {
      * Static class that update user profile
      */
     public static class UpdateUserTask extends AsyncTask<User, Void, User> {
+        /**
+         * The Listener.
+         */
         public OnAsyncTaskCompleted listener;
 
+        /**
+         * Instantiates a new Update user task.
+         *
+         * @param listener the listener
+         */
         public UpdateUserTask(OnAsyncTaskCompleted listener) {
             this.listener = listener;
         }
@@ -152,11 +171,19 @@ public class User {
     }
 
     /**
-     *  Static class that get user profile
+     * Static class that get user profile
      */
     public static class GetUserProfileTask extends AsyncTask<String, Void, User> {
+        /**
+         * The Listener.
+         */
         public OnAsyncTaskCompleted listener;
 
+        /**
+         * Instantiates a new Get user profile task.
+         *
+         * @param listener the listener
+         */
         public GetUserProfileTask(OnAsyncTaskCompleted listener) {
             this.listener = listener;
         }
@@ -201,7 +228,7 @@ public class User {
     }
 
     /**
-     *  Static class that check user profile
+     * Static class that check user profile
      */
     public static class SearchUserExistTask extends AsyncTask<String, Void, Boolean> {
 
@@ -253,6 +280,7 @@ public class User {
             client = (JestDroidClient) factory.getObject();
         }
     }
+
     /**
      * Gets user name.
      *
@@ -312,10 +340,20 @@ public class User {
         return userName;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param ID the id
+     */
     public void setID(String ID) {
         this.ID = ID;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public String getID() {
         return ID;
     }
