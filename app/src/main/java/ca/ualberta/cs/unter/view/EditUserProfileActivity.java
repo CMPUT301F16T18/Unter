@@ -16,6 +16,10 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 
+/**
+ * Activity that user can browse their profile,
+ * update their profile
+ */
 public class EditUserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText usernameText;
     private EditText emailText;
@@ -66,6 +70,9 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
         }
     }
 
+    /**
+     * save and upload the new profiel to the ES server
+     */
     public void editProfile(){
         String username = usernameText.getText().toString();
         String email = emailText.getText().toString();

@@ -15,6 +15,9 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 
+/**
+ * Activity that user could signup
+ */
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText usernameText;

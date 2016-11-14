@@ -32,6 +32,9 @@ import ca.ualberta.cs.unter.view.LoginActivity;
 import ca.ualberta.cs.unter.view.RiderMainActivity;
 import ca.ualberta.cs.unter.view.SignupActivity;
 
+/**
+ * Application test for LoginActivity
+ */
 public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
 
     private Solo solo;
@@ -56,6 +59,9 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         solo.finishOpenedActivities();
     }
 
+    /**
+     * Test login functionality
+     */
     public void testLogin() {
         solo.assertCurrentActivity("Wrong Activity", LoginActivity.class);
         // Enter username
@@ -71,6 +77,9 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         solo.assertCurrentActivity("Wrong Activity", RiderMainActivity.class);
     }
 
+    /**
+     * Tst signup functionaliry
+     */
     public void testSignup() {
         LoginActivity activity = (LoginActivity) solo.getCurrentActivity();
 

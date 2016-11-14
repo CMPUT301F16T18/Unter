@@ -24,7 +24,7 @@ import com.robotium.solo.Solo;
 import ca.ualberta.cs.unter.view.DriverMainActivity;
 
 /**
- * Created by Michael on 16-11-14.
+ * Aplication test for DriverMatinAcitivyt
  */
 public class DriverMainActivityTest extends ActivityInstrumentationTestCase2<DriverMainActivity> {
     private Solo solo;

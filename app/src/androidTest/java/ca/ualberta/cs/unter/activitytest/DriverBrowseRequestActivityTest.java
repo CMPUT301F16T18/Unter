@@ -24,7 +24,7 @@ import com.robotium.solo.Solo;
 import ca.ualberta.cs.unter.view.DriverBrowseRequestActivity;
 
 /**
- * Created by Michael on 16-11-14.
+ * Applicatoin test for driverbrowserequestactivity
  */
 public class DriverBrowseRequestActivityTest extends ActivityInstrumentationTestCase2<DriverBrowseRequestActivity> {
 
@@ -46,6 +46,9 @@ public class DriverBrowseRequestActivityTest extends ActivityInstrumentationTest
         solo.finishOpenedActivities();
     }
 
+    /**
+     * Tst see if the request can be seen or not
+     */
     public void testRequestList() {
         solo.assertCurrentActivity("Wrong Activity", DriverBrowseRequestActivity.class);
         solo.clickInList(0);

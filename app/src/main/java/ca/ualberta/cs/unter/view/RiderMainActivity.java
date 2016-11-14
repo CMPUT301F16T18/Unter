@@ -61,6 +61,13 @@ import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
 
+/**
+ * Main activity of rider that could browse locatoin on map,
+ * search location, and send request
+ *
+ * Issue: it may possible break when the route is way too long
+ * for OSM to render.
+ */
 public class RiderMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -363,7 +370,7 @@ public class RiderMainActivity extends AppCompatActivity
     }
 
     /**
-     * An async
+     * An async task
      */
     private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
         @Override
