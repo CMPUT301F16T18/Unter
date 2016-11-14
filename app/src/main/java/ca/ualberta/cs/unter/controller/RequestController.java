@@ -32,18 +32,28 @@ import ca.ualberta.cs.unter.model.request.Request;
 
 
 /**
- * This class contains all functionalities of request list
+ * Request model's controller, a glue between Activity and Model. Give access for activity(View) to
+ * modify and update model.
  */
 public class RequestController {
 
+    /**
+     * The Listener, callback method when the async task is done
+     */
     public OnAsyncTaskCompleted listener;
 
+    /**
+     * Instantiates a new Request controller.
+     *
+     * @param listener the listener, custom callback method
+     */
     public RequestController(OnAsyncTaskCompleted listener) {
         this.listener = listener;
     }
 
     /**
      * Create a new request and send it to the server
+     *
      * @param request The request to be created
      */
     public void createRequest(Request request) {
@@ -59,6 +69,7 @@ public class RequestController {
 
     /**
      * Update a a request
+     *
      * @param request The request to be updated
      */
     public void updateRequest(Request request) {
@@ -68,6 +79,7 @@ public class RequestController {
 
     /**
      * Cancle a request
+     *
      * @param request The request to be deleted
      */
     public void deleteRequest(Request request) {
@@ -77,6 +89,7 @@ public class RequestController {
 
     /**
      * Get a list of all request
+     *
      * @return An ArrayList of requests
      */
     public ArrayList<NormalRequest> getAllRequest() {
@@ -97,7 +110,9 @@ public class RequestController {
 
     /**
      * Get a list of request that match the geo-location
-     * @param location the coordinate of the location
+     *
+     * @param location       the coordinate of the location
+     * @param driverUserName the driver user name
      */
     // http://stackoverflow.com/questions/36805014/how-to-merge-geo-distance-filter-with-bool-term-query
     // Author: Val
@@ -134,7 +149,9 @@ public class RequestController {
 
     /**
      * Get a list of request that match the keyword
-     * @param keyword The keyword to match
+     *
+     * @param keyword        The keyword to match
+     * @param driverUserName the driver user name
      * @return An arraylist of matching request.
      */
     public void searchRequestByKeyword(String keyword, String driverUserName) {
@@ -160,8 +177,9 @@ public class RequestController {
     }
 
     /**
-     * Get a list of reuqest that has been accepted by the rider
-     * but the request is not completed yet
+     * Get a list of reuqest that has been accepted by the rider but the request is not completed
+     * yet
+     *
      * @param driverUserName the driver's username
      */
     public void getDriverAcceptedRequest(String driverUserName) {
@@ -183,8 +201,8 @@ public class RequestController {
     }
 
     /**
-     * Get a list of requests that driver accepts but still waiting
-     * for confirmation from the rider
+     * Get a list of requests that driver accepts but still waiting for confirmation from the rider
+     *
      * @param driverUserName the driver's username
      */
     public void getDriverPendingRequest(String driverUserName) {
@@ -207,6 +225,7 @@ public class RequestController {
 
     /**
      * Get a list of requests of driver's past request
+     *
      * @param driverUserName the driver's user name
      */
     public void getDriverCompletedRequest(String driverUserName) {
@@ -227,6 +246,7 @@ public class RequestController {
 
     /**
      * Get a list of requests of driver's past request
+     *
      * @param riderUserName the rider's user name
      */
     public void getRiderCompletedRequest(String riderUserName) {
@@ -247,6 +267,7 @@ public class RequestController {
 
     /**
      * Get a list of inprogress request of rider
+     *
      * @param riderUserName the rider's username
      */
     public void getRiderInProgressRequest(String riderUserName) {
@@ -270,6 +291,7 @@ public class RequestController {
     /**
      * Driver confirm request.
      *
+     * @param request        the request
      * @param driverUserName the driver user name
      */
     public void driverConfirmRequest(Request request, String driverUserName) {
@@ -290,8 +312,9 @@ public class RequestController {
     /**
      * Rider confirm driver.
      *
-     * @param request the request to be confirmed by the rider
+     * @param request        the request to be confirmed by the rider
      * @param driverUserName the driver user name
+     * @throws RequestException the request exception
      */
     public void riderConfirmDriver(Request request, String driverUserName) throws RequestException {
         request.riderConfirmDriver(driverUserName);
@@ -300,11 +323,22 @@ public class RequestController {
     }
 
 
+    /**
+     * Calculate estimated fare.
+     *
+     * @param request the request
+     */
     public void calculateEstimatedFare(Request request) {
         double fare = request.getDistance() * 0.50;
 		request.setEstimatedFare(fare);
     }
 
+    /**
+     * Sets distance.
+     *
+     * @param request  the request
+     * @param distance the distance
+     */
     public void setDistance(Request request, double distance) {
         request.setDistance(distance);
     }
