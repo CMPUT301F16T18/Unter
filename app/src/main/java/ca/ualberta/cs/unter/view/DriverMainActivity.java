@@ -1,5 +1,6 @@
 package ca.ualberta.cs.unter.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,18 +14,46 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.Polyline;
+import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.UnterConstant;
+import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
+import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
+import ca.ualberta.cs.unter.util.OSMapUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 public class DriverMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Request request;
+    private Activity ourActivity = this;
+    private MapView map;
+    private Road[] mRoads;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_main);
+
+        readyMap();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -50,6 +79,14 @@ public class DriverMainActivity extends AppCompatActivity
         // Set drawer text
         username.setText(driver.getUserName());
         email.setText(driver.getEmailAddress());
+
+        // Get intent
+        String requestStr = getIntent().getStringExtra("request");
+        if (requestStr != null) {
+            // If intent exist
+            request = RequestUtil.deserializer(requestStr);
+            drawRoute();
+        }
     }
 
     @Override
@@ -66,6 +103,56 @@ public class DriverMainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    /**
+     * Init the map
+     */
+    protected void readyMap() {
+        // map stuff
+        map = (MapView) findViewById(R.id.map);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setBuiltInZoomControls(true);
+        map.setMaxZoomLevel(16);
+        map.setMultiTouchControls(true);
+
+        final IMapController mapController = map.getController();
+        mapController.setZoom(15);
+        mapController.setCenter(UnterConstant.UALBERTA_COORDS);
+    }
+
+    /**
+     * Draw out the route if there is a intent
+     */
+    protected void drawRoute() {
+        GeoPoint startPoint = request.getOriginCoordinate();  // Start point
+        IMapController mapController = map.getController();
+        mapController.setZoom(9);
+        mapController.setCenter(startPoint);  // sets map to centre here
+
+        Marker startMarker = new Marker(map);
+        startMarker.setPosition(startPoint);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        startMarker.setTitle("Start Point");
+        map.getOverlays().add(startMarker);
+
+
+        GeoPoint destinationPoint = request.getDestinationCoordinate();  // End point
+        Marker endMarker = new Marker(map);
+        endMarker.setPosition(destinationPoint);
+        endMarker.setTitle("End Point");
+        map.getOverlays().add(endMarker);
+
+        // TODO - see if this code is ever used
+        // (I don't think it is)
+        ArrayList<OverlayItem> overlayItemArray;  //
+        overlayItemArray = new ArrayList<>();  //
+
+        overlayItemArray.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));  //
+        overlayItemArray.add(new OverlayItem("Destination", "This is the destination point", destinationPoint));  //
+
+        // Get the route
+        OSMapUtil.getRoad(startPoint, destinationPoint, updateMap);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -113,4 +200,33 @@ public class DriverMainActivity extends AppCompatActivity
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    // the update method
+    private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            mRoads = (Road[]) o;  // not sure if this needs to be here, but it works
+            if (mRoads == null)
+                return;
+            if (mRoads[0].mStatus == Road.STATUS_TECHNICAL_ISSUE)
+                Toast.makeText(map.getContext(), "Technical issue when getting the route", Toast.LENGTH_SHORT).show();
+            else if (mRoads[0].mStatus > Road.STATUS_TECHNICAL_ISSUE) //functional issues
+                Toast.makeText(map.getContext(), "No possible route here", Toast.LENGTH_SHORT).show();
+            Polyline[] mRoadOverlays = new Polyline[mRoads.length];
+            List<Overlay> mapOverlays = map.getOverlays();
+            for (int i = 0; i < mRoads.length; i++) {
+                Polyline roadPolyline = RoadManager.buildRoadOverlay(mRoads[i]);
+                mRoadOverlays[i] = roadPolyline;
+                String routeDesc = mRoads[i].getLengthDurationText(ourActivity, -1);
+                roadPolyline.setTitle(getString(R.string.app_name) + " - " + routeDesc);
+                roadPolyline.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
+                roadPolyline.setRelatedObject(i);
+                mapOverlays.add(1, roadPolyline);
+
+                // all this shizz works
+                Toast.makeText(ourActivity, "distance="+mRoads[i].mLength,Toast.LENGTH_LONG).show(); //
+                Toast.makeText(ourActivity, "durée="+mRoads[i].mDuration,Toast.LENGTH_LONG).show(); //
+            }
+        }
+    };
 }

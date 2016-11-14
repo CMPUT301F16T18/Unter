@@ -130,10 +130,20 @@ public class OSMapUtil {
         }
     }
 
+    /**
+     * Converts actual address intext into geo-coordinate by using GMAPS API
+     * @param address the address in text
+     * @param responseHandler a custom async event handler
+     */
     public static void GeoCoding(String address, AsyncHttpResponseHandler responseHandler) {
         HttpClientUtil.get("address=" + address, null, responseHandler);
     }
 
+    /**
+     * Convers geo-coordinate into actual address in text
+     * @param coordinate the coordiante
+     * @param responseHandler a custom async event handler
+     */
     public static void ReverseGeoCoding(GeoPoint coordinate, AsyncHttpResponseHandler responseHandler) {
         String url = "latlng=" +
                 Double.toString(coordinate.getLatitude()) + "," +

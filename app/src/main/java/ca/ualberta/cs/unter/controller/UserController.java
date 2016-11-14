@@ -26,7 +26,9 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 
 /**
- * User model's controller
+ * User model's controller, a glue between
+ * Activity and Model. Give access for activity(View)
+ * to modify and update model.
  */
 public class UserController {
     OnAsyncTaskCompleted listener;
