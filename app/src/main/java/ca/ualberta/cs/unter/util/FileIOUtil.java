@@ -33,13 +33,17 @@ import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 
+/**
+ * The type File io util.
+ */
 public class FileIOUtil {
-    /**
-     * An utility method that save user profile locally
-     * @param user the user object to be saved
-     * @param context an android activity component
-     */
-    public static void saveUserInFile(User user, Context context) {
+	/**
+	 * An utility method that save user profile locally
+	 *
+	 * @param user    the user object to be saved
+	 * @param context an android activity component
+	 */
+	public static void saveUserInFile(User user, Context context) {
         try {
             Gson gson = new Gson();
             String jsonStr = gson.toJson(user);
@@ -54,12 +58,13 @@ public class FileIOUtil {
         }
     }
 
-    /**
-     * An utility method that retrieve user profile locally
-     * @param context an android activity component
-     * @return an User object
-     */
-    public static User loadUserFromFile(Context context) {
+	/**
+	 * An utility method that retrieve user profile locally
+	 *
+	 * @param context an android activity component
+	 * @return an User object
+	 */
+	public static User loadUserFromFile(Context context) {
         User user = new User();
         try {
             Gson gson = new Gson();
@@ -72,7 +77,13 @@ public class FileIOUtil {
         return user;
     }
 
-    public static void saveRequestInFile(ArrayList<Request> requestList, Context context) {
+	/**
+	 * Save requestList in file.
+	 *
+	 * @param requestList the arraylist of requests
+	 * @param context     the context
+	 */
+	public static void saveRequestInFile(ArrayList<Request> requestList, Context context) {
 		try {
 			Gson gson = new Gson();
 			String jsonStr = gson.toJson(requestList);
@@ -92,6 +103,12 @@ public class FileIOUtil {
 		}
 	}
 
+	/**
+	 * Load request from file array list.
+	 *
+	 * @param context the context
+	 * @return the array list of requests
+	 */
 	public static ArrayList<Request> loadRequestFromFile(Context context) {
 		ArrayList<Request> requestList = new ArrayList<>();
 		try {
