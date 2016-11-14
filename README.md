@@ -7,7 +7,7 @@ A CMPUT 301 Project
 [Trello](https://trello.com/b/OjZMEk7F/cmput301)
 
 # Documentation
-[Javadoc - Host by Github Page](https://cmput301f16t18.github.io/Unter/javadoc/)
+[Javadoc - Host by Github Page](https://cmput301f16t18.github.io/Unter/)
 
 # Important Notes
 1. **Please read [Contribution Code](https://github.com/CMPUT301F16T18/Unter/wiki/Contribution-Code)**
