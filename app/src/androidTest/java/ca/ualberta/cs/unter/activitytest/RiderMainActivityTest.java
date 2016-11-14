@@ -23,8 +23,6 @@ import android.widget.EditText;
 
 import com.robotium.solo.Solo;
 
-import org.osmdroid.util.GeoPoint;
-
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.view.RiderMainActivity;
 
@@ -83,5 +81,14 @@ public class RiderMainActivityTest extends ActivityInstrumentationTestCase2<Ride
 		solo.enterText((EditText) solo.getView(R.id.editDestination), "");
 		solo.clickOnButton("Search");
 		assertTrue(solo.waitForText("Please enter an address")); // test for invalid address
+	}
+
+
+	/**
+	 * Test notify rider when request has been accepted by the driver
+	 */
+	public void testNotifyRider() {
+		solo.assertCurrentActivity("Wrong Activity", RiderMainActivity.class);
+		assertTrue("Cannot find dialog", solo.searchText("Request has been accepted"));
 	}
 }
