@@ -124,7 +124,9 @@ public class OSMapUtil {
 
         @Override
         protected void onPostExecute(GeoPoint geoPoint) {
-            listner.onTaskCompleted(geoPoint);
+            if (listner != null) {
+                listner.onTaskCompleted(geoPoint);
+            }
         }
     }
 
