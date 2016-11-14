@@ -22,6 +22,7 @@ import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
@@ -34,12 +35,18 @@ import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 
 /**
- * Created by stephen on 16-11-05.
+ * Testing suite for the FileIO system
  */
 public class FileIOTest extends ApplicationTestCase<Application> {
 
+	/**
+	 * The Signal.
+	 */
 	CountDownLatch signal = null;
 
+	/**
+	 * Instantiates a new File io test.
+	 */
 	public FileIOTest() {
 		super(Application.class);
 	}
@@ -54,7 +61,11 @@ public class FileIOTest extends ApplicationTestCase<Application> {
 		signal.countDown();
 	}
 
+	/**
+	 * Test save request in file.
+	 */
 	public void testSaveRequestInFile() {
+		// TODO - test does not pass until save properly implemented
 		GeoPoint gPoint1 = new GeoPoint(-137.8826, 58.6698);
 		GeoPoint gPoint2 = new GeoPoint(-137.4444, 62.4444);
 		Route route = new Route(gPoint1, gPoint2);
@@ -63,22 +74,41 @@ public class FileIOTest extends ApplicationTestCase<Application> {
 		PendingRequest pending = new PendingRequest("john", route);
 		requestList.add(pending);
 
-		AcceptedRequest accepted = new AcceptedRequest("don", "driver", route, 45.00);
-		requestList.add(accepted);
-
-		ConfirmedRequest confirmed = new ConfirmedRequest("rider", "driver2", route, 66.00);
-		requestList.add(confirmed);
-
-		CompletedRequest completed = new CompletedRequest("rider2", "driver3", route, 77.00);
-		requestList.add(completed);
-
 		assertFalse(requestList.isEmpty());
 
 		try {
 			FileIOUtil.saveRequestInFile(requestList, getContext());
 		} catch (Exception e) {
 			Log.i("Error", "Did not save correctly!!");
+			throw new RuntimeException();
 		}
 
+	}
+
+	/**
+	 * Test load request from file.
+	 */
+	public void testLoadRequestFromFile() {
+		// TODO - does not pass until load from file implemented fully
+		GeoPoint gPoint1 = new GeoPoint(-137.8826, 58.6698);
+		GeoPoint gPoint2 = new GeoPoint(-137.4444, 62.4444);
+		Route route = new Route(gPoint1, gPoint2);
+		ArrayList<Request> requestList = new ArrayList<>();
+
+		PendingRequest pending = new PendingRequest("john", route);
+		requestList.add(pending);
+
+		assertFalse(requestList.isEmpty());
+
+		FileIOUtil.saveRequestInFile(requestList, getContext());
+
+		ArrayList<Request> newList;
+		try {
+			newList = FileIOUtil.loadRequestFromFile(getContext());
+		} catch (Exception e) {
+			Log.i("Error", "Did not load correctly.");
+			throw new RuntimeException();
+		}
+		assertFalse(newList.isEmpty());
 	}
 }
