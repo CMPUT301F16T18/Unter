@@ -165,6 +165,9 @@ public class DriverMainActivity extends AppCompatActivity
         if (id == R.id.nav_user_profile) {
             Intent intentUserProfile = new Intent(this, EditUserProfileActivity.class);
             startActivity(intentUserProfile);
+        } else if (id == R.id.nav_car_info) {
+            Intent intent = new Intent(this, DriverCarInfoActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_request) {
             Intent intentDriverBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
             startActivity(intentDriverBrowseRequest);
