@@ -26,6 +26,8 @@
         <item>Search request by geolocation</item>
         <item>Search request by keyword</item>
     </string-array>
+    <string name="price_range">Price Range</string>
+    <string name="price_per_km_range">Price per KM Range</string>
 
     <!--EditUserProfileActivity-->
     <string name="username">User Name</string>

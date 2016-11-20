@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/price_range"
+        android:paddingTop="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <!--price RangeBar-->
+    <com.appyvet.rangebar.RangeBar
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rangebar__priceRange_DriverSearchRequestActivity"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        custom:tickStart="5"
+        custom:tickInterval="1"
+        custom:tickEnd="10"
+        custom:temporaryPins="false"
+        custom:pinMaxFont="10sp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/price_per_km_range"
+        android:paddingTop="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <!--price per km RangeBar-->
+    <com.appyvet.rangebar.RangeBar
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rangebar__pricePerKMRange_DriverSearchRequestActivity"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        custom:tickStart="5"
+        custom:tickInterval="1"
+        custom:tickEnd="10"
+        custom:temporaryPins="false"
+        custom:pinMaxFont="10sp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
+
+
+</LinearLayout>

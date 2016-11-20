@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +31,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+
+import com.appyvet.rangebar.RangeBar;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -53,6 +57,11 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
 
     EditText searchContextEditText;
     private Button searchButton;
+
+    private float priceRangeMin;
+    private float priceRangeMax;
+    private float pricePerKMRangeMin;
+    private float pricePerKMRangeMax;
 
     private ListView searchRequestListView;
     private ArrayAdapter<Request> searchRequestAdapter;
@@ -199,6 +208,61 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                         startActivity(intent);
                     }
         });
+        // Create & Show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void openFilterRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DriverSearchRequestActivity.this);
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View promptView = layoutInflater.inflate(R.layout.driver_filter_request_dialog, null);
+
+        RangeBar priceRangeBar = (RangeBar) promptView.findViewById(R.id.rangebar__priceRange_DriverSearchRequestActivity);
+        priceRangeBar.setTickStart(0);
+        priceRangeBar.setTickEnd(300);
+        priceRangeBar.setTickInterval(300/100.0f);
+        // Sets the display values of the indices
+        priceRangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
+                                              int rightPinIndex,
+                                              String leftPinValue, String rightPinValue) {
+                // TODO use priceRangeMin, priceRangeMax later for filtering search result
+                priceRangeMin = Float.parseFloat(leftPinValue);
+                priceRangeMax = Float.parseFloat(rightPinValue);
+                Log.i("Debug1", String.format("%s", priceRangeMin));
+                Log.i("Debug2", String.format("%s", priceRangeMax));
+            }
+        });
+
+        RangeBar pricePerKMRangeBar = (RangeBar) promptView.findViewById(R.id.rangebar__pricePerKMRange_DriverSearchRequestActivity);
+        pricePerKMRangeBar.setTickStart(0);
+        pricePerKMRangeBar.setTickEnd(10);
+        pricePerKMRangeBar.setTickInterval(10/20.0f);
+        // Sets the display values of the indices
+        pricePerKMRangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
+                                              int rightPinIndex,
+                                              String leftPinValue, String rightPinValue) {
+                // TODO use pricePerKMRangeMin, pricePerKMRangeMin later for filtering search result
+                pricePerKMRangeMin = Float.parseFloat(leftPinValue);
+                pricePerKMRangeMax = Float.parseFloat(rightPinValue);
+                Log.i("Debug3", String.format("%s", pricePerKMRangeMin));
+                Log.i("Debug4", String.format("%s", pricePerKMRangeMax));
+            }
+        });
+
+        builder.setTitle("Filter Request")
+                .setView(promptView)
+                .setPositiveButton(R.string.dialog_ok_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+
         // Create & Show the AlertDialog
         AlertDialog dialog = builder.create();
         dialog.show();
