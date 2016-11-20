@@ -36,6 +36,7 @@ import android.widget.Spinner;
 import com.appyvet.rangebar.RangeBar;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.R;
@@ -59,10 +60,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     private Button searchButton;
     private Button filterButton;
 
-    private float priceRangeMin;
-    private float priceRangeMax;
-    private float pricePerKMRangeMin;
-    private float pricePerKMRangeMax;
+    private double priceRangeMin = 0.00;
+    private double priceRangeMax = 300.00;
+    private double pricePerKMRangeMin = 0.00;
+    private double pricePerKMRangeMax = 10.00;
 
     private ListView searchRequestListView;
     private ArrayAdapter<Request> searchRequestAdapter;
@@ -191,6 +192,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         }
     }
 
+    /**
+     * A dialog that allow user to view request info
+     * @param request the request
+     */
     private void openRequestInfoDialog(final Request request) {
         // TODO get estimated fare price and description of the request
         String estimatedFare = request.getEstimatedFare().toString();   // replace 100 with estimated price
@@ -230,6 +235,9 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         dialog.show();
     }
 
+    /**
+     * A dialog that allow user to filter the request
+     */
     private void openFilterRequestDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverSearchRequestActivity.this);
 
@@ -249,12 +257,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                 // TODO use priceRangeMin, priceRangeMax later for filtering search result
                 priceRangeMin = Float.parseFloat(leftPinValue);
                 priceRangeMax = Float.parseFloat(rightPinValue);
-                Log.i("Debug1", String.format("%s", priceRangeMin));
-                Log.i("Debug2", String.format("%s", priceRangeMax));
             }
         });
 
-        RangeBar pricePerKMRangeBar = (RangeBar) promptView.findViewById(R.id.rangebar__pricePerKMRange_DriverSearchRequestActivity);
+        RangeBar pricePerKMRangeBar = (RangeBar) promptView.findViewById(R.id.rangebar_priceperkmrange_driversearchrequestactivity);
         pricePerKMRangeBar.setTickStart(0);
         pricePerKMRangeBar.setTickEnd(10);
         pricePerKMRangeBar.setTickInterval(10 / 20.0f);
@@ -267,8 +273,6 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                 // TODO use pricePerKMRangeMin, pricePerKMRangeMin later for filtering search result
                 pricePerKMRangeMin = Float.parseFloat(leftPinValue);
                 pricePerKMRangeMax = Float.parseFloat(rightPinValue);
-                Log.i("Debug3", String.format("%s", pricePerKMRangeMin));
-                Log.i("Debug4", String.format("%s", pricePerKMRangeMax));
             }
         });
 
@@ -277,6 +281,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                 .setPositiveButton(R.string.dialog_ok_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        filterRequestList(priceRangeMin, priceRangeMax, pricePerKMRangeMin, pricePerKMRangeMax);
                     }
                 }).setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
@@ -285,11 +290,35 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
                     }
                 });
 
-        // Create & Show the AlertDialog
+        // Create & Show the FilterDialog
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
+    /**
+     * Filter the request list
+     * @param minPrice the min price
+     * @param maxPrice the max price
+     * @param minPricePerKM the min price per kilometer
+     * @param maxPricePerKM the max price per kilometer
+     */
+    private void filterRequestList(double minPrice, double maxPrice, double minPricePerKM, double maxPricePerKM) {
+        Iterator<Request> ite = searchRequestList.iterator();
+        Log.i("Debug",String.format("%.6f, %.6f, %.6f, %.6f, ", minPrice, maxPrice, minPricePerKM, maxPricePerKM));
+        while (ite.hasNext()) {
+            Request r = ite.next();
+            double fare = r.getEstimatedFare();
+            double farePerKM = fare / r.getDistance();
+            // remove item that does not fit the range
+            if (!(fare >= minPrice && fare <= maxPrice && farePerKM >= minPricePerKM && farePerKM <= maxPricePerKM)) {
+                ite.remove();
+            }
+        }
+        // update
+        updateRequest();
+    }
+
+    // Update method
     private void updateRequest() {
         searchRequestAdapter.clear();
         searchRequestAdapter.addAll(searchRequestList);
