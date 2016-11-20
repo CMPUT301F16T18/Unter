@@ -28,7 +28,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,8 +74,10 @@ public class RiderMainActivity extends AppCompatActivity
     private EditText searchDestinationLocationEditText;
     private Button searchDepartureButton;
     private Button searchDestinationButton;
+
     protected GeoPoint departureLocation;
     protected GeoPoint destinationLocation;
+
     private MapView map;
     private User rider;
     private Marker startMarker;
@@ -303,21 +304,16 @@ public class RiderMainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // TODO send request to drivers
-                        String searchStartLocation = searchDepartureLocationEditText.getText().toString().trim();
-                        String searchEndLocation = searchDestinationLocationEditText.getText().toString().trim();
                         String description = descriptionEditText.getText().toString();
                         double fare = Double.parseDouble(fareEditText.getText().toString());
-                        if (searchStartLocation.isEmpty() || searchEndLocation.isEmpty()) {
-                            Toast.makeText(RiderMainActivity.this,
-                                    "Starting/Ending Location is empty", Toast.LENGTH_SHORT).show();
-                        } else if (fare == 0) {
+                         if (fare == 0) {
                             fareEditText.setError("Fare cannot be empty");
                         } else if (description.isEmpty()) {
                             descriptionEditText.setError("Description cannot be empty");
                         } else {
-                            Request req = new PendingRequest(rider.getUserName(),
-                                    new Route(departureLocation, destinationLocation));
-                            Log.i("Debug", String.format("%.2f", fare));
+                            Route route = new Route(departureLocation, destinationLocation);
+                            route.setDistance(distance);
+                            Request req = new PendingRequest(rider.getUserName(), route);
                             req.setEstimatedFare(fare);
                             req.setRequestDescription(description);
                             requestController.createRequest(req);

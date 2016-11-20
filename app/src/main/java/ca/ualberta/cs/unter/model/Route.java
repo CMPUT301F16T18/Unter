@@ -28,7 +28,7 @@ import org.osmdroid.util.GeoPoint;
 public class Route {
     private GeoPoint origin;
     private GeoPoint destination;
-	private transient double distance;
+	private double distance;
 
     /**
      * Instantiates a new Route.
