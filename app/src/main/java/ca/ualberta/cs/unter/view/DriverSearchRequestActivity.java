@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -51,8 +52,9 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     private Spinner searchOptionSpinner;
     private ArrayAdapter<CharSequence> searchOptionAdapter;
 
-    EditText searchContextEditText;
+    private EditText searchContextEditText;
     private Button searchButton;
+    private Button filterButton;
 
     private ListView searchRequestListView;
     private ArrayAdapter<Request> searchRequestAdapter;
@@ -61,7 +63,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     private int searchOption;
     private User driver;
 
-    // Requestcontroller for searching result
+    // Request controller for searching result
     private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
@@ -114,6 +116,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         assert searchButton != null;
         searchButton.setOnClickListener(this);
 
+        filterButton = (Button) findViewById(R.id.button_filter_driversearchrequestactivity);
+        assert filterButton != null;
+        filterButton.setOnClickListener(this);
+
         searchRequestListView = (ListView) findViewById(R.id.listView_searchList_DriverSearchRequestActivity);
         searchRequestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -146,6 +152,11 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     @Override
     public void onClick(View view) {
         if (view == searchButton) {
+            String address = searchContextEditText.getText().toString();
+            if (TextUtils.isEmpty(address)) {
+                searchContextEditText.setError("Address cannot be empty");
+                return;
+            }
             if (searchOption == 0) {
                 // If search by geolocation
                 OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext());
@@ -161,6 +172,13 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
             } else if (searchOption == 1) {
                 // If search by keyword
                 requestController.searchRequestByKeyword(searchContextEditText.getText().toString(), driver.getUserName());
+            }
+        } else if (view == filterButton) {
+            if (searchRequestList == null || searchRequestList.isEmpty()) {
+                searchContextEditText.setError("Just search something");
+            } else if (!searchRequestList.isEmpty()) {
+                // TODO open filter dialog
+                return;
             }
         }
     }

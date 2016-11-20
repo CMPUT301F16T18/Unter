@@ -17,8 +17,6 @@
 
 package ca.ualberta.cs.unter.controller;
 
-import android.util.Log;
-
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
@@ -117,7 +115,6 @@ public class RequestController {
     // http://stackoverflow.com/questions/36805014/how-to-merge-geo-distance-filter-with-bool-term-query
     // Author: Val
     public void searchRequestByGeoLocation(GeoPoint location, String driverUserName) {
-        Log.i("Debug", location.toString());
         String query = String.format(
                         "{\n" +
                         "    \"filter\": {\n" +
