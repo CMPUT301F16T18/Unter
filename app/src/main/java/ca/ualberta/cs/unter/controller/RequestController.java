@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
 
@@ -39,6 +40,7 @@ public class RequestController {
      * The Listener, callback method when the async task is done
      */
     public OnAsyncTaskCompleted listener;
+    public OnAsyncTaskFailure offlineHandler;
 
     /**
      * Instantiates a new Request controller.
@@ -49,13 +51,18 @@ public class RequestController {
         this.listener = listener;
     }
 
+    public RequestController(OnAsyncTaskCompleted listener, OnAsyncTaskFailure offlineHandler) {
+        this.listener = listener;
+        this.offlineHandler = offlineHandler;
+    }
+
     /**
      * Create a new request and send it to the server
      *
      * @param request The request to be created
      */
     public void createRequest(Request request) {
-        Request.CreateRequestTask task = new Request.CreateRequestTask(listener);
+        Request.CreateRequestTask task = new Request.CreateRequestTask(listener, offlineHandler);
         try {
             request.setID(UUID.randomUUID().toString());
             task.execute(request);
@@ -71,7 +78,7 @@ public class RequestController {
      * @param request The request to be updated
      */
     public void updateRequest(Request request) {
-        Request.UpdateRequestTask task = new Request.UpdateRequestTask(listener);
+        Request.UpdateRequestTask task = new Request.UpdateRequestTask(listener, offlineHandler);
         task.execute(request);
     }
 

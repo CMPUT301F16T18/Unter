@@ -14,25 +14,8 @@
  * limitations under the License.
  */
 
-package ca.ualberta.cs.unter.exception;
+package ca.ualberta.cs.unter.model;
 
-/**
- * The type Request exception.
- */
-public class RequestException extends Exception {
-    /**
-     * Instantiates a new Request exception.
-     */
-    public RequestException() {
-
-    }
-
-    /**
-     * Instantiates a new Request exception.
-     *
-     * @param message the message
-     */
-    public RequestException(String message) {
-        super(message);
-    }
+public interface OnAsyncTaskFailure {
+    void onTaskFailed(Object o);
 }

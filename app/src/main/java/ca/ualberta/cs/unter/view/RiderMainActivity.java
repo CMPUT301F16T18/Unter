@@ -47,18 +47,21 @@ import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.Route;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.PendingRequest;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 /**
  * Main activity of rider that could browse locatoin on map,
@@ -85,12 +88,18 @@ public class RiderMainActivity extends AppCompatActivity
     private Road[] mRoads;
     private double distance;
 
-    private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
-        @Override
-        public void onTaskCompleted(Object o) {
+    private ArrayList<Request> offlineRequestList = new ArrayList<>();
 
-        }
-    });
+    private RequestController requestController = new RequestController(
+            null,
+            new OnAsyncTaskFailure() {
+                @Override
+                public void onTaskFailed(Object o) {
+                    Toast.makeText(getApplication(), "Device offline", Toast.LENGTH_SHORT).show();
+                    offlineRequestList.add((Request) o);
+                    FileIOUtil.saveOfflineRequestInFile((Request) o, getApplicationContext());
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +136,7 @@ public class RiderMainActivity extends AppCompatActivity
                             public void onTaskCompleted(Object o) {
                                 // Call back method after the coordinate is obtained
                                 // drop a marker on the map once the location is obtain // done
+                                if (o == null) return; // In case fail to get coordinate
                                 departureLocation = (GeoPoint) o;
 
                                 startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
@@ -155,6 +165,7 @@ public class RiderMainActivity extends AppCompatActivity
                                 // Call back method after the coordinate is obtained
                                 // drop a marker on the map once the location is obtained
                                 // also the route
+                                if (o == null) return; // In case fail to get coordinate
                                 destinationLocation = (GeoPoint) o;
                                 endMarker = createMarker(destinationLocation, "Drop-Off");  // hard-coded string for now
                                 map.getOverlays().add(endMarker);
@@ -204,6 +215,8 @@ public class RiderMainActivity extends AppCompatActivity
         // Set text
         username.setText(rider.getUserName());
         email.setText(rider.getEmailAddress());
+
+        updateOfflineRequest();
     }
 
     // http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
@@ -306,7 +319,7 @@ public class RiderMainActivity extends AppCompatActivity
                         // TODO send request to drivers
                         String description = descriptionEditText.getText().toString();
                         double fare = Double.parseDouble(fareEditText.getText().toString());
-                         if (fare == 0) {
+                        if (fare == 0) {
                             fareEditText.setError("Fare cannot be empty");
                         } else if (description.isEmpty()) {
                             descriptionEditText.setError("Description cannot be empty");
@@ -317,6 +330,9 @@ public class RiderMainActivity extends AppCompatActivity
                             req.setEstimatedFare(fare);
                             req.setRequestDescription(description);
                             requestController.createRequest(req);
+                            // clean up filed after it's done
+                            searchDepartureLocationEditText.setText("");
+                            searchDestinationLocationEditText.setText("");
                         }
                     }
                 });
@@ -355,7 +371,7 @@ public class RiderMainActivity extends AppCompatActivity
      * Create a point marker on the map
      * @param geoPoint the geolocatoin of the point
      * @param title the title to display
-     * @return
+     * @return the marker
      */
     public Marker createMarker(GeoPoint geoPoint, String title) {
         Marker marker = new Marker(map);
@@ -366,7 +382,7 @@ public class RiderMainActivity extends AppCompatActivity
     }
 
     /**
-     * An async task
+     * An async task to draw road on map
      */
     private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
         @Override
@@ -396,4 +412,12 @@ public class RiderMainActivity extends AppCompatActivity
         }
     };
 
+    protected void updateOfflineRequest() {
+        ArrayList<String> offlineList = RequestUtil.getOfflineRequestList(getApplicationContext());
+        if (offlineList == null) return;
+        offlineRequestList = FileIOUtil.loadRequestFromFile(getApplicationContext(), offlineList);
+        for (Request r : offlineRequestList) {
+            requestController.createRequest(r);
+        }
+    }
 }

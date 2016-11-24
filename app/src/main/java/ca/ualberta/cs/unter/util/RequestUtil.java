@@ -19,7 +19,11 @@ package ca.ualberta.cs.unter.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import android.content.Context;
+
 import org.osmdroid.util.GeoPoint;
+
+import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
@@ -41,5 +45,24 @@ public class RequestUtil {
 
     public static Gson customGsonBuilder() {
         return new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
+    }
+
+    public static String generateOfflineRequestFileName(Request request) {
+        return "offline-" + request.getID() + ".json";
+    }
+
+    public static String generateRequestFileName(Request request) {
+        return request.getID() + ".json";
+    }
+
+    public static ArrayList<String> getOfflineRequestList(Context context) {
+        String[] fileList = context.fileList();
+        ArrayList<String> offlineRequestFileList = new ArrayList<>();
+        for (String f : fileList) {
+            if (f != null && f.startsWith("offline-")) {
+                offlineRequestFileList.add(f);
+            }
+        }
+        return offlineRequestFileList;
     }
 }
