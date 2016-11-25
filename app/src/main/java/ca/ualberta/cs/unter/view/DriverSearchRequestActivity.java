@@ -34,6 +34,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.appyvet.rangebar.RangeBar;
+import com.novoda.merlin.Merlin;
+import com.novoda.merlin.NetworkStatus;
+import com.novoda.merlin.registerable.bind.Bindable;
+import com.novoda.merlin.registerable.connection.Connectable;
+import com.novoda.merlin.registerable.disconnection.Disconnectable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,6 +47,7 @@ import java.util.concurrent.ExecutionException;
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
@@ -51,7 +57,8 @@ import ca.ualberta.cs.unter.util.RequestUtil;
 /**
  * Activity that driver can search for request and browse the map and accept it
  */
-public class DriverSearchRequestActivity extends AppCompatActivity implements View.OnClickListener {
+public class DriverSearchRequestActivity extends AppCompatActivity
+        implements View.OnClickListener, Connectable, Disconnectable, Bindable {
 
     private Spinner searchOptionSpinner;
     private ArrayAdapter<CharSequence> searchOptionAdapter;
@@ -72,6 +79,8 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
     private int searchOption;
     private User driver;
 
+    protected Merlin merlin;
+
     // Request controller for searching result
     private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
@@ -84,18 +93,38 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
 
     // Request controller for confirming request
     // TODO data consistent
-    private RequestController confirmedRequestController = new RequestController(new OnAsyncTaskCompleted() {
-        @Override
-        public void onTaskCompleted(Object o) {
-            searchRequestList.remove((Request) o);
-            updateRequest();
-        }
-    });
+    private RequestController confirmedRequestController = new RequestController(
+            new OnAsyncTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object o) {
+                    Request req = (Request) o;
+                    FileIOUtil.saveRequestInFile(req, RequestUtil.generateDriverRequestFileName(req),
+                            getApplicationContext());
+                    searchRequestList.remove(req);
+                    updateRequest();
+                }
+            },
+            new OnAsyncTaskFailure() {
+                @Override
+                public void onTaskFailed(Object o) {
+                    Request req = (Request) o;
+                    FileIOUtil.saveRequestInFile(req, RequestUtil.generateAcceptedReqestFileName(req),
+                            getApplicationContext());
+                    searchRequestList.remove(req);
+                    updateRequest();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_search_request);
+
+        // merline stuff
+        merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
+        merlin.registerConnectable(this);
+        merlin.registerDisconnectable(this);
+        merlin.registerBindable(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -145,6 +174,18 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         driver = FileIOUtil.loadUserFromFile(getApplicationContext());
         searchRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, searchRequestList);
         searchRequestListView.setAdapter(searchRequestAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        merlin.bind();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        merlin.unbind();
     }
 
     @Override
@@ -323,5 +364,28 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         searchRequestAdapter.clear();
         searchRequestAdapter.addAll(searchRequestList);
         searchRequestAdapter.notifyDataSetChanged();
+    }
+
+    protected void updateOfflineRequest() {
+        confirmedRequestController.updateDriverOfflineRequest(driver.getUserName(), this);
+    }
+
+    @Override
+    public void onBind(NetworkStatus networkStatus) {
+        if (networkStatus.isAvailable()) {
+            onConnect();
+        } else if (!networkStatus.isAvailable()) {
+            onDisconnect();
+        }
+    }
+
+    @Override
+    public void onConnect() {
+        updateOfflineRequest();
+    }
+
+    @Override
+    public void onDisconnect() {
+
     }
 }

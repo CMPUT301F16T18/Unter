@@ -104,6 +104,26 @@ public class FileIOUtil {
 		}
 	}
 
+	public static void saveRequestInFile(Request request, String fileName, Context context) {
+		try {
+			Gson gson = RequestUtil.customGsonBuilder();
+			String jsonStr = gson.toJson(request);
+			FileOutputStream fos = context.openFileOutput(fileName, 0);
+			if (fos == null) {
+				Log.i("Debug", "null fos in save request");
+			}
+			try {
+				fos.write(jsonStr.getBytes());
+			} catch (NullPointerException e) {
+				Log.i("Debug", "getBytes() threw null pointer exception");
+			}
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
 	public static void saveRiderRequestInFile(Request request, Context context) {
 		try {
 			Gson gson = RequestUtil.customGsonBuilder();

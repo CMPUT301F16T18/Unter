@@ -312,6 +312,64 @@ public class RequestController {
     }
 
     /**
+     * Get a list of driver's pending request while offline
+     * @param driverUserName the driver's user name
+     * @param context activity context
+     */
+    public void getDriverOfflinePendingRequest(String driverUserName, Context context) {
+        ArrayList<String> fileList = RequestUtil.getDriverRequestList(context);
+        if (fileList == null) return;
+        ArrayList<Request> requestsList = FileIOUtil.loadRequestFromFile(context, fileList);
+        Iterator<Request> it = requestsList.iterator();
+        while (it.hasNext()) {
+            Request r = it.next();
+            if (!r.getDriverList().contains(driverUserName)) {
+                it.remove();
+            }
+        }
+        if (requestsList.isEmpty()) return;
+        listener.onTaskCompleted(requestsList);
+    }
+
+    /**
+     * Get a list of driver's request while offline
+     * @param driverUserName the driver's user name
+     * @param context activity context
+     */
+    public void getDriverOfflineAcceptedRequest(String driverUserName, Context context) {
+        ArrayList<String> fileList = RequestUtil.getDriverRequestList(context);
+        if (fileList == null) return;
+        ArrayList<Request> requestsList = FileIOUtil.loadRequestFromFile(context, fileList);
+        Iterator<Request> it = requestsList.iterator();
+        while (it.hasNext()) {
+            Request r = it.next();
+            if (r.getDriverUserName() == null || !r.getDriverUserName().equals(driverUserName)) {
+                it.remove();
+            }
+        }
+        if (requestsList.isEmpty()) return;
+        listener.onTaskCompleted(requestsList);
+    }
+
+    /**
+     * Send driver's accepted request to the server once the device is back onelin
+     * @param driverUserName the driver's user name
+     * @param context activity context
+     */
+    public void updateDriverOfflineRequest(String driverUserName, Context context) {
+        ArrayList<String> fileList = RequestUtil.getAcceptedRequestList(context);
+        if (fileList == null) return;
+        ArrayList<Request> requestsList = FileIOUtil.loadRequestFromFile(context, fileList);
+        for (Request r : requestsList) {
+            if (r.getDriverList() == null || r.getDriverList().contains(driverUserName)) {
+                updateRequest(r);
+                // Delete file after it has been upload
+                context.deleteFile(RequestUtil.generateAcceptedReqestFileName(r));
+            }
+        }
+    }
+
+    /**
      * Driver confirm request.
      *
      * @param request        the request
