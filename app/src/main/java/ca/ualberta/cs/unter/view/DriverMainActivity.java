@@ -16,6 +16,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.novoda.merlin.NetworkStatus;
+import com.novoda.merlin.registerable.bind.Bindable;
+import com.novoda.merlin.registerable.connection.Connectable;
+import com.novoda.merlin.registerable.disconnection.Disconnectable;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -33,7 +38,9 @@ import java.util.List;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
+import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
@@ -41,12 +48,32 @@ import ca.ualberta.cs.unter.util.OSMapUtil;
 import ca.ualberta.cs.unter.util.RequestUtil;
 
 public class DriverMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, Connectable, Disconnectable, Bindable {
 
     private Request request;
     private Activity ourActivity = this;
     private MapView map;
     private Road[] mRoads;
+
+    private User driver;
+
+    private RequestController requestController = new RequestController(
+            new OnAsyncTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object o) {
+                    Request req = (Request) o;
+                    FileIOUtil.saveRequestInFile(req, RequestUtil.generateDriverRequestFileName(req),
+                            getApplicationContext());
+                }
+            },
+            new OnAsyncTaskFailure() {
+                @Override
+                public void onTaskFailed(Object o) {
+                    Request req = (Request) o;
+                    FileIOUtil.saveRequestInFile(req, RequestUtil.generateAcceptedReqestFileName(req),
+                            getApplicationContext());
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +114,8 @@ public class DriverMainActivity extends AppCompatActivity
             request = RequestUtil.deserializer(requestStr);
             drawRoute();
         }
+
+        driver = FileIOUtil.loadUserFromFile(this);
     }
 
     @Override
@@ -232,4 +261,23 @@ public class DriverMainActivity extends AppCompatActivity
             }
         }
     };
+
+    @Override
+    public void onBind(NetworkStatus networkStatus) {
+        if (networkStatus.isAvailable()) {
+            onConnect();
+        } else if (!networkStatus.isAvailable()) {
+            onDisconnect();
+        }
+    }
+
+    @Override
+    public void onConnect() {
+        requestController.updateDriverOfflineRequest(driver.getUserName(), this);
+    }
+
+    @Override
+    public void onDisconnect() {
+
+    }
 }

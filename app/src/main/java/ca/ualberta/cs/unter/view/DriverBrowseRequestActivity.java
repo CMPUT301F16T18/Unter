@@ -167,6 +167,10 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
         pendingRequestController.getDriverPendingRequest(driver.getUserName());
     }
 
+    /**
+     * Once the device went offline, try to get request list
+     * from internal storage
+     */
     protected void offlineHandler() {
         pendingRequestController.getDriverOfflinePendingRequest(driver.getUserName(), this);
         acceptedRequestController.getDriverOfflineAcceptedRequest(driver.getUserName(), this);
@@ -183,7 +187,9 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
 
     @Override
     public void onConnect() {
-
+        // try to update offline accepted request
+        pendingRequestController.updateDriverOfflineRequest(driver.getUserName(), this);
+        updateRequestList();
     }
 
     @Override

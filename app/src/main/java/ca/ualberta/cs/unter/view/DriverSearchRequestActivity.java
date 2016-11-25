@@ -366,6 +366,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity
         searchRequestAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Once the device is oneline, try to update the request to the
+     * server
+     */
     protected void updateOfflineRequest() {
         confirmedRequestController.updateDriverOfflineRequest(driver.getUserName(), this);
     }
