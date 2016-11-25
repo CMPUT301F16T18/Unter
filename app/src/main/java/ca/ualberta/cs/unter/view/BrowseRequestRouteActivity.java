@@ -45,11 +45,7 @@ public class BrowseRequestRouteActivity extends Activity {
 	private double distance;
 	private Request request;
 
-	private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
-		@Override
-		public void onTaskCompleted(Object o) {
-		}
-	});
+	private RequestController requestController = new RequestController(null);
 
     // the update method
     private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
@@ -85,7 +81,7 @@ public class BrowseRequestRouteActivity extends Activity {
                 //to avoid covering the other overlays.
             }
         }
-    };
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
