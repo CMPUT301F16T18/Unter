@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -51,6 +52,10 @@ public class RequestUtil {
         return "offline-" + request.getID() + ".json";
     }
 
+    public static String generateRiderRequestFileName(Request request) {
+        return "rider-" + request.getID() + ".json";
+    }
+
     public static String generateRequestFileName(Request request) {
         return request.getID() + ".json";
     }
@@ -64,5 +69,17 @@ public class RequestUtil {
             }
         }
         return offlineRequestFileList;
+    }
+
+    public static ArrayList<String> getRiderRequestList(Context context) {
+        String[] fileList = context.fileList();
+        ArrayList<String> offlineAcceptedRequestFileList = new ArrayList<>();
+        for (String f : fileList) {
+            if (f != null && f.startsWith("rider-")) {
+                Log.i("Debug", f);
+                offlineAcceptedRequestFileList.add(f);
+            }
+        }
+        return offlineAcceptedRequestFileList;
     }
 }

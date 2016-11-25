@@ -17,10 +17,12 @@
 
 package ca.ualberta.cs.unter.controller;
 
+import android.content.Context;
+
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.exception.RequestException;
@@ -28,6 +30,8 @@ import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
+import ca.ualberta.cs.unter.util.FileIOUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 
 /**
@@ -64,7 +68,7 @@ public class RequestController {
     public void createRequest(Request request) {
         Request.CreateRequestTask task = new Request.CreateRequestTask(listener, offlineHandler);
         try {
-            request.setID(UUID.randomUUID().toString());
+//            request.setID(UUID.randomUUID().toString());
             task.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,6 +294,21 @@ public class RequestController {
                         "}", riderUserName);
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
+    }
+
+    public void getRiderOfflineRequest(String riderUserName, Context context) {
+        ArrayList<String> fileList = RequestUtil.getRiderRequestList(context);
+        if (fileList == null) return;
+        ArrayList<Request> requestsList = FileIOUtil.loadRequestFromFile(context, fileList);
+        Iterator<Request> it = requestsList.iterator();
+        while (it.hasNext()) {
+            Request r = it.next();
+            if (!r.getRiderUserName().equals(riderUserName)) {
+                it.remove();
+            }
+        }
+        if (requestsList.isEmpty()) return;
+        listener.onTaskCompleted(requestsList);
     }
 
     /**

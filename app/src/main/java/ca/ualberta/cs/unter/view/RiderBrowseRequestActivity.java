@@ -29,6 +29,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.novoda.merlin.Merlin;
+import com.novoda.merlin.NetworkStatus;
+import com.novoda.merlin.registerable.bind.Bindable;
+import com.novoda.merlin.registerable.connection.Connectable;
+import com.novoda.merlin.registerable.disconnection.Disconnectable;
+
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.R;
@@ -44,7 +50,7 @@ import ca.ualberta.cs.unter.util.RequestUtil;
  * including completed request and the reuqest that
  * the rider currently envolve
  */
-public class RiderBrowseRequestActivity extends AppCompatActivity {
+public class RiderBrowseRequestActivity extends AppCompatActivity implements Connectable, Disconnectable, Bindable{
 
     private ListView inProgressRequestListView;
     private ListView completedRequestListView;
@@ -68,6 +74,8 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
     private RequestController confirmRequestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
+            // save it locally afterware
+            FileIOUtil.saveRiderRequestInFile((Request) o, getApplicationContext());
             updateRequest();
         }
     });
@@ -84,10 +92,18 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
 
     private User rider;
 
+    protected Merlin merlin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_browse_request);
+
+        // merline stuff
+        merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
+        merlin.registerConnectable(this);
+        merlin.registerDisconnectable(this);
+        merlin.registerBindable(this);
 
         // Back button on action bar
         assert getSupportActionBar() != null;
@@ -131,6 +147,18 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         inProgressRequestListView.setAdapter(inProgressRequestAdapter);
         completedRequestListView.setAdapter(completedRequestAdapter);
         updateRequest();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        merlin.bind();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        merlin.unbind();
     }
 
     @Override
@@ -213,5 +241,25 @@ public class RiderBrowseRequestActivity extends AppCompatActivity {
         Log.i("Debug", rider.getUserName());
         inProgressRequestController.getRiderInProgressRequest(rider.getUserName());
         completedRequestController.getRiderCompletedRequest(rider.getUserName());
+    }
+
+    @Override
+    public void onBind(NetworkStatus networkStatus) {
+        if (networkStatus.isAvailable()) {
+            onConnect();
+        } else if (!networkStatus.isAvailable()) {
+            onDisconnect();
+        }
+    }
+
+    @Override
+    public void onDisconnect() {
+        Log.i("Debug", "Offline");
+        inProgressRequestController.getRiderOfflineRequest(rider.getUserName(), this);
+    }
+
+    @Override
+    public void onConnect() {
+
     }
 }

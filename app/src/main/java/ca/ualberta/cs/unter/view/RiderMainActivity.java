@@ -28,6 +28,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.novoda.merlin.Merlin;
+import com.novoda.merlin.NetworkStatus;
+import com.novoda.merlin.registerable.bind.Bindable;
+import com.novoda.merlin.registerable.connection.Connectable;
+import com.novoda.merlin.registerable.disconnection.Disconnectable;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.Road;
@@ -49,6 +56,7 @@ import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
@@ -71,7 +79,7 @@ import ca.ualberta.cs.unter.util.RequestUtil;
  * for OSM to render.
  */
 public class RiderMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, Connectable, Disconnectable, Bindable {
 
     private EditText searchDepartureLocationEditText;
     private EditText searchDestinationLocationEditText;
@@ -88,10 +96,17 @@ public class RiderMainActivity extends AppCompatActivity
     private Road[] mRoads;
     private double distance;
 
+    protected Merlin merlin;
+
     private ArrayList<Request> offlineRequestList = new ArrayList<>();
 
     private RequestController requestController = new RequestController(
-            null,
+            new OnAsyncTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object o) {
+                    FileIOUtil.saveRiderRequestInFile((Request) o, getApplicationContext());
+                }
+            },
             new OnAsyncTaskFailure() {
                 @Override
                 public void onTaskFailed(Object o) {
@@ -105,6 +120,12 @@ public class RiderMainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
+
+        // merline stuff
+        merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
+        merlin.registerConnectable(this);
+        merlin.registerDisconnectable(this);
+        merlin.registerBindable(this);
 
         // map stuff
         map = (MapView) findViewById(R.id.map);
@@ -215,8 +236,6 @@ public class RiderMainActivity extends AppCompatActivity
         // Set text
         username.setText(rider.getUserName());
         email.setText(rider.getEmailAddress());
-
-        updateOfflineRequest();
     }
 
     // http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
@@ -229,6 +248,18 @@ public class RiderMainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        merlin.bind();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        merlin.unbind();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -329,6 +360,7 @@ public class RiderMainActivity extends AppCompatActivity
                             Request req = new PendingRequest(rider.getUserName(), route);
                             req.setEstimatedFare(fare);
                             req.setRequestDescription(description);
+                            req.setID(UUID.randomUUID().toString());
                             requestController.createRequest(req);
                             // clean up filed after it's done
                             searchDepartureLocationEditText.setText("");
@@ -417,7 +449,30 @@ public class RiderMainActivity extends AppCompatActivity
         if (offlineList == null) return;
         offlineRequestList = FileIOUtil.loadRequestFromFile(getApplicationContext(), offlineList);
         for (Request r : offlineRequestList) {
-            requestController.createRequest(r);
+            if (r.getRiderUserName().equals(rider.getUserName())) {
+                requestController.createRequest(r);
+                deleteFile(RequestUtil.generateOfflineRequestFileName(r));
+            }
         }
+    }
+
+    @Override
+    public void onBind(NetworkStatus networkStatus) {
+        if (!networkStatus.isAvailable()) {
+            onDisconnect();
+        } else if (networkStatus.isAvailable()) {
+            onConnect();
+        }
+    }
+
+    @Override
+    public void onConnect() {
+        Log.i("Debug", "Connected");
+        updateOfflineRequest();
+    }
+
+    @Override
+    public void onDisconnect() {
+        Log.i("Debug", "Disconnect");
     }
 }
