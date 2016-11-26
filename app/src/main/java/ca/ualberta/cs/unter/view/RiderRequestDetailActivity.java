@@ -2,6 +2,7 @@ package ca.ualberta.cs.unter.view;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -172,8 +174,6 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         View promptView = layoutInflater.inflate(R.layout.rider_choose_acceptance_dialog, null);
         Button mobileButton = (Button) promptView.findViewById(R.id.button__callMobile_RiderRequestDetailActivity);
         Button emailButton = (Button) promptView.findViewById(R.id.button__sendEmail_RiderRequestDetailActivity);
-        Button acceptButton = (Button) promptView.findViewById(R.id.button__confirmAcceptance_RiderRequestDetailActivity);
-        Button cancelButton = (Button) promptView.findViewById(R.id.button__cancel_RiderRequestDetailActivity);
 
         // click to make a phone call
         // http://stackoverflow.com/questions/4816683/how-to-make-a-phone-call-programatically
@@ -184,7 +184,7 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
                 if (ActivityCompat.checkSelfPermission(RiderRequestDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                startActivity(intentCall);
+                startActivity(Intent.createChooser(intentCall, "Select Phone Call App :"));
             }
         });
 
@@ -200,32 +200,28 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
             }
         });
 
-        acceptButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                // TODO confirm driver's acceptance, driver will be notified
-                // TODO modify acceptedDriverList so that only this driver's acceptance will appear on acceptanceListView
-                try {
-                    requestController.riderConfirmDriver(request, driverUserName);
-                } catch (RequestException e) {
-                    Toast.makeText(activity, "The request has not been confirmed by any driver", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         builder.setTitle("Confirm Acceptance")
                 .setMessage("Driver's Information\n"
                         + "Name: " + driverName)
-                .setView(promptView);
+                .setView(promptView)
+                .setPositiveButton(R.string.dialog_confirm_acceptance_button, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // TODO confirm driver's acceptance, driver will be notified
+                        // TODO modify acceptedDriverList so that only this driver's acceptance will appear on acceptanceListView
+                        try {
+                            requestController.riderConfirmDriver(request, driverUserName);
+                        } catch (RequestException e) {
+                            Toast.makeText(activity, "The request has not been confirmed by any driver", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
 
         // Create & Show the AlertDialog
-        final AlertDialog dialog = builder.create();
-
-        // http://stackoverflow.com/questions/4053395/android-dialog-cancel-button
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        AlertDialog dialog = builder.create();
         dialog.show();
     }
 
