@@ -167,4 +167,19 @@ public class FileIOUtil {
 		}
 		return requestList;
 	}
+
+	public static Request loadSingleRequestFromFile(String fileName, Context context) {
+		Request request = new NormalRequest();
+		FileInputStream fis = null;
+		Gson gson = RequestUtil.customGsonBuilder();
+		try {
+			fis = context.openFileInput(fileName);
+			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+			request = gson.fromJson(in, NormalRequest.class);
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return request;
+	}
 }

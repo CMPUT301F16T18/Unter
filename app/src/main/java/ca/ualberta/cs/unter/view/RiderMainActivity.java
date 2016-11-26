@@ -116,6 +116,14 @@ public class RiderMainActivity extends AppCompatActivity
                 }
             });
 
+    private RequestController acceptedRequestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            ArrayList<Request> acceptedRequestList = (ArrayList<Request>) o;
+            checkAccepted(acceptedRequestList);
+        }
+    }, null);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -236,6 +244,8 @@ public class RiderMainActivity extends AppCompatActivity
         // Set text
         username.setText(rider.getUserName());
         email.setText(rider.getEmailAddress());
+
+        acceptedRequestController.getRiderInProgressRequest(rider.getUserName());
     }
 
     // http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
@@ -376,10 +386,10 @@ public class RiderMainActivity extends AppCompatActivity
     // TODO call openRiderNotifiedRequestDialog() when a request is accepted by a driver
 
     // pops up on RiderMainActivity when a request is accepted by a driver
-    private void openRiderNotifiedRequestDialog() {
+    private void openRiderNotifiedRequestDialog(final Request request) {
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
         builder.setTitle("Request Status Message")
-                .setMessage("Request XX is Accepted by a Driver.!\n " +
+                .setMessage("Request has been Accepted by a Driver.!\n " +
                         "Click on View Request Button to View Request Details.")  // TODO replace XX with actual request ID
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
@@ -390,8 +400,9 @@ public class RiderMainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // intent RiderRequestDetailActivity
-                        Intent intentRiderRequestDetail = new Intent(RiderMainActivity.this, RiderRequestDetailActivity.class);
-                        startActivity(intentRiderRequestDetail);
+                        Intent intent = new Intent(RiderMainActivity.this, RiderRequestDetailActivity.class);
+                        intent.putExtra("request", RequestUtil.serializer(request));
+                        startActivity(intent);
                     }
                 });
         // Create & Show the AlertDialog
@@ -452,6 +463,20 @@ public class RiderMainActivity extends AppCompatActivity
             if (r.getRiderUserName().equals(rider.getUserName())) {
                 requestController.createRequest(r);
                 deleteFile(RequestUtil.generateOfflineRequestFileName(r));
+            }
+        }
+    }
+
+    protected void checkAccepted(ArrayList<Request> requestsList) {
+        ArrayList<String> fileList = RequestUtil.getRiderRequestList(this);
+        if (fileList == null) return;
+        for (Request r : requestsList) {
+            // if request has been confirmed by a driver
+            if (r.getDriverList() != null && r.getDriverUserName() == null) {
+                Request req = FileIOUtil.loadSingleRequestFromFile(RequestUtil.generateRiderRequestFileName(r), this);
+                if (!req.equals(r)) {
+                    openRiderNotifiedRequestDialog(r);
+                }
             }
         }
     }
