@@ -1,13 +1,13 @@
 package ca.ualberta.cs.unter.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,11 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.novoda.merlin.NetworkStatus;
-import com.novoda.merlin.registerable.bind.Bindable;
-import com.novoda.merlin.registerable.connection.Connectable;
-import com.novoda.merlin.registerable.disconnection.Disconnectable;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.Road;
@@ -38,9 +33,7 @@ import java.util.List;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
-import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
-import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
@@ -48,39 +41,12 @@ import ca.ualberta.cs.unter.util.OSMapUtil;
 import ca.ualberta.cs.unter.util.RequestUtil;
 
 public class DriverMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, Connectable, Disconnectable, Bindable {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private Request request;
     private Activity ourActivity = this;
     private MapView map;
     private Road[] mRoads;
-
-    private User driver;
-
-    private RequestController requestController = new RequestController(
-            new OnAsyncTaskCompleted() {
-                @Override
-                public void onTaskCompleted(Object o) {
-                    Request req = (Request) o;
-                    FileIOUtil.saveRequestInFile(req, RequestUtil.generateDriverRequestFileName(req),
-                            getApplicationContext());
-                }
-            },
-            new OnAsyncTaskFailure() {
-                @Override
-                public void onTaskFailed(Object o) {
-                    Request req = (Request) o;
-                    FileIOUtil.saveRequestInFile(req, RequestUtil.generateAcceptedReqestFileName(req),
-                            getApplicationContext());
-                }
-            });
-
-    private RequestController acceptedRequestController = new RequestController(new OnAsyncTaskCompleted() {
-        @Override
-        public void onTaskCompleted(Object o) {
-            checkAccepted((ArrayList<Request>) o);
-        }
-    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +74,7 @@ public class DriverMainActivity extends AppCompatActivity
         TextView email = (TextView) navHeader.findViewById(R.id.nav_drawer_driver_email);
 
         // Get user profile
-        driver = FileIOUtil.loadUserFromFile(getApplicationContext());
+        User driver = FileIOUtil.loadUserFromFile(getApplicationContext());
 
         // Set drawer text
         username.setText(driver.getUserName());
@@ -121,8 +87,6 @@ public class DriverMainActivity extends AppCompatActivity
             request = RequestUtil.deserializer(requestStr);
             drawRoute();
         }
-
-        acceptedRequestController.getDriverAcceptedRequest(driver.getUserName());
     }
 
     @Override
@@ -201,9 +165,6 @@ public class DriverMainActivity extends AppCompatActivity
         if (id == R.id.nav_user_profile) {
             Intent intentUserProfile = new Intent(this, EditUserProfileActivity.class);
             startActivity(intentUserProfile);
-        } else if (id == R.id.nav_car_info) {
-            Intent intent = new Intent(this, DriverCarInfoActivity.class);
-            startActivity(intent);
         } else if (id == R.id.nav_request) {
             Intent intentDriverBrowseRequest = new Intent(this, DriverBrowseRequestActivity.class);
             startActivity(intentDriverBrowseRequest);
@@ -225,16 +186,14 @@ public class DriverMainActivity extends AppCompatActivity
     }
 
     // TODO call openDriverNotifyAcceptedDialog() when a request is accepted by a rider
-    // Dialog that notifies driver the requeset has been confirmed by the rider
+
     private void openDriverNotifyAcceptedDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverMainActivity.this);
         builder.setTitle("Rider Acceptance Notification")
-                .setMessage("Request has been Confirmed!")
+                .setMessage("Request XX is Accepted!")  // TODO replace XX with actual request ID
                 .setNeutralButton(R.string.dialog_ok_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(DriverMainActivity.this, DriverBrowseRequestActivity.class);
-                        startActivity(intent);
                     }
                 });
         // Create & Show the AlertDialog
@@ -270,38 +229,4 @@ public class DriverMainActivity extends AppCompatActivity
             }
         }
     };
-
-    @Override
-    public void onBind(NetworkStatus networkStatus) {
-        if (networkStatus.isAvailable()) {
-            onConnect();
-        } else if (!networkStatus.isAvailable()) {
-            onDisconnect();
-        }
-    }
-
-    @Override
-    public void onConnect() {
-        requestController.updateDriverOfflineRequest(driver.getUserName(), this);
-    }
-
-    @Override
-    public void onDisconnect() {
-
-    }
-
-    protected void checkAccepted(ArrayList<Request> requestsList) {
-        ArrayList<String> fileList = RequestUtil.getRiderRequestList(this);
-        if (fileList == null) return;
-        for (Request r : requestsList) {
-            // if request has been confirmed by a driver
-            if (r.getDriverUserName() != null && r.getDriverUserName().equals(driver.getUserName())) {
-                Request req = FileIOUtil.loadSingleRequestFromFile(RequestUtil.generateDriverRequestFileName(r), this);
-                if (!req.equals(r)) {
-                    FileIOUtil.saveRequestInFile(r, RequestUtil.generateDriverRequestFileName(r), this);
-                    openDriverNotifyAcceptedDialog();
-                }
-            }
-        }
-    }
 }

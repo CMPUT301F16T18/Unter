@@ -11,12 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.novoda.merlin.Merlin;
-import com.novoda.merlin.NetworkStatus;
-import com.novoda.merlin.registerable.bind.Bindable;
-import com.novoda.merlin.registerable.connection.Connectable;
-import com.novoda.merlin.registerable.disconnection.Disconnectable;
-
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.R;
@@ -31,12 +25,9 @@ import ca.ualberta.cs.unter.util.RequestUtil;
  * Activity that driver could browse for current
  * evolved request
  */
-public class DriverBrowseRequestActivity extends AppCompatActivity
-        implements Connectable, Disconnectable, Bindable {
+public class DriverBrowseRequestActivity extends AppCompatActivity {
 
     private User driver;
-
-    protected Merlin merlin;
 
     private ListView acceptedRequestListView;
     private ListView pendingRequestListView;
@@ -71,11 +62,6 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_browse_request);
 
-        merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
-        merlin.registerConnectable(this);
-        merlin.registerDisconnectable(this);
-        merlin.registerBindable(this);
-
         // Back button on action bar
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -109,18 +95,6 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
         acceptedRequestListView.setAdapter(acceptedRequestAdapter);
         pendingRequestListView.setAdapter(pendingRequestAdapter);
         updateRequestList();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        merlin.bind();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        merlin.unbind();
     }
 
     @Override
@@ -165,35 +139,5 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
     private void updateRequestList() {
         acceptedRequestController.getDriverAcceptedRequest(driver.getUserName());
         pendingRequestController.getDriverPendingRequest(driver.getUserName());
-    }
-
-    /**
-     * Once the device went offline, try to get request list
-     * from internal storage
-     */
-    protected void offlineHandler() {
-        pendingRequestController.getDriverOfflinePendingRequest(driver.getUserName(), this);
-        acceptedRequestController.getDriverOfflineAcceptedRequest(driver.getUserName(), this);
-    }
-
-    @Override
-    public void onBind(NetworkStatus networkStatus) {
-        if (networkStatus.isAvailable()) {
-            onConnect();
-        } else if (!networkStatus.isAvailable()) {
-            onDisconnect();
-        }
-    }
-
-    @Override
-    public void onConnect() {
-        // try to update offline accepted request
-        pendingRequestController.updateDriverOfflineRequest(driver.getUserName(), this);
-        updateRequestList();
-    }
-
-    @Override
-    public void onDisconnect() {
-        offlineHandler();
     }
 }

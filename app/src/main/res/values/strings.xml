@@ -13,10 +13,6 @@
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
 
-    <!--DriverCarInfoActivity-->
-    <string name="vehicle_name_input">Vehicle Name</string>
-    <string name="plate_number_input">Plate Number</string>
-
     <!--DriverMainActivity-->
     <string name="title_activity_driver_main">DriverMainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -30,8 +26,6 @@
         <item>Search request by geolocation</item>
         <item>Search request by keyword</item>
     </string-array>
-    <string name="price_range">Total Price</string>
-    <string name="price_per_km_range">Price Per km</string>
 
     <!--EditUserProfileActivity-->
     <string name="username">User Name</string>

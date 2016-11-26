@@ -43,7 +43,6 @@ public class User {
     private String mobileNumber;
     private String emailAddress;
     private String ID;
-    private Car car;
 
     private transient static JestDroidClient client;
 
@@ -357,32 +356,5 @@ public class User {
      */
     public String getID() {
         return ID;
-    }
-
-    public String getVehicleName() {
-        return this.car.getVehicleName();
-    }
-
-    public String getPlateNumber() {
-        return this.car.getPlateNumber();
-    }
-
-    public void setVehicleName(String vehicleName) {
-        car.setVehicleName(vehicleName);
-    }
-
-    public void setPlateNumber(String plateNumber) {
-        car.setPlateNumber(plateNumber);
-    }
-
-    public Car getCar() {
-        if (car == null) {
-            return null;
-        }
-        return car;
-    }
-
-    public void setCar(Car car) {
-        this.car = car;
     }
 }

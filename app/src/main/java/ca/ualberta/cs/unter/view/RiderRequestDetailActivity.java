@@ -35,7 +35,6 @@ import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
-import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
 import ca.ualberta.cs.unter.util.RequestUtil;
 import cz.msebera.android.httpclient.Header;
@@ -59,7 +58,7 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
     private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
-            FileIOUtil.saveRiderRequestInFile((Request) o, getApplicationContext());
+
         }
     });
 

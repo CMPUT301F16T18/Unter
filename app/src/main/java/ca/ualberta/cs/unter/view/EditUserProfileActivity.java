@@ -83,6 +83,7 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
         user.setUserName(username);
         user.setEmailAddress(email);
         user.setMobileNumber(mobile);
+        Log.i("Debug", user.getID());
 
         boolean validUsername = !(username.isEmpty() || username.trim().isEmpty());
         boolean validEmail = Patterns.EMAIL_ADDRESS.matcher(email).matches();

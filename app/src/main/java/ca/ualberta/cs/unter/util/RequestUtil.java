@@ -19,12 +19,7 @@ package ca.ualberta.cs.unter.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import android.content.Context;
-import android.util.Log;
-
 import org.osmdroid.util.GeoPoint;
-
-import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
@@ -46,68 +41,5 @@ public class RequestUtil {
 
     public static Gson customGsonBuilder() {
         return new GsonBuilder().registerTypeAdapter(GeoPoint.class, new GeoPointConverter()).create();
-    }
-
-    public static String generateOfflineRequestFileName(Request request) {
-        return "offline-" + request.getID() + ".json";
-    }
-
-    public static String generateAcceptedReqestFileName(Request request) {
-        return "accepted-" + request.getID() + ".json";
-    }
-
-    public static String generateRiderRequestFileName(Request request) {
-        return "rider-" + request.getID() + ".json";
-    }
-
-    public static String generateDriverRequestFileName(Request request) {
-        return "driver-" + request.getID() + ".json";
-    }
-
-    public static ArrayList<String> getOfflineRequestList(Context context) {
-        String[] fileList = context.fileList();
-        ArrayList<String> offlineRequestFileList = new ArrayList<>();
-        for (String f : fileList) {
-            if (f != null && f.startsWith("offline-")) {
-                offlineRequestFileList.add(f);
-            }
-        }
-        return offlineRequestFileList;
-    }
-
-    public static ArrayList<String> getRiderRequestList(Context context) {
-        String[] fileList = context.fileList();
-        ArrayList<String> offlineAcceptedRequestFileList = new ArrayList<>();
-        for (String f : fileList) {
-            if (f != null && f.startsWith("rider-")) {
-                Log.i("Debug", f);
-                offlineAcceptedRequestFileList.add(f);
-            }
-        }
-        return offlineAcceptedRequestFileList;
-    }
-
-    public static ArrayList<String> getDriverRequestList(Context context) {
-        String[] fileList = context.fileList();
-        ArrayList<String> offlineAcceptedRequestFileList = new ArrayList<>();
-        for (String f : fileList) {
-            if (f != null && f.startsWith("driver-")) {
-                Log.i("Debug", f);
-                offlineAcceptedRequestFileList.add(f);
-            }
-        }
-        return offlineAcceptedRequestFileList;
-    }
-
-    public static ArrayList<String> getAcceptedRequestList(Context context) {
-        String[] fileList = context.fileList();
-        ArrayList<String> offlineAcceptedRequestFileList = new ArrayList<>();
-        for (String f : fileList) {
-            if (f != null && f.startsWith("accepted-")) {
-                Log.i("Debug", f);
-                offlineAcceptedRequestFileList.add(f);
-            }
-        }
-        return offlineAcceptedRequestFileList;
     }
 }

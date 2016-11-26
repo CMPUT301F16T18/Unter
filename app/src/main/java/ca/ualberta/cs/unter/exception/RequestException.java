@@ -19,7 +19,7 @@ package ca.ualberta.cs.unter.exception;
 /**
  * The type Request exception.
  */
-public class RequestException extends Exception {
+public class RequestException extends Exception{
     /**
      * Instantiates a new Request exception.
      */

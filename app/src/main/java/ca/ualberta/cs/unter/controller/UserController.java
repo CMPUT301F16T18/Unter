@@ -103,11 +103,6 @@ public class UserController {
         }
     }
 
-    public void updateCar(User user) {
-        User.UpdateUserTask task = new User.UpdateUserTask(listener);
-        task.execute(user);
-    }
-
     /**
      * Retrive user profile from the server
      * @param username the username to search
