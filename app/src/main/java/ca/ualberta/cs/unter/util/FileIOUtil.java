@@ -25,12 +25,12 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.User;
+import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
 
 /**
@@ -78,16 +78,58 @@ public class FileIOUtil {
     }
 
 	/**
-	 * Save requestList in file.
+	 * Save request in file.
 	 *
-	 * @param requestList the arraylist of requests
-	 * @param context     the context
+	 * @param request the  requests
+	 * @param context the context
 	 */
-	public static void saveRequestInFile(ArrayList<Request> requestList, Context context) {
+	public static void saveOfflineRequestInFile(Request request, Context context) {
 		try {
-			Gson gson = new Gson();
-			String jsonStr = gson.toJson(requestList);
-			FileOutputStream fos = context.openFileOutput(UnterConstant.REQUEST_FILENAME, 0);
+			Gson gson = RequestUtil.customGsonBuilder();
+			String jsonStr = gson.toJson(request);
+			String fileName = RequestUtil.generateOfflineRequestFileName(request);
+			FileOutputStream fos = context.openFileOutput(fileName, 0);
+			if (fos == null) {
+				Log.i("Debug", "null fos in save request");
+			}
+			try {
+				fos.write(jsonStr.getBytes());
+			} catch (NullPointerException e) {
+				Log.i("Debug", "getBytes() threw null pointer exception");
+			}
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	public static void saveRequestInFile(Request request, String fileName, Context context) {
+		try {
+			Gson gson = RequestUtil.customGsonBuilder();
+			String jsonStr = gson.toJson(request);
+			FileOutputStream fos = context.openFileOutput(fileName, 0);
+			if (fos == null) {
+				Log.i("Debug", "null fos in save request");
+			}
+			try {
+				fos.write(jsonStr.getBytes());
+			} catch (NullPointerException e) {
+				Log.i("Debug", "getBytes() threw null pointer exception");
+			}
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	public static void saveRiderRequestInFile(Request request, Context context) {
+		try {
+			Gson gson = RequestUtil.customGsonBuilder();
+			String jsonStr = gson.toJson(request);
+			String fileName = RequestUtil.generateRiderRequestFileName(request);
+			FileOutputStream fos = context.openFileOutput(fileName, 0);
 			if (fos == null) {
 				Log.i("Debug", "null fos in save request");
 			}
@@ -109,17 +151,35 @@ public class FileIOUtil {
 	 * @param context the context
 	 * @return the array list of requests
 	 */
-	public static ArrayList<Request> loadRequestFromFile(Context context) {
+	public static ArrayList<Request> loadRequestFromFile(Context context, ArrayList<String> fileList) {
 		ArrayList<Request> requestList = new ArrayList<>();
-		try {
-			Gson gson = new Gson();
-			FileInputStream fis = context.openFileInput(UnterConstant.REQUEST_FILENAME);
-			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-//			requestList = gson.fromJson(in, Request.class);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			throw new RuntimeException();
+        Gson gson = RequestUtil.customGsonBuilder();
+		for (String f : fileList) {
+            FileInputStream fis = null;
+            try {
+                fis = context.openFileInput(f);
+                BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+                NormalRequest req = gson.fromJson(in, NormalRequest.class);
+                requestList.add(req);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
 		}
 		return requestList;
+	}
+
+	public static Request loadSingleRequestFromFile(String fileName, Context context) {
+		Request request = new NormalRequest();
+		FileInputStream fis = null;
+		Gson gson = RequestUtil.customGsonBuilder();
+		try {
+			fis = context.openFileInput(fileName);
+			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+			request = gson.fromJson(in, NormalRequest.class);
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return request;
 	}
 }

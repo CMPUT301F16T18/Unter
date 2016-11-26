@@ -17,18 +17,21 @@
 
 package ca.ualberta.cs.unter.controller;
 
-import android.util.Log;
+import android.content.Context;
 
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.request.NormalRequest;
 import ca.ualberta.cs.unter.model.request.Request;
+import ca.ualberta.cs.unter.util.FileIOUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 
 /**
@@ -41,6 +44,7 @@ public class RequestController {
      * The Listener, callback method when the async task is done
      */
     public OnAsyncTaskCompleted listener;
+    public OnAsyncTaskFailure offlineHandler;
 
     /**
      * Instantiates a new Request controller.
@@ -51,15 +55,20 @@ public class RequestController {
         this.listener = listener;
     }
 
+    public RequestController(OnAsyncTaskCompleted listener, OnAsyncTaskFailure offlineHandler) {
+        this.listener = listener;
+        this.offlineHandler = offlineHandler;
+    }
+
     /**
      * Create a new request and send it to the server
      *
      * @param request The request to be created
      */
     public void createRequest(Request request) {
-        Request.CreateRequestTask task = new Request.CreateRequestTask(listener);
+        Request.CreateRequestTask task = new Request.CreateRequestTask(listener, offlineHandler);
         try {
-            request.setID(UUID.randomUUID().toString());
+//            request.setID(UUID.randomUUID().toString());
             task.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,7 +82,7 @@ public class RequestController {
      * @param request The request to be updated
      */
     public void updateRequest(Request request) {
-        Request.UpdateRequestTask task = new Request.UpdateRequestTask(listener);
+        Request.UpdateRequestTask task = new Request.UpdateRequestTask(listener, offlineHandler);
         task.execute(request);
     }
 
@@ -117,7 +126,6 @@ public class RequestController {
     // http://stackoverflow.com/questions/36805014/how-to-merge-geo-distance-filter-with-bool-term-query
     // Author: Val
     public void searchRequestByGeoLocation(GeoPoint location, String driverUserName) {
-        Log.i("Debug", location.toString());
         String query = String.format(
                         "{\n" +
                         "    \"filter\": {\n" +
@@ -286,6 +294,79 @@ public class RequestController {
                         "}", riderUserName);
         Request.GetRequestsListTask task = new Request.GetRequestsListTask(listener);
         task.execute(query);
+    }
+
+    public void getRiderOfflineRequest(String riderUserName, Context context) {
+        ArrayList<String> fileList = RequestUtil.getRiderRequestList(context);
+        if (fileList == null) return;
+        ArrayList<Request> requestsList = FileIOUtil.loadRequestFromFile(context, fileList);
+        Iterator<Request> it = requestsList.iterator();
+        while (it.hasNext()) {
+            Request r = it.next();
+            if (!r.getRiderUserName().equals(riderUserName)) {
+                it.remove();
+            }
+        }
+        if (requestsList.isEmpty()) return;
+        listener.onTaskCompleted(requestsList);
+    }
+
+    /**
+     * Get a list of driver's pending request while offline
+     * @param driverUserName the driver's user name
+     * @param context activity context
+     */
+    public void getDriverOfflinePendingRequest(String driverUserName, Context context) {
+        ArrayList<String> fileList = RequestUtil.getDriverRequestList(context);
+        if (fileList == null) return;
+        ArrayList<Request> requestsList = FileIOUtil.loadRequestFromFile(context, fileList);
+        Iterator<Request> it = requestsList.iterator();
+        while (it.hasNext()) {
+            Request r = it.next();
+            if (!r.getDriverList().contains(driverUserName)) {
+                it.remove();
+            }
+        }
+        if (requestsList.isEmpty()) return;
+        listener.onTaskCompleted(requestsList);
+    }
+
+    /**
+     * Get a list of driver's request while offline
+     * @param driverUserName the driver's user name
+     * @param context activity context
+     */
+    public void getDriverOfflineAcceptedRequest(String driverUserName, Context context) {
+        ArrayList<String> fileList = RequestUtil.getDriverRequestList(context);
+        if (fileList == null) return;
+        ArrayList<Request> requestsList = FileIOUtil.loadRequestFromFile(context, fileList);
+        Iterator<Request> it = requestsList.iterator();
+        while (it.hasNext()) {
+            Request r = it.next();
+            if (r.getDriverUserName() == null || !r.getDriverUserName().equals(driverUserName)) {
+                it.remove();
+            }
+        }
+        if (requestsList.isEmpty()) return;
+        listener.onTaskCompleted(requestsList);
+    }
+
+    /**
+     * Send driver's accepted request to the server once the device is back onelin
+     * @param driverUserName the driver's user name
+     * @param context activity context
+     */
+    public void updateDriverOfflineRequest(String driverUserName, Context context) {
+        ArrayList<String> fileList = RequestUtil.getAcceptedRequestList(context);
+        if (fileList == null) return;
+        ArrayList<Request> requestsList = FileIOUtil.loadRequestFromFile(context, fileList);
+        for (Request r : requestsList) {
+            if (r.getDriverList() == null || r.getDriverList().contains(driverUserName)) {
+                updateRequest(r);
+                // Delete file after it has been upload
+                context.deleteFile(RequestUtil.generateAcceptedReqestFileName(r));
+            }
+        }
     }
 
     /**

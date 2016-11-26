@@ -14,25 +14,35 @@
  * limitations under the License.
  */
 
-package ca.ualberta.cs.unter.exception;
+package ca.ualberta.cs.unter.model;
 
 /**
- * The type Request exception.
+ * A car model that will be implement in
+ * a user model
  */
-public class RequestException extends Exception {
-    /**
-     * Instantiates a new Request exception.
-     */
-    public RequestException() {
+public class Car {
 
+    private String vehicleName;
+    private String plateNumber;
+
+    public Car(String vehicleName, String plateNumber) {
+        this.vehicleName = vehicleName;
+        this.plateNumber = plateNumber;
     }
 
-    /**
-     * Instantiates a new Request exception.
-     *
-     * @param message the message
-     */
-    public RequestException(String message) {
-        super(message);
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
+    public String getVehicleName() {
+        return vehicleName;
+    }
+
+    public void setVehicleName(String vehicleName) {
+        this.vehicleName = vehicleName;
     }
 }

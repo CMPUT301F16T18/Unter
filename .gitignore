@@ -70,6 +70,7 @@ captures/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
+.idea/vcs.xml
 
 # JIRA plugin
 atlassian-ide-plugin.xml

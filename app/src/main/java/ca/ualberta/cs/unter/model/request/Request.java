@@ -35,6 +35,7 @@ import java.util.List;
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.exception.RequestException;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.Route;
 import ca.ualberta.cs.unter.util.GeoPointConverter;
 import ca.ualberta.cs.unter.util.RequestUtil;
@@ -147,8 +148,10 @@ public abstract class Request {
          * The Listener.
          */
         public OnAsyncTaskCompleted listener;
+        public OnAsyncTaskFailure offlineHandler;
         // http://stackoverflow.com/questions/9963691/android-asynctask-sending-callbacks-to-ui
         // Author: Dmitry Zaitsev
+        private RequestException requestException;
 
         /**
          * Constructor for CreateRequestTask class
@@ -157,6 +160,16 @@ public abstract class Request {
          */
         public CreateRequestTask(OnAsyncTaskCompleted listener) {
             this.listener = listener;
+        }
+
+        /**
+         * Constructor for create request async task
+         * @param listener the customize job after the async task is done
+         * @param offlineHandler the customize job after the async task is fail
+         */
+        public CreateRequestTask(OnAsyncTaskCompleted listener, OnAsyncTaskFailure offlineHandler) {
+            this.listener = listener;
+            this.offlineHandler = offlineHandler;
         }
 
         /**
@@ -180,11 +193,12 @@ public abstract class Request {
                         Log.i("Debug", "Elastic search was not able to add the request.");
                     }
                 } catch (Exception e) {
+                    requestException = new RequestException("Application lost connection to the server");
                     Log.i("Debug", "We failed to add a request to elastic search!");
                     e.printStackTrace();
                 }
             }
-            return request;
+            return requests[0];
         }
 
         /**
@@ -194,8 +208,11 @@ public abstract class Request {
          */
         @Override
         protected void onPostExecute(Request request) {
-            if (listener != null) {
+            if (listener != null && requestException == null) {
                 listener.onTaskCompleted(request);
+            } else if (offlineHandler != null && requestException != null) {
+                Log.i("Debug", "Fail to upload");
+                offlineHandler.onTaskFailed(request);
             }
         }
     }
@@ -208,6 +225,8 @@ public abstract class Request {
          * The Listener.
          */
         public OnAsyncTaskCompleted listener;
+        public OnAsyncTaskFailure offlineHandler;
+        private RequestException requestException;
 
         /**
          * Constructor for updaterequesttask class
@@ -216,6 +235,16 @@ public abstract class Request {
          */
         public UpdateRequestTask(OnAsyncTaskCompleted listener) {
             this.listener = listener;
+        }
+
+        /**
+         * Constructor for updaterequesttask async task
+         * @param listener the customize job after the async task is done
+         * @param offlineHandler the customize job after the async task is fail
+         */
+        public UpdateRequestTask(OnAsyncTaskCompleted listener, OnAsyncTaskFailure offlineHandler) {
+            this.listener = listener;
+            this.offlineHandler = offlineHandler;
         }
 
         /**
@@ -242,9 +271,10 @@ public abstract class Request {
                     Log.i("Debug", "Elastic search was not able to add the request.");
                 }
             } catch (Exception e) {
+                requestException = new RequestException("Application lost connection to the server");
                 Log.i("Debug", "We failed to add a request to elastic search!");
                 e.printStackTrace();
-                }
+            }
             return requests[0];
         }
 
@@ -255,8 +285,11 @@ public abstract class Request {
          */
         @Override
         protected void onPostExecute(Request request) {
-            if (listener != null) {
+            if (listener != null && requestException == null) {
                 listener.onTaskCompleted(request);
+            } else if (offlineHandler != null && requestException != null) {
+                Log.i("Debug", "Fail to upload");
+                offlineHandler.onTaskFailed(request);
             }
         }
     }
@@ -351,7 +384,6 @@ public abstract class Request {
                     .addIndex("unter")
                     .addType("request")
                     .build();
-
             try {
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {

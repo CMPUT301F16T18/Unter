@@ -7,6 +7,10 @@
             android:icon="@drawable/ic_person_black_24dp"
             android:title="User Profile" />
         <item
+            android:id="@+id/nav_car_info"
+            android:icon="@drawable/ic_directions_car_black_24dp"
+            android:title="Car Info"/>
+        <item
             android:id="@+id/nav_request"
             android:icon="@drawable/ic_work_black_24dp"
             android:title="Pending/Accepted Request" />
