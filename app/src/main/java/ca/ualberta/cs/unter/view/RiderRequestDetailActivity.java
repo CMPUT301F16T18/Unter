@@ -179,13 +179,11 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         // http://stackoverflow.com/questions/4816683/how-to-make-a-phone-call-programatically
         mobileButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Log.i("Debug", "Button is clicked");
                 Intent intentCall = new Intent(Intent.ACTION_CALL);
                 intentCall.setData(Uri.parse("tel:" + Uri.parse(driverMobile)));
                 if (ActivityCompat.checkSelfPermission(RiderRequestDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-//                startActivity(intentCall);
                 startActivity(Intent.createChooser(intentCall, "Select Phone Call App :"));
             }
         });
