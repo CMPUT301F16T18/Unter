@@ -28,6 +28,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.novoda.merlin.Merlin;
+import com.novoda.merlin.NetworkStatus;
+import com.novoda.merlin.registerable.bind.Bindable;
+import com.novoda.merlin.registerable.connection.Connectable;
+import com.novoda.merlin.registerable.disconnection.Disconnectable;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.Road;
@@ -47,18 +54,22 @@ import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
+import ca.ualberta.cs.unter.model.OnAsyncTaskFailure;
 import ca.ualberta.cs.unter.model.Route;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.PendingRequest;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
+import ca.ualberta.cs.unter.util.RequestUtil;
 
 /**
  * Main activity of rider that could browse locatoin on map,
@@ -68,7 +79,7 @@ import ca.ualberta.cs.unter.util.OSMapUtil;
  * for OSM to render.
  */
 public class RiderMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, Connectable, Disconnectable, Bindable {
 
     private EditText searchDepartureLocationEditText;
     private EditText searchDestinationLocationEditText;
@@ -85,17 +96,44 @@ public class RiderMainActivity extends AppCompatActivity
     private Road[] mRoads;
     private double distance;
 
-    private RequestController requestController = new RequestController(new OnAsyncTaskCompleted() {
+    protected Merlin merlin;
+
+    private ArrayList<Request> offlineRequestList = new ArrayList<>();
+
+    private RequestController requestController = new RequestController(
+            new OnAsyncTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object o) {
+                    FileIOUtil.saveRiderRequestInFile((Request) o, getApplicationContext());
+                }
+            },
+            new OnAsyncTaskFailure() {
+                @Override
+                public void onTaskFailed(Object o) {
+                    Toast.makeText(getApplication(), "Device offline", Toast.LENGTH_SHORT).show();
+                    offlineRequestList.add((Request) o);
+                    FileIOUtil.saveOfflineRequestInFile((Request) o, getApplicationContext());
+                }
+            });
+
+    private RequestController acceptedRequestController = new RequestController(new OnAsyncTaskCompleted() {
         @Override
         public void onTaskCompleted(Object o) {
-
+            ArrayList<Request> acceptedRequestList = (ArrayList<Request>) o;
+            checkAccepted(acceptedRequestList);
         }
-    });
+    }, null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
+
+        // merline stuff
+        merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
+        merlin.registerConnectable(this);
+        merlin.registerDisconnectable(this);
+        merlin.registerBindable(this);
 
         // map stuff
         map = (MapView) findViewById(R.id.map);
@@ -127,6 +165,7 @@ public class RiderMainActivity extends AppCompatActivity
                             public void onTaskCompleted(Object o) {
                                 // Call back method after the coordinate is obtained
                                 // drop a marker on the map once the location is obtain // done
+                                if (o == null) return; // In case fail to get coordinate
                                 departureLocation = (GeoPoint) o;
 
                                 startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
@@ -155,6 +194,7 @@ public class RiderMainActivity extends AppCompatActivity
                                 // Call back method after the coordinate is obtained
                                 // drop a marker on the map once the location is obtained
                                 // also the route
+                                if (o == null) return; // In case fail to get coordinate
                                 destinationLocation = (GeoPoint) o;
                                 endMarker = createMarker(destinationLocation, "Drop-Off");  // hard-coded string for now
                                 map.getOverlays().add(endMarker);
@@ -204,6 +244,8 @@ public class RiderMainActivity extends AppCompatActivity
         // Set text
         username.setText(rider.getUserName());
         email.setText(rider.getEmailAddress());
+
+        acceptedRequestController.getRiderInProgressRequest(rider.getUserName());
     }
 
     // http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
@@ -216,6 +258,18 @@ public class RiderMainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        merlin.bind();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        merlin.unbind();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -306,7 +360,7 @@ public class RiderMainActivity extends AppCompatActivity
                         // TODO send request to drivers
                         String description = descriptionEditText.getText().toString();
                         double fare = Double.parseDouble(fareEditText.getText().toString());
-                         if (fare == 0) {
+                        if (fare == 0) {
                             fareEditText.setError("Fare cannot be empty");
                         } else if (description.isEmpty()) {
                             descriptionEditText.setError("Description cannot be empty");
@@ -316,7 +370,11 @@ public class RiderMainActivity extends AppCompatActivity
                             Request req = new PendingRequest(rider.getUserName(), route);
                             req.setEstimatedFare(fare);
                             req.setRequestDescription(description);
+                            req.setID(UUID.randomUUID().toString());
                             requestController.createRequest(req);
+                            // clean up filed after it's done
+                            searchDepartureLocationEditText.setText("");
+                            searchDestinationLocationEditText.setText("");
                         }
                     }
                 });
@@ -328,10 +386,10 @@ public class RiderMainActivity extends AppCompatActivity
     // TODO call openRiderNotifiedRequestDialog() when a request is accepted by a driver
 
     // pops up on RiderMainActivity when a request is accepted by a driver
-    private void openRiderNotifiedRequestDialog() {
+    private void openRiderNotifiedRequestDialog(final Request request) {
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
         builder.setTitle("Request Status Message")
-                .setMessage("Request XX is Accepted by a Driver.!\n " +
+                .setMessage("Request has been Accepted by a Driver.!\n " +
                         "Click on View Request Button to View Request Details.")  // TODO replace XX with actual request ID
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
@@ -342,8 +400,9 @@ public class RiderMainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // intent RiderRequestDetailActivity
-                        Intent intentRiderRequestDetail = new Intent(RiderMainActivity.this, RiderRequestDetailActivity.class);
-                        startActivity(intentRiderRequestDetail);
+                        Intent intent = new Intent(RiderMainActivity.this, RiderRequestDetailActivity.class);
+                        intent.putExtra("request", RequestUtil.serializer(request));
+                        startActivity(intent);
                     }
                 });
         // Create & Show the AlertDialog
@@ -355,7 +414,7 @@ public class RiderMainActivity extends AppCompatActivity
      * Create a point marker on the map
      * @param geoPoint the geolocatoin of the point
      * @param title the title to display
-     * @return
+     * @return the marker
      */
     public Marker createMarker(GeoPoint geoPoint, String title) {
         Marker marker = new Marker(map);
@@ -366,7 +425,7 @@ public class RiderMainActivity extends AppCompatActivity
     }
 
     /**
-     * An async task
+     * An async task to draw road on map
      */
     private OnAsyncTaskCompleted updateMap = new OnAsyncTaskCompleted() {
         @Override
@@ -396,4 +455,49 @@ public class RiderMainActivity extends AppCompatActivity
         }
     };
 
+    protected void updateOfflineRequest() {
+        ArrayList<String> offlineList = RequestUtil.getOfflineRequestList(getApplicationContext());
+        if (offlineList == null) return;
+        offlineRequestList = FileIOUtil.loadRequestFromFile(getApplicationContext(), offlineList);
+        for (Request r : offlineRequestList) {
+            if (r.getRiderUserName().equals(rider.getUserName())) {
+                requestController.createRequest(r);
+                deleteFile(RequestUtil.generateOfflineRequestFileName(r));
+            }
+        }
+    }
+
+    protected void checkAccepted(ArrayList<Request> requestsList) {
+        ArrayList<String> fileList = RequestUtil.getRiderRequestList(this);
+        if (fileList == null) return;
+        for (Request r : requestsList) {
+            // if request has been confirmed by a driver
+            if (r.getDriverList() != null && r.getDriverUserName() == null) {
+                Request req = FileIOUtil.loadSingleRequestFromFile(RequestUtil.generateRiderRequestFileName(r), this);
+                if (!req.equals(r)) {
+                    openRiderNotifiedRequestDialog(r);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onBind(NetworkStatus networkStatus) {
+        if (!networkStatus.isAvailable()) {
+            onDisconnect();
+        } else if (networkStatus.isAvailable()) {
+            onConnect();
+        }
+    }
+
+    @Override
+    public void onConnect() {
+        Log.i("Debug", "Connected");
+        updateOfflineRequest();
+    }
+
+    @Override
+    public void onDisconnect() {
+        Log.i("Debug", "Disconnect");
+    }
 }
