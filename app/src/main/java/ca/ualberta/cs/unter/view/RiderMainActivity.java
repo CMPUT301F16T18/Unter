@@ -37,6 +37,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -60,13 +63,12 @@ import ca.ualberta.cs.unter.model.request.PendingRequest;
 import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
+import cz.msebera.android.httpclient.Header;
 
 /**
- * Main activity of rider that could browse locatoin on map,
- * search location, and send request
+ * Main activity of rider that could browse locatoin on map, search location, and send request
  *
- * Issue: it may possible break when the route is way too long
- * for OSM to render.
+ * Issue: it may possible break when the route is way too long for OSM to render.
  */
 public class RiderMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -113,32 +115,27 @@ public class RiderMainActivity extends AppCompatActivity
         searchDestinationLocationEditText = (EditText) findViewById(R.id.editDestination);
         assert searchDestinationLocationEditText != null;
 
-        // The search button for departure location
-        // TODO geocoder is broken on the Galaxy Note 3
-        // Implement with the google map api instead, someday
+        // Implement geocoding with the google map api
         searchDepartureButton = (Button) findViewById(R.id.buttonSearchDep);
         searchDepartureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(),
-                        new OnAsyncTaskCompleted() {
-                            @Override
-                            public void onTaskCompleted(Object o) {
-                                // Call back method after the coordinate is obtained
-                                // drop a marker on the map once the location is obtain // done
-                                departureLocation = (GeoPoint) o;
-
-                                startMarker = createMarker(departureLocation, "Pick-Up");  // hard-coded string for now
-                                map.getOverlays().add(startMarker);
-                                mapController.setCenter(departureLocation);
-                            }
-                        });
                 String departureStr = searchDepartureLocationEditText.getText().toString();
                 if (TextUtils.isEmpty(departureStr)) {
                     searchDepartureLocationEditText.setError("Please enter an address");
                     return;
                 }
-                task.execute(departureStr);
+                OSMapUtil.GeoCoding(departureStr,
+                        new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                // phrase http reponse into geopoint
+                                departureLocation = OSMapUtil.pharseGeoJson(response);
+                                startMarker = createMarker(departureLocation, "Pick-Up");
+                                map.getOverlays().add(startMarker);
+                                mapController.setCenter(departureLocation);
+                            }
+                        });
             }
         });
 
@@ -147,15 +144,18 @@ public class RiderMainActivity extends AppCompatActivity
         searchDestinationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext(),
-                        new OnAsyncTaskCompleted() {
+                String destinationStr = searchDestinationLocationEditText.getText().toString();
+                if (TextUtils.isEmpty(destinationStr)) {
+                    searchDestinationLocationEditText.setError("Please enter an address");
+                    return;
+                }
+                OSMapUtil.GeoCoding(destinationStr,
+                        new JsonHttpResponseHandler() {
                             @Override
-                            public void onTaskCompleted(Object o) {
-                                // Call back method after the coordinate is obtained
-                                // drop a marker on the map once the location is obtained
-                                // also the route
-                                destinationLocation = (GeoPoint) o;
-                                endMarker = createMarker(destinationLocation, "Drop-Off");  // hard-coded string for now
+                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                // phares https reponse into geopoint
+                                destinationLocation = OSMapUtil.pharseGeoJson(response);
+                                endMarker = createMarker(destinationLocation, "Drop-Off");
                                 map.getOverlays().add(endMarker);
                                 mapController.setCenter(destinationLocation);
                                 mapController.setZoom(15);
@@ -163,12 +163,6 @@ public class RiderMainActivity extends AppCompatActivity
                                 openRiderConfirmPathDialog();
                             }
                         });
-                String destinationStr = searchDestinationLocationEditText.getText().toString();
-                if (TextUtils.isEmpty(destinationStr)) {
-                    searchDestinationLocationEditText.setError("Please enter an address");
-                    return;
-                }
-                task.execute(destinationStr);
             }
         });
 
@@ -255,6 +249,7 @@ public class RiderMainActivity extends AppCompatActivity
             }
         }
     }
+
     // A dialog allow user to confirm the location he enters
     private void openRiderConfirmPathDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
@@ -357,9 +352,9 @@ public class RiderMainActivity extends AppCompatActivity
 
     /**
      * Create a point marker on the map
+     *
      * @param geoPoint the geolocatoin of the point
-     * @param title the title to display
-     * @return
+     * @param title    the title to display
      */
     public Marker createMarker(GeoPoint geoPoint, String title) {
         Marker marker = new Marker(map);

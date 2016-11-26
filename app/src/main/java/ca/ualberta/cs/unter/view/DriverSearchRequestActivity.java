@@ -30,8 +30,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
+
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.controller.RequestController;
@@ -41,6 +45,7 @@ import ca.ualberta.cs.unter.model.request.Request;
 import ca.ualberta.cs.unter.util.FileIOUtil;
 import ca.ualberta.cs.unter.util.OSMapUtil;
 import ca.ualberta.cs.unter.util.RequestUtil;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Activity that driver can search for request
@@ -148,16 +153,13 @@ public class DriverSearchRequestActivity extends AppCompatActivity implements Vi
         if (view == searchButton) {
             if (searchOption == 0) {
                 // If search by geolocation
-                OSMapUtil.GeocoderTask task = new OSMapUtil.GeocoderTask(getApplicationContext());
-                task.execute(searchContextEditText.getText().toString());
-
-                try {
-                    requestController.searchRequestByGeoLocation(task.get(), driver.getUserName());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                OSMapUtil.GeoCoding(searchContextEditText.getText().toString(), new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        GeoPoint point = OSMapUtil.pharseGeoJson(response);
+                        requestController.searchRequestByGeoLocation(point, driver.getUserName());
+                    }
+                });
             } else if (searchOption == 1) {
                 // If search by keyword
                 requestController.searchRequestByKeyword(searchContextEditText.getText().toString(), driver.getUserName());
