@@ -16,20 +16,18 @@
 
 package ca.ualberta.cs.unter.util;
 
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.AsyncTask;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ca.ualberta.cs.unter.UnterConstant;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
@@ -76,61 +74,6 @@ public class OSMapUtil {
     }
 
     /**
-     * Static class for geocoding a street address
-     */
-    public static class GeocoderTask extends AsyncTask<String, Void, GeoPoint> {
-
-        private Context context;
-        private OnAsyncTaskCompleted listner;
-
-        public GeocoderTask(Context context) {
-            this.context = context;
-        }
-
-        public GeocoderTask(Context context, OnAsyncTaskCompleted listner) {
-            this.context = context;
-            this.listner = listner;
-        }
-
-        /**
-         * Converts a street address to a set of coordinates
-         * @param strAddress the street address to be converted
-         * @return the coordinates of the street address as a GeoPoint
-         */
-        @Override
-        protected GeoPoint doInBackground(String... strAddress) {
-            Geocoder coder = new Geocoder(context);
-            List<Address> address;
-            GeoPoint p1 = null;
-
-            try {
-                address = coder.getFromLocationName(strAddress[0], 5);
-                if (address == null) {
-                    return null;
-                }
-                Address location = address.get(0);
-                location.getLatitude();
-                location.getLongitude();
-
-                p1 = new GeoPoint(location.getLatitude(), location.getLongitude());
-
-            } catch (Exception ex) {
-
-                ex.printStackTrace();
-            }
-
-            return p1;
-        }
-
-        @Override
-        protected void onPostExecute(GeoPoint geoPoint) {
-            if (listner != null) {
-                listner.onTaskCompleted(geoPoint);
-            }
-        }
-    }
-
-    /**
      * Converts actual address intext into geo-coordinate by using GMAPS API
      * @param address the address in text
      * @param responseHandler a custom async event handler
@@ -149,5 +92,16 @@ public class OSMapUtil {
                 Double.toString(coordinate.getLatitude()) + "," +
                 Double.toString(coordinate.getLongitude());
         HttpClientUtil.get(url, null, responseHandler);
+    }
+
+    public static GeoPoint pharseGeoJson(JSONObject response) {
+        try {
+            JSONObject jsonObj = response.getJSONArray("results").getJSONObject(0)
+                    .getJSONObject("geometry").getJSONObject("location");
+            return new GeoPoint(jsonObj.getDouble("lat"), jsonObj.getDouble("lng"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
