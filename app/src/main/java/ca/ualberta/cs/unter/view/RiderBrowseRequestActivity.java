@@ -195,11 +195,6 @@ public class RiderBrowseRequestActivity extends AppCompatActivity implements Con
                     public void onClick(DialogInterface dialog, int which) {
                         confirmRequestController.riderConfirmRequestComplete(request);
                     }
-                })
-                .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
                 });
         // Create & Show the AlertDialog
         AlertDialog dialog = builder.create();
