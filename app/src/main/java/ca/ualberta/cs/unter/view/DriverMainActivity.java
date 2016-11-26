@@ -1,13 +1,13 @@
 package ca.ualberta.cs.unter.view;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -75,6 +75,13 @@ public class DriverMainActivity extends AppCompatActivity
                 }
             });
 
+    private RequestController acceptedRequestController = new RequestController(new OnAsyncTaskCompleted() {
+        @Override
+        public void onTaskCompleted(Object o) {
+            checkAccepted((ArrayList<Request>) o);
+        }
+    });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +108,7 @@ public class DriverMainActivity extends AppCompatActivity
         TextView email = (TextView) navHeader.findViewById(R.id.nav_drawer_driver_email);
 
         // Get user profile
-        User driver = FileIOUtil.loadUserFromFile(getApplicationContext());
+        driver = FileIOUtil.loadUserFromFile(getApplicationContext());
 
         // Set drawer text
         username.setText(driver.getUserName());
@@ -115,7 +122,7 @@ public class DriverMainActivity extends AppCompatActivity
             drawRoute();
         }
 
-        driver = FileIOUtil.loadUserFromFile(this);
+        acceptedRequestController.getDriverAcceptedRequest(driver.getUserName());
     }
 
     @Override
@@ -218,14 +225,16 @@ public class DriverMainActivity extends AppCompatActivity
     }
 
     // TODO call openDriverNotifyAcceptedDialog() when a request is accepted by a rider
-
+    // Dialog that notifies driver the requeset has been confirmed by the rider
     private void openDriverNotifyAcceptedDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverMainActivity.this);
         builder.setTitle("Rider Acceptance Notification")
-                .setMessage("Request XX is Accepted!")  // TODO replace XX with actual request ID
+                .setMessage("Request has been Confirmed!")
                 .setNeutralButton(R.string.dialog_ok_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(DriverMainActivity.this, DriverBrowseRequestActivity.class);
+                        startActivity(intent);
                     }
                 });
         // Create & Show the AlertDialog
@@ -279,5 +288,20 @@ public class DriverMainActivity extends AppCompatActivity
     @Override
     public void onDisconnect() {
 
+    }
+
+    protected void checkAccepted(ArrayList<Request> requestsList) {
+        ArrayList<String> fileList = RequestUtil.getRiderRequestList(this);
+        if (fileList == null) return;
+        for (Request r : requestsList) {
+            // if request has been confirmed by a driver
+            if (r.getDriverUserName() != null && r.getDriverUserName().equals(driver.getUserName())) {
+                Request req = FileIOUtil.loadSingleRequestFromFile(RequestUtil.generateDriverRequestFileName(r), this);
+                if (!req.equals(r)) {
+                    FileIOUtil.saveRequestInFile(r, RequestUtil.generateDriverRequestFileName(r), this);
+                    openDriverNotifyAcceptedDialog();
+                }
+            }
+        }
     }
 }
