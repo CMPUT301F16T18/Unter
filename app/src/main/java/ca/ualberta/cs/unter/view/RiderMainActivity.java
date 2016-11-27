@@ -317,7 +317,7 @@ public class RiderMainActivity extends AppCompatActivity
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        map.getOverlays().clear();
                     }
                 });
         // Create & Show the AlertDialog
