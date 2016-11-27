@@ -170,9 +170,38 @@ public class RiderMainActivity extends AppCompatActivity
                             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                 // phrase http reponse into geopoint
                                 departureLocation = OSMapUtil.pharseGeoJson(response);
-                                startMarker = createMarker(departureLocation, "Pick-Up");
-                                map.getOverlays().add(startMarker);
-                                mapController.setCenter(departureLocation);
+                                if (map.getOverlays().contains(startMarker)) {
+									map.getOverlays().remove(startMarker);
+									startMarker = createMarker(departureLocation, "Pick-Up");
+                                    map.getOverlays().add(startMarker);
+                                    mapController.setCenter(startMarker.getPosition());
+                                } else {
+									startMarker = createMarker(departureLocation, "Pick-Up");
+									map.getOverlays().add(startMarker);
+									mapController.setCenter(startMarker.getPosition());
+                                }
+								// set startMarker to draggable + init listener
+								startMarker.setDraggable(true);
+								startMarker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
+									@Override
+									public void onMarkerDrag(Marker marker) {
+
+									}
+
+									@Override
+									public void onMarkerDragEnd(Marker marker) {
+										startMarker.setPosition(marker.getPosition());
+										mapController.setCenter(startMarker.getPosition());
+										map.invalidate();
+										//getRoadAsync(startPoint, testMarker.getPosition());
+									}
+
+									@Override
+									public void onMarkerDragStart(Marker marker) {
+
+									}
+								});
+
                             }
                         });
             }
@@ -203,6 +232,7 @@ public class RiderMainActivity extends AppCompatActivity
                         });
             }
         });
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -311,7 +341,7 @@ public class RiderMainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO - this breaks the code if you zoom in too far
-                        OSMapUtil.getRoad(departureLocation, destinationLocation, updateMap);
+                        OSMapUtil.getRoad(startMarker.getPosition(), destinationLocation, updateMap);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
@@ -444,6 +474,7 @@ public class RiderMainActivity extends AppCompatActivity
                 // displays route distance on map overlay
                 Toast.makeText(map.getContext(), "Distance =" + mRoads[i].mLength, Toast.LENGTH_LONG).show();
                 distance = mRoads[i].mLength;
+				map.invalidate();
             }
         }
     };

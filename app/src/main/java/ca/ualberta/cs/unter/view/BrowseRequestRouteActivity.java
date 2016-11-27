@@ -70,13 +70,12 @@ public class BrowseRequestRouteActivity extends Activity {
                 mapOverlays.add(1, roadPolyline);
 
                 // all this shizz works
-                Toast.makeText(ourActivity, "distance="+mRoads[i].mLength,Toast.LENGTH_LONG).show(); //
-                Toast.makeText(ourActivity, "durée="+mRoads[i].mDuration,Toast.LENGTH_LONG).show(); //
+                Toast.makeText(ourActivity, "Distance ="+mRoads[i].mLength,Toast.LENGTH_LONG).show(); //
+				map.invalidate();
 
                 distance = mRoads[i].mLength; // untested
                 request.setDistance(distance); // untested
                 requestController.calculateEstimatedFare(request); //untested
-                Toast.makeText(ourActivity, "price="+request.getEstimatedFare(), Toast.LENGTH_LONG).show(); //
                 //we insert the road overlays at the "bottom", just above the MapEventsOverlay,
                 //to avoid covering the other overlays.
             }
@@ -106,20 +105,11 @@ public class BrowseRequestRouteActivity extends Activity {
 		startMarker.setTitle("Start Point");
 		map.getOverlays().add(startMarker);
 
-
 		GeoPoint destinationPoint = request.getDestinationCoordinate();  // End point
 		Marker endMarker = new Marker(map);
 		endMarker.setPosition(destinationPoint);
 		endMarker.setTitle("End Point");
 		map.getOverlays().add(endMarker);
-
-		// TODO - see if this code is ever used
-		// (I don't think it is)
-		ArrayList<OverlayItem> overlayItemArray;  //
-		overlayItemArray = new ArrayList<>();  //
-
-		overlayItemArray.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));  //
-		overlayItemArray.add(new OverlayItem("Destination", "This is the destination point", destinationPoint));  //
 
         // Get the route
         OSMapUtil.getRoad(startPoint, destinationPoint, updateMap);
