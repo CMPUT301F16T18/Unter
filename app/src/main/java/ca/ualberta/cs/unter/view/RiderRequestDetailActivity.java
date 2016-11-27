@@ -32,6 +32,7 @@ import ca.ualberta.cs.unter.R;
 import ca.ualberta.cs.unter.controller.RequestController;
 import ca.ualberta.cs.unter.controller.UserController;
 import ca.ualberta.cs.unter.exception.RequestException;
+import ca.ualberta.cs.unter.model.Car;
 import ca.ualberta.cs.unter.model.OnAsyncTaskCompleted;
 import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.Request;
@@ -167,6 +168,11 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
         String driverName = driver.getUserName();    // replace it with actual driver's name
         final String driverMobile = driver.getMobileNumber();   // replace it with actual driver's mobile
         final String driverEmail = driver.getEmailAddress();   // replace it with actual driver's email
+        assert driver.getCar() != null;
+        Car driverCar = driver.getCar();
+        assert driverCar.getVehicleName() != null && driverCar.getVehicleName() != null;
+        final String carVehicleName = driverCar.getVehicleName();
+        final String carPlateNumber = driverCar.getPlateNumber();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderRequestDetailActivity.this);
 
@@ -202,7 +208,9 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
 
         builder.setTitle("Confirm Acceptance")
                 .setMessage("Driver's Information\n"
-                        + "Name: " + driverName)
+                        + "Name: " + driverName + "\n")
+                .setMessage("Vehicle Name: " + carVehicleName + "\n"
+                        + "Plate Number: " + carPlateNumber)
                 .setView(promptView)
                 .setPositiveButton(R.string.dialog_confirm_acceptance_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
