@@ -17,16 +17,19 @@
 package ca.ualberta.cs.unter.ControllerTest;
 
 import android.app.Application;
+import android.content.Context;
 import android.test.ApplicationTestCase;
 import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 import ca.ualberta.cs.unter.model.Route;
+import ca.ualberta.cs.unter.model.User;
 import ca.ualberta.cs.unter.model.request.AcceptedRequest;
 import ca.ualberta.cs.unter.model.request.CompletedRequest;
 import ca.ualberta.cs.unter.model.request.ConfirmedRequest;
@@ -61,54 +64,72 @@ public class FileIOTest extends ApplicationTestCase<Application> {
 		signal.countDown();
 	}
 
-	/**
-	 * Test save request in file.
-	 */
+	public void testSaveUserInFile() {
+		User testUser = new User("test", "000", "test@test.com");
+		try {
+			FileIOUtil.saveUserInFile(testUser, getContext());
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to save user");
+		}
+	}
+
+	public void testLoadUserFromFile() {
+		User testUser = new User("test", "000", "test@test.com");
+		FileIOUtil.saveUserInFile(testUser, getContext());
+
+		User user;
+		user = FileIOUtil.loadUserFromFile(getContext());
+		assertFalse(user.equals(null));
+	}
+
 	public void testSaveRequestInFile() {
-		// TODO - test does not pass until save properly implemented
-		GeoPoint gPoint1 = new GeoPoint(-137.8826, 58.6698);
-		GeoPoint gPoint2 = new GeoPoint(-137.4444, 62.4444);
-		Route route = new Route(gPoint1, gPoint2);
-		ArrayList<Request> requestList = new ArrayList<>();
-
-		PendingRequest pending = new PendingRequest("john", route);
-		requestList.add(pending);
-
-		assertFalse(requestList.isEmpty());
+		Route route = new Route(new GeoPoint(-127.00, 32), new GeoPoint(-128.11, 36));
+		PendingRequest test = new PendingRequest("test", route);
 
 		try {
-			FileIOUtil.saveRequestInFile(requestList, getContext());
+			FileIOUtil.saveRequestInFile(test, "test.json", getContext());
 		} catch (Exception e) {
-			Log.i("Error", "Did not save correctly!!");
-			throw new RuntimeException();
+			throw new RuntimeException("Failed to save request");
 		}
 
 	}
 
-	/**
-	 * Test load request from file.
-	 */
-	public void testLoadRequestFromFile() {
-		// TODO - does not pass until load from file implemented fully
-		GeoPoint gPoint1 = new GeoPoint(-137.8826, 58.6698);
-		GeoPoint gPoint2 = new GeoPoint(-137.4444, 62.4444);
-		Route route = new Route(gPoint1, gPoint2);
-		ArrayList<Request> requestList = new ArrayList<>();
+	public void testSaveOfflineRequestInFile() {
+		Route route = new Route(new GeoPoint(-127.00, 32), new GeoPoint(-128.11, 36));
+		PendingRequest test = new PendingRequest("test1", route);
 
-		PendingRequest pending = new PendingRequest("john", route);
-		requestList.add(pending);
-
-		assertFalse(requestList.isEmpty());
-
-		FileIOUtil.saveRequestInFile(requestList, getContext());
-
-		ArrayList<Request> newList;
 		try {
-			newList = FileIOUtil.loadRequestFromFile(getContext());
+			FileIOUtil.saveOfflineRequestInFile(test, getContext());
 		} catch (Exception e) {
-			Log.i("Error", "Did not load correctly.");
-			throw new RuntimeException();
+			throw new RuntimeException("Failed to save request");
+
 		}
-		assertFalse(newList.isEmpty());
+	}
+
+	public void testSaveRiderRequestInFile() {
+		Route route = new Route(new GeoPoint(-127.00, 32), new GeoPoint(-128.11, 36));
+		PendingRequest test = new PendingRequest("test2", route);
+
+		try {
+			FileIOUtil.saveRiderRequestInFile(test, getContext());
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to save request");
+		}
+	}
+
+	public void testLoadRequestFromFile() {
+		ArrayList<Request> testArray;
+		ArrayList<String> strArray = new ArrayList<>();
+		strArray.add("test.json");
+
+		testArray = FileIOUtil.loadRequestFromFile(getContext(),strArray);
+		assertFalse(testArray.isEmpty());
+	}
+
+	public void testLoadSingleRequestFromFile() {
+		Request test;
+
+		test = FileIOUtil.loadSingleRequestFromFile("test.json", getContext());
+		assertFalse(test.equals(null));
 	}
 }
