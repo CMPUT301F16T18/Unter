@@ -297,7 +297,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
                                               int rightPinIndex,
                                               String leftPinValue, String rightPinValue) {
-                // TODO use priceRangeMin, priceRangeMax later for filtering search result
+                // use priceRangeMin, priceRangeMax later for filtering search result
                 priceRangeMin = Float.parseFloat(leftPinValue);
                 priceRangeMax = Float.parseFloat(rightPinValue);
             }
@@ -313,7 +313,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
                                               int rightPinIndex,
                                               String leftPinValue, String rightPinValue) {
-                // TODO use pricePerKMRangeMin, pricePerKMRangeMin later for filtering search result
+                // use pricePerKMRangeMin, pricePerKMRangeMin later for filtering search result
                 pricePerKMRangeMin = Float.parseFloat(leftPinValue);
                 pricePerKMRangeMax = Float.parseFloat(rightPinValue);
             }
