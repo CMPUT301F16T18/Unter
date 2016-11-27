@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -109,8 +108,11 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
     @Override
     public void onClick(View view) {
         if (view == cancelRequestButton ) {
-            // TODO cancel this request
+            // delete the request
             requestController.deleteRequest(request);
+            deleteFile(RequestUtil.generateRiderRequestFileName(request));
+            // go back to the main activity
+            startActivity(new Intent(RiderRequestDetailActivity.this, RiderMainActivity.class));
         }
     }
 
@@ -214,10 +216,10 @@ public class RiderRequestDetailActivity extends AppCompatActivity implements Vie
                 .setView(promptView)
                 .setPositiveButton(R.string.dialog_confirm_acceptance_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO confirm driver's acceptance, driver will be notified
-                        // TODO modify acceptedDriverList so that only this driver's acceptance will appear on acceptanceListView
                         try {
                             requestController.riderConfirmDriver(request, driverUserName);
+                            FileIOUtil.saveRequestInFile(request, RequestUtil.generateRiderRequestFileName(request), getApplicationContext());
+                            startActivity(new Intent(RiderRequestDetailActivity.this, RiderMainActivity.class));
                         } catch (RequestException e) {
                             Toast.makeText(activity, "The request has not been confirmed by any driver", Toast.LENGTH_SHORT).show();
                         }
