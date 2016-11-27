@@ -59,5 +59,7 @@ public class RiderBrowseRequestActivityTest extends ActivityInstrumentationTestC
         solo.assertCurrentActivity("Wrong Activity", RiderBrowseRequestActivity.class);
         solo.clickInList(0);
         solo.assertCurrentActivity("Wrong", RiderRequestDetailActivity.class);
+        solo.clickInList(0);
+        assertTrue(solo.searchText("Vehicle")); // Find car info
     }
 }
