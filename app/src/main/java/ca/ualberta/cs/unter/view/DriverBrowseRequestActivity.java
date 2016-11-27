@@ -71,6 +71,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_browse_request);
 
+        // monitor network connectivity
         merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
         merlin.registerConnectable(this);
         merlin.registerDisconnectable(this);

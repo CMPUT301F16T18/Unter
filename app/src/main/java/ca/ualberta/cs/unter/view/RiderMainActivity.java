@@ -131,7 +131,7 @@ public class RiderMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
 
-        // merline stuff
+        // merline stuff, monitor network connectivity
         merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
         merlin.registerConnectable(this);
         merlin.registerDisconnectable(this);
