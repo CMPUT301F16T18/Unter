@@ -99,16 +99,17 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
         });
 
         driver = FileIOUtil.loadUserFromFile(getApplicationContext());
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
         acceptedRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, acceptedRequestList);
         pendingRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, pendingRequestList);
         acceptedRequestListView.setAdapter(acceptedRequestAdapter);
         pendingRequestListView.setAdapter(pendingRequestAdapter);
         updateRequestList();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -135,7 +136,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
     }
 
     private void openRequestInfoDialog(final Request request) {
-        // TODO get estimated fare price and description of the request
+        // get request info, and show it on the dialog
         String estimatedFare = request.getEstimatedFare().toString();   // replace 100 with estimated price
         String description = request.getRequestDescription();   // replace hello with actual request description
 
