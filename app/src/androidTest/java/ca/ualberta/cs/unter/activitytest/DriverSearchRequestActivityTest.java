@@ -18,6 +18,7 @@ package ca.ualberta.cs.unter.activitytest;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.robotium.solo.Solo;
@@ -56,7 +57,7 @@ public class DriverSearchRequestActivityTest extends ActivityInstrumentationTest
      */
     public void testSearchRequestByKeyword() {
         solo.assertCurrentActivity("Wrong Activity", DriverSearchRequestActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.editText_searchRequest_DriverSearchRequestActivity), "unter");
+        solo.enterText((EditText) solo.getView(R.id.editText_searchRequest_DriverSearchRequestActivity), "u of a");
         solo.clickOnButton("Search");
         solo.clickInList(0);
         assertTrue("Cannot find dialog", solo.searchText("Request Information"));
@@ -67,9 +68,19 @@ public class DriverSearchRequestActivityTest extends ActivityInstrumentationTest
      */
     public void testSearchRequestByLocation() {
         solo.assertCurrentActivity("Wrong Activity", DriverSearchRequestActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.editText_searchRequest_DriverSearchRequestActivity), "Van Vilet");
+        solo.enterText((EditText) solo.getView(R.id.editText_searchRequest_DriverSearchRequestActivity), "university of alberta");
         solo.clickOnButton("Search");
         solo.clickInList(0);
         assertTrue("Cannot find dialog", solo.searchText("Request Information"));
+    }
+
+    /**
+     * Test the filter method
+     * since there is no way to actually test the customize
+     * range bar, we just see if the dialog pop up or not
+     */
+    public void testFilterByPrice() {
+        solo.clickLongOnView((Button) solo.getView(R.id.button_filter_driversearchrequestactivity));
+        assertTrue(solo.searchText("Filter Request"));
     }
 }
