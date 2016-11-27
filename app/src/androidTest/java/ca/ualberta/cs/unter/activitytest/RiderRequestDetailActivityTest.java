@@ -40,7 +40,7 @@ public class RiderRequestDetailActivityTest extends ActivityInstrumentationTestC
     @Override
     public void setUp() throws Exception {
         Log.d("TAG1", "setUp()");
-        solo = new Solo(getInstrumentation(),getActivity());
+        solo = new Solo(getInstrumentation(), getActivity());
 
     }
 
