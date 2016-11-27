@@ -245,7 +245,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverSearchRequestActivity.this);
         builder.setTitle("Request Information")
-                .setMessage("Estimated Fare: " + estimatedFare + "\\n" + "Description" + description)
+                .setMessage("Estimated Fare: " + estimatedFare + "\n" + "Description: " + description)
                 .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
