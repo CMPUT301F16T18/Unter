@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,6 +70,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
     private Button searchButton;
     private Button filterButton;
 
+    // set default value
     private double priceRangeMin = 0.00;
     private double priceRangeMax = 300.00;
     private double pricePerKMRangeMin = 0.00;
@@ -226,9 +226,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity
             }
         } else if (view == filterButton) {
             if (searchRequestList == null || searchRequestList.isEmpty()) {
+                // if there is no search result, cannot be filtered
                 searchContextEditText.setError("Just search something");
             } else if (!searchRequestList.isEmpty()) {
-                // TODO open filter dialog
+                // open the filter dialog
                 openFilterRequestDialog();
             }
         }
@@ -346,7 +347,6 @@ public class DriverSearchRequestActivity extends AppCompatActivity
      */
     private void filterRequestList(double minPrice, double maxPrice, double minPricePerKM, double maxPricePerKM) {
         Iterator<Request> ite = searchRequestList.iterator();
-        Log.i("Debug",String.format("%.6f, %.6f, %.6f, %.6f, ", minPrice, maxPrice, minPricePerKM, maxPricePerKM));
         while (ite.hasNext()) {
             Request r = ite.next();
             double fare = r.getEstimatedFare();

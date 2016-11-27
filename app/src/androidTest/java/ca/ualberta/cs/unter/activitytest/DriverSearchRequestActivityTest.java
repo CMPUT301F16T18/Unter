@@ -44,7 +44,6 @@ public class DriverSearchRequestActivityTest extends ActivityInstrumentationTest
     public void setUp() throws Exception {
         Log.d("TAG1", "setUp()");
         solo = new Solo(getInstrumentation(),getActivity());
-
     }
 
     @Override
@@ -55,10 +54,15 @@ public class DriverSearchRequestActivityTest extends ActivityInstrumentationTest
     /**
      * Test search request by keyword.
      */
-    public void testSearchRequestByKeyword() {
+    public void testSearchRequestByKeyword() throws InterruptedException {
         solo.assertCurrentActivity("Wrong Activity", DriverSearchRequestActivity.class);
+        solo.pressSpinnerItem(0, 1);
         solo.enterText((EditText) solo.getView(R.id.editText_searchRequest_DriverSearchRequestActivity), "u of a");
         solo.clickOnButton("Search");
+        solo.waitForText("u");
+        solo.clickLongOnView((Button) solo.getView(R.id.button_filter_driversearchrequestactivity));
+        assertTrue(solo.searchText("Filter Request"));
+        solo.clickOnButton("Ok");
         solo.clickInList(0);
         assertTrue("Cannot find dialog", solo.searchText("Request Information"));
     }
@@ -80,7 +84,6 @@ public class DriverSearchRequestActivityTest extends ActivityInstrumentationTest
      * range bar, we just see if the dialog pop up or not
      */
     public void testFilterByPrice() {
-        solo.clickLongOnView((Button) solo.getView(R.id.button_filter_driversearchrequestactivity));
-        assertTrue(solo.searchText("Filter Request"));
+
     }
 }
