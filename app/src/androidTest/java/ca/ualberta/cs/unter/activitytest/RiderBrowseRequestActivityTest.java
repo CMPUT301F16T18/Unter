@@ -35,16 +35,15 @@ public class RiderBrowseRequestActivityTest extends ActivityInstrumentationTestC
     /**
      * Instantiates a new Rider browse request activity test.
      *
-     * @param activityClass the activity class
      */
-    public RiderBrowseRequestActivityTest(Class<RiderBrowseRequestActivity> activityClass) {
-        super(ca.ualberta.cs.unter.view.RiderBrowseRequestActivity.class);
+    public RiderBrowseRequestActivityTest() {
+        super(RiderBrowseRequestActivity.class);
     }
 
     @Override
     protected void setUp() throws Exception {
         Log.d("TAG1", "setUp()");
-        solo = new Solo(getInstrumentation(),getActivity());
+        solo = new Solo(getInstrumentation(), getActivity());
     }
 
     @Override
