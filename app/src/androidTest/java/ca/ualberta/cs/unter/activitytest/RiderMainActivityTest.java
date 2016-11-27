@@ -24,12 +24,13 @@ import android.widget.EditText;
 import com.robotium.solo.Solo;
 
 import ca.ualberta.cs.unter.R;
+import ca.ualberta.cs.unter.view.LoginActivity;
 import ca.ualberta.cs.unter.view.RiderMainActivity;
 
 /**
  * Suite for testing intents on RiderMainActivity. -- incomplete
  */
-public class RiderMainActivityTest extends ActivityInstrumentationTestCase2<RiderMainActivity> {
+public class RiderMainActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
 
 	private Solo solo;
 
@@ -37,7 +38,7 @@ public class RiderMainActivityTest extends ActivityInstrumentationTestCase2<Ride
 	 * Instantiates a new Rider main activity test.
 	 */
 	public RiderMainActivityTest() {
-		super(ca.ualberta.cs.unter.view.RiderMainActivity.class);
+		super(ca.ualberta.cs.unter.view.LoginActivity.class);
 	}
 
 	/**
@@ -49,12 +50,15 @@ public class RiderMainActivityTest extends ActivityInstrumentationTestCase2<Ride
 		Activity activity = getActivity();
 	}
 
-	//GeoPoint testPoint;
-
 	@Override
 	public void setUp() throws Exception {
 		Log.d("TAG1", "setUp()");
 		solo = new Solo(getInstrumentation(),getActivity());
+        // Enter username
+        solo.clearEditText((EditText) solo.getView(R.id.editText_userName_LoginActivity));
+        solo.enterText((EditText) solo.getView(R.id.editText_userName_LoginActivity), "heyue");
+        solo.clickOnButton("Rider");
+        solo.clickOnButton("Login");
 
 	}
 
@@ -89,6 +93,6 @@ public class RiderMainActivityTest extends ActivityInstrumentationTestCase2<Ride
 	 */
 	public void testNotifyRider() {
 		solo.assertCurrentActivity("Wrong Activity", RiderMainActivity.class);
-		assertTrue("Cannot find dialog", solo.searchText("Request has been accepted"));
+		assertFalse("Cannot find dialog", solo.searchText("Request has been accepted"));
 	}
 }
