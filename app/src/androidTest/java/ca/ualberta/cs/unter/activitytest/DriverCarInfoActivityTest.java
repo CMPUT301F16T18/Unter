@@ -40,7 +40,7 @@ public class DriverCarInfoActivityTest extends ActivityInstrumentationTestCase2<
 
     @Override
     public void setUp() throws Exception {
-c        Log.d("TAG1", "setUp()");
+        Log.d("TAG1", "setUp()");
         solo = new Solo(getInstrumentation(),getActivity());
 
     }
