@@ -12,7 +12,7 @@ A CMPUT 301 Project
 # Important Notes
 1. **Please read [Contribution Code](https://github.com/CMPUT301F16T18/Unter/wiki/Contribution-Code)**
 
-# Backup Vdeio
+# Backup Video
 [Youtue](https://youtu.be/DDiK01RR-Eg)
 
 # Author
