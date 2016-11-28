@@ -411,8 +411,8 @@ public class RiderMainActivity extends AppCompatActivity
     private void openRiderNotifiedRequestDialog(final Request request) {
         AlertDialog.Builder builder = new AlertDialog.Builder(RiderMainActivity.this);
         builder.setTitle("Request Status Message")
-                .setMessage("Request has been Accepted by a Driver.!\n " +
-                        "Click on View Request Button to View Request Details.")  // TODO replace XX with actual request ID
+                .setMessage("Request has been accepted by a Driver!\n" +
+                        "Click on View Request button to view request details.")  // TODO replace XX with actual request ID
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
