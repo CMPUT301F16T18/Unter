@@ -23,9 +23,7 @@ import android.widget.EditText;
 import com.robotium.solo.Solo;
 
 import ca.ualberta.cs.unter.R;
-import ca.ualberta.cs.unter.view.DriverBrowseRequestActivity;
 import ca.ualberta.cs.unter.view.DriverCarInfoActivity;
-import ca.ualberta.cs.unter.view.DriverMainActivity;
 
 /**
  * Applicatoin test for DriverCarInfoActivityTest

@@ -71,6 +71,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_browse_request);
 
+        // monitor network connectivity
         merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
         merlin.registerConnectable(this);
         merlin.registerDisconnectable(this);
@@ -135,7 +136,7 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
     }
 
     private void openRequestInfoDialog(final Request request) {
-        // TODO get estimated fare price and description of the request
+        // get request info, and show it on the dialog
         String estimatedFare = request.getEstimatedFare().toString();   // replace 100 with estimated price
         String description = request.getRequestDescription();   // replace hello with actual request description
 

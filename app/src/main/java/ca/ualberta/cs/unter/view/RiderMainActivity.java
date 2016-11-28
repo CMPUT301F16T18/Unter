@@ -131,7 +131,7 @@ public class RiderMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_main);
 
-        // merline stuff
+        // merline stuff, monitor network connectivity
         merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().withBindableCallbacks().build(this);
         merlin.registerConnectable(this);
         merlin.registerDisconnectable(this);
@@ -347,7 +347,7 @@ public class RiderMainActivity extends AppCompatActivity
                 .setNegativeButton(R.string.dialog_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        map.getOverlays().clear();
                     }
                 });
         // Create & Show the AlertDialog
@@ -498,7 +498,7 @@ public class RiderMainActivity extends AppCompatActivity
             // if request has been confirmed by a driver
             if (r.getDriverList() != null && r.getDriverUserName() == null) {
                 Request req = FileIOUtil.loadSingleRequestFromFile(RequestUtil.generateRiderRequestFileName(r), this);
-                if (!req.equals(r)) {
+                if (req.getDriverUserName() == null) {
                     openRiderNotifiedRequestDialog(r);
                 }
             }

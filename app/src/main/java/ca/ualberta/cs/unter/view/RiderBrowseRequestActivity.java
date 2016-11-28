@@ -76,7 +76,11 @@ public class RiderBrowseRequestActivity extends AppCompatActivity implements Con
         public void onTaskCompleted(Object o) {
             // save it locally afterware
             FileIOUtil.saveRiderRequestInFile((Request) o, getApplicationContext());
-            updateRequest();
+            inProgressRequestAdapter.remove((Request) o);
+            completedRequestAdapter.add((Request) o);
+            inProgressRequestAdapter.notifyDataSetChanged();
+            completedRequestAdapter.notifyDataSetChanged();
+
         }
     });
 
@@ -194,6 +198,7 @@ public class RiderBrowseRequestActivity extends AppCompatActivity implements Con
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         confirmRequestController.riderConfirmRequestComplete(request);
+                        FileIOUtil.saveRequestInFile(request, RequestUtil.generateRiderRequestFileName(request), getApplicationContext());
                     }
                 });
         // Create & Show the AlertDialog

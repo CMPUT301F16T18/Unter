@@ -27,6 +27,8 @@ import ca.ualberta.cs.unter.view.RiderRequestDetailActivity;
 
 /**
  * The type Rider browse request activity test.
+ *
+ * This test may need to run seperately in order to pass
  */
 public class RiderBrowseRequestActivityTest extends ActivityInstrumentationTestCase2<RiderBrowseRequestActivity> {
 
@@ -35,16 +37,15 @@ public class RiderBrowseRequestActivityTest extends ActivityInstrumentationTestC
     /**
      * Instantiates a new Rider browse request activity test.
      *
-     * @param activityClass the activity class
      */
-    public RiderBrowseRequestActivityTest(Class<RiderBrowseRequestActivity> activityClass) {
-        super(ca.ualberta.cs.unter.view.RiderBrowseRequestActivity.class);
+    public RiderBrowseRequestActivityTest() {
+        super(RiderBrowseRequestActivity.class);
     }
 
     @Override
     protected void setUp() throws Exception {
         Log.d("TAG1", "setUp()");
-        solo = new Solo(getInstrumentation(),getActivity());
+        solo = new Solo(getInstrumentation(), getActivity());
     }
 
     @Override
@@ -59,5 +60,8 @@ public class RiderBrowseRequestActivityTest extends ActivityInstrumentationTestC
         solo.assertCurrentActivity("Wrong Activity", RiderBrowseRequestActivity.class);
         solo.clickInList(0);
         solo.assertCurrentActivity("Wrong", RiderRequestDetailActivity.class);
+        solo.clickInList(0);
+        assertTrue(solo.searchText("Vehicle")); // Find car info
+        assertTrue("Cannot find dialog", solo.searchText("Confirm Acceptance")); // check acceptes
     }
 }

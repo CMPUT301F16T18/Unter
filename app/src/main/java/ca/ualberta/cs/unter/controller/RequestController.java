@@ -323,6 +323,7 @@ public class RequestController {
         Iterator<Request> it = requestsList.iterator();
         while (it.hasNext()) {
             Request r = it.next();
+            if (r.getDriverList() == null) continue;
             if (!r.getDriverList().contains(driverUserName)) {
                 it.remove();
             }

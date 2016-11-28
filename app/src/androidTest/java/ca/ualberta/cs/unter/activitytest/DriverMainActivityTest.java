@@ -50,6 +50,6 @@ public class DriverMainActivityTest extends ActivityInstrumentationTestCase2<Dri
      */
     public void testNotifyDriver() {
         solo.assertCurrentActivity("Wrong Activity", DriverMainActivity.class);
-        assertTrue("Cannot find dialog", solo.searchText("Request has been accepted"));
+        assertFalse("Cannot find dialog", solo.searchText("Request has been accepted"));
     }
 }

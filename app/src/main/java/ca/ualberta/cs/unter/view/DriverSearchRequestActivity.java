@@ -71,6 +71,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
     private Button searchButton;
     private Button filterButton;
 
+    // set default value
     private double priceRangeMin = 0.00;
     private double priceRangeMax = 300.00;
     private double pricePerKMRangeMin = 0.00;
@@ -217,6 +218,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         GeoPoint point = OSMapUtil.pharseGeoJson(response);
+                        Log.i("Debug", point.toString());
                         requestController.searchRequestByGeoLocation(point, driver.getUserName());
                     }
                 });
@@ -226,9 +228,10 @@ public class DriverSearchRequestActivity extends AppCompatActivity
             }
         } else if (view == filterButton) {
             if (searchRequestList == null || searchRequestList.isEmpty()) {
+                // if there is no search result, cannot be filtered
                 searchContextEditText.setError("Just search something");
             } else if (!searchRequestList.isEmpty()) {
-                // TODO open filter dialog
+                // open the filter dialog
                 openFilterRequestDialog();
             }
         }
@@ -245,7 +248,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DriverSearchRequestActivity.this);
         builder.setTitle("Request Information")
-                .setMessage("Estimated Fare: " + estimatedFare + "\\n" + "Description" + description)
+                .setMessage("Estimated Fare: " + estimatedFare + "\n" + "Description: " + description)
                 .setNeutralButton(R.string.dialog_view_map_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -296,7 +299,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
                                               int rightPinIndex,
                                               String leftPinValue, String rightPinValue) {
-                // TODO use priceRangeMin, priceRangeMax later for filtering search result
+                // use priceRangeMin, priceRangeMax later for filtering search result
                 priceRangeMin = Float.parseFloat(leftPinValue);
                 priceRangeMax = Float.parseFloat(rightPinValue);
             }
@@ -312,7 +315,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
                                               int rightPinIndex,
                                               String leftPinValue, String rightPinValue) {
-                // TODO use pricePerKMRangeMin, pricePerKMRangeMin later for filtering search result
+                // use pricePerKMRangeMin, pricePerKMRangeMin later for filtering search result
                 pricePerKMRangeMin = Float.parseFloat(leftPinValue);
                 pricePerKMRangeMax = Float.parseFloat(rightPinValue);
             }
@@ -346,7 +349,6 @@ public class DriverSearchRequestActivity extends AppCompatActivity
      */
     private void filterRequestList(double minPrice, double maxPrice, double minPricePerKM, double maxPricePerKM) {
         Iterator<Request> ite = searchRequestList.iterator();
-        Log.i("Debug",String.format("%.6f, %.6f, %.6f, %.6f, ", minPrice, maxPrice, minPricePerKM, maxPricePerKM));
         while (ite.hasNext()) {
             Request r = ite.next();
             double fare = r.getEstimatedFare();
