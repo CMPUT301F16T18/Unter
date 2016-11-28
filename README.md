@@ -12,8 +12,11 @@ A CMPUT 301 Project
 # Important Notes
 1. **Please read [Contribution Code](https://github.com/CMPUT301F16T18/Unter/wiki/Contribution-Code)**
 
-# Backup Video
-[Youtue](https://youtu.be/DDiK01RR-Eg)
+# Commerical Video
+[Youtube](https://youtu.be/NvivAwLdzdc)
+
+# Demo Video
+[Youtube](https://youtu.be/DDiK01RR-Eg)
 
 # Author
 * [Alan(Xutong) Zhao](https://github.com/TongTongX)
