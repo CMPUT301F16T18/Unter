@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -217,6 +218,7 @@ public class DriverSearchRequestActivity extends AppCompatActivity
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         GeoPoint point = OSMapUtil.pharseGeoJson(response);
+                        Log.i("Debug", point.toString());
                         requestController.searchRequestByGeoLocation(point, driver.getUserName());
                     }
                 });

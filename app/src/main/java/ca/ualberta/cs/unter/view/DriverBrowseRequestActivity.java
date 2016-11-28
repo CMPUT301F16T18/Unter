@@ -100,17 +100,16 @@ public class DriverBrowseRequestActivity extends AppCompatActivity
         });
 
         driver = FileIOUtil.loadUserFromFile(getApplicationContext());
-
-        acceptedRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, acceptedRequestList);
-        pendingRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, pendingRequestList);
-        acceptedRequestListView.setAdapter(acceptedRequestAdapter);
-        pendingRequestListView.setAdapter(pendingRequestAdapter);
-        updateRequestList();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        acceptedRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, acceptedRequestList);
+        pendingRequestAdapter = new ArrayAdapter<>(this, R.layout.request_list_item, pendingRequestList);
+        acceptedRequestListView.setAdapter(acceptedRequestAdapter);
+        pendingRequestListView.setAdapter(pendingRequestAdapter);
+        updateRequestList();
     }
 
     @Override

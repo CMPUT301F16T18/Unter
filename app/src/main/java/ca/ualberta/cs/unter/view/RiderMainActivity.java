@@ -498,7 +498,7 @@ public class RiderMainActivity extends AppCompatActivity
             // if request has been confirmed by a driver
             if (r.getDriverList() != null && r.getDriverUserName() == null) {
                 Request req = FileIOUtil.loadSingleRequestFromFile(RequestUtil.generateRiderRequestFileName(r), this);
-                if (!req.equals(r)) {
+                if (req.getDriverUserName() == null) {
                     openRiderNotifiedRequestDialog(r);
                 }
             }

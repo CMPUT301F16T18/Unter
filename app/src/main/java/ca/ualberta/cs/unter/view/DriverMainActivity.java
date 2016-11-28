@@ -295,9 +295,9 @@ public class DriverMainActivity extends AppCompatActivity
         if (fileList == null) return;
         for (Request r : requestsList) {
             // if request has been confirmed by a driver
-            if (r.getDriverUserName() != null && r.getDriverUserName().equals(driver.getUserName())) {
+            if (r.getDriverUserName() != null && r.getDriverUserName().equals(driver.getUserName()) && r.getDriverList() == null) {
                 Request req = FileIOUtil.loadSingleRequestFromFile(RequestUtil.generateDriverRequestFileName(r), this);
-                if (!req.equals(r)) {
+                if (req.getDriverUserName() == null) {
                     FileIOUtil.saveRequestInFile(r, RequestUtil.generateDriverRequestFileName(r), this);
                     openDriverNotifyAcceptedDialog();
                 }
